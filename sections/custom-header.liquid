@@ -1,6 +1,11 @@
 <header class="pt-header" role="banner">
   <div class="pt-header__inner">
 
+    <!-- MOBILE MENU BUTTON -->
+    <button class="pt-mobile-toggle" aria-label="Open menu" aria-expanded="false">
+      <span class="pt-mobile-toggle__text">Menu</span>
+    </button>
+
     <!-- LEFT: primary items -->
     <nav class="pt-nav pt-nav--left" aria-label="Primary">
       {% if section.settings.menu_left != blank %}
@@ -66,6 +71,9 @@
       {% endif %}
     </a>
 
+    <!-- MOBILE BAG BUTTON -->
+    <a href="{{ routes.cart_url }}" class="pt-mobile-bag">Bag{% if cart.item_count > 0 %}<sup class="pt-badge">{{ cart.item_count }}</sup>{% endif %}</a>
+
     <!-- RIGHT: utility + book -->
     <nav class="pt-nav pt-nav--right" aria-label="Secondary">
       {% if section.settings.menu_right != blank %}
@@ -97,6 +105,27 @@
 
   </div>
 </header>
+
+<!-- MOBILE MENU EXPANDED -->
+<div class="pt-mobile-expanded" aria-hidden="true">
+  <nav class="pt-mobile-nav">
+    {% if section.settings.menu_left != blank %}
+      {% assign left_menu = linklists[section.settings.menu_left] %}
+      {% for link in left_menu.links %}
+        {% if link.links.size == 0 %}
+          <a href="{{ link.url }}" class="pt-mobile-tab">{{ link.title }}</a>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {% if section.settings.menu_right != blank %}
+      {% assign right_menu = linklists[section.settings.menu_right] %}
+      {% for link in right_menu.links %}
+        <a href="{{ link.url }}" class="pt-mobile-tab">{{ link.title }}{% if link.url == routes.cart_url and cart.item_count > 0 %}<sup class="pt-badge-mobile">{{ cart.item_count }}</sup>{% endif %}</a>
+      {% endfor %}
+    {% endif %}
+  </nav>
+</div>
 
 <style>
   :root{ --pt-offset: 0px; }
@@ -142,8 +171,27 @@
   .pt-header.is-shrink .pt-header__inner{padding:6px 14px}
   .pt-header.is-shrink .pt-book{padding:6px 10px}
 
+  /* Mobile toggle button */
+  .pt-mobile-toggle{display:none;background:none;border:none;padding:0;cursor:pointer;z-index:70;position:relative;font-size:13px;letter-spacing:.03em;color:#111}
+  .pt-mobile-toggle__text{display:inline-block}
+
+  /* Mobile menu expanded (horizontal tabs) */
+  .pt-mobile-expanded{position:fixed;top:calc(var(--pt-offset, 64px));left:0;right:0;background:#fff;border-bottom:1px solid #efefef;z-index:59;max-height:0;overflow:hidden;transition:.3s ease;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .pt-mobile-expanded[aria-hidden="false"]{max-height:200px}
+  .pt-mobile-nav{display:flex;overflow-x:auto;padding:12px 6px;gap:4px;-webkit-overflow-scrolling:touch}
+  .pt-mobile-nav::-webkit-scrollbar{display:none}
+  .pt-mobile-tab{flex-shrink:0;padding:8px 16px;text-decoration:none;color:#111;font-size:13px;letter-spacing:.03em;white-space:nowrap;border-bottom:2px solid transparent;position:relative}
+  .pt-mobile-tab:hover,.pt-mobile-tab:active{border-bottom-color:#111}
+  .pt-badge-mobile{font-size:9px;position:absolute;top:4px;right:8px;background:#111;color:#fff;border-radius:10px;padding:2px 5px;line-height:1}
+
   /* mobile */
   @media (max-width:960px){
+    .pt-mobile-toggle{display:flex}
+    .pt-nav--left,.pt-nav--right{display:none}
+    .pt-logo{position:static;transform:none}
+    .pt-header__inner{justify-content:space-between}
+  }
+  @media (min-width:961px){
     .pt-nav--left{gap:14px}
     .pt-mega__inner{min-width:88vw}
     .pt-brands{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -153,6 +201,7 @@
 
 <script>
   (function(){
+    // Header scroll and offset
     var el = document.querySelector('.pt-header'); if(!el) return;
     function setOffset(){ var off = (el.offsetHeight||0) + 6; document.documentElement.style.setProperty('--pt-offset', off+'px'); }
     setOffset();
@@ -165,6 +214,20 @@
     window.addEventListener('scroll', onScroll, {passive:true});
     window.addEventListener('resize', setOffset);
     window.addEventListener('load', setOffset);
+
+    // Mobile menu functionality
+    var mobileExpanded = document.querySelector('.pt-mobile-expanded');
+    var mobileToggle = document.querySelector('.pt-mobile-toggle');
+
+    function toggleMobileMenu(){
+      var isHidden = mobileExpanded.getAttribute('aria-hidden') === 'true';
+      mobileExpanded.setAttribute('aria-hidden', isHidden ? 'false' : 'true');
+      mobileToggle.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+    }
+
+    if(mobileToggle) {
+      mobileToggle.addEventListener('click', toggleMobileMenu);
+    }
   })();
 </script>
 
