@@ -1,0 +1,35 @@
+{% comment %}
+	- args: Filter settings | Obj
+	- ids: Id Filter
+{% endcomment %}
+{%- liquid
+	assign design = args.design
+	assign show_count = args.count
+
+	if ids == nil
+		assign ids = "vendor"
+	endif
+	if args.limit != nil and args.limit != "" and args.limit > 0
+		assign limit = args.limit
+	endif
+	assign source = collection.filters
+	if template contains 'search'
+		assign source = search.filters
+	endif
+-%}
+
+{%- for filter in source -%}
+	{%- liquid
+		assign scope = filter.param_name | replace: 'filter.p.', '' | split: '.' | first
+	-%}
+	{%- if scope == "vendor" and filter.type == "list" -%}
+		{% render 'product-filter__list',
+			filter: filter,
+			design: design,
+			limit_value: limit,
+			show_count: show_count,
+			ids: ids,
+			tag_html: 'gsp-widget-filter-list' %}
+		{% break %}
+	{%- endif -%}
+{%- endfor -%}

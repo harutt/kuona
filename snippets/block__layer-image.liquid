@@ -1,0 +1,70 @@
+{% liquid
+	assign layer_width = block.settings.layer_width
+	assign layer_width_mobile = block.settings.layer_width_mobile
+	assign horizontal_align = block.settings.horizontal_align
+	assign vertical_align = block.settings.vertical_align
+	assign horizontal_offset = block.settings.horizontal_offset
+	assign horizontal_offset_mobile = block.settings.horizontal_offset_mobile
+	assign vertical_offset = block.settings.vertical_offset
+	assign vertical_offset_mobile = block.settings.vertical_offset_mobile
+	assign loop_animation = block.settings.loop_animation
+	assign transition_duration = block.settings.transition_duration
+	assign radius = block.settings.radius
+	assign z_index = block.settings.z_index
+
+	assign class_block = "gsp-block-layer-image position-absolute gsp-block-" | append: block.id
+	assign class_block = class_block | append: " gsp-block-image-horizontal-" | append: horizontal_align
+	assign class_block = class_block | append: " gsp-block-image-vertical-" | append: vertical_align
+	if block.settings.custom_class != blank
+		assign class_block = class_block | append: " " | append: block.settings.custom_class
+	endif
+
+	if loop_animation != "none"
+		assign class_block = class_block | append: " gsp-img-loop-animation-" | append: loop_animation
+	endif
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+	capture aspect_ratio
+		render 'convert-aspect-ratio', aspect_ratio: block.settings.aspect_ratio
+	endcapture
+	assign aspect_ratio = aspect_ratio | strip_newlines
+%}
+<div class="{{ class_block }}" {{ block.shopify_attributes }}>
+	<div class="gsp-layer-image__inner" {{- animation_attr -}}>
+		{% render 'responsive-image', image: block.settings.image, aspect_ratio: aspect_ratio, wrapper_class: "overflow-hidden", placeholder: "image" %}
+	</div>
+</div>
+{% style %}
+	.gsp-block-{{ block.id }} {
+	{%- if layer_width != blank and layer_width != -1 %}
+		--gsp-layer-image-width: {{ layer_width }}px !important;
+	{% endif -%}
+	{%- if layer_width_mobile != blank and layer_width_mobile != -1 %}
+		--gsp-layer-image-width-mobile: {{ layer_width_mobile }}px !important;
+	{% endif -%}
+	{%- if z_index != blank and z_index != -1 %}
+		--gsp-layer-image-index: {{ z_index }} !important;
+	{% endif -%}
+	{%- if horizontal_offset != blank %}
+		--gsp-layer-image-horizontal-offset: {{ horizontal_offset }} !important;
+	{% endif -%}
+	{%- if horizontal_offset_mobile != blank %}
+		--gsp-layer-image-horizontal-offset-mobile: {{ horizontal_offset_mobile }} !important;
+	{% endif -%}
+	{%- if vertical_offset != blank %}
+		--gsp-layer-image-vertical-offset: {{ vertical_offset }} !important;
+	{% endif -%}
+	{%- if vertical_offset_mobile != blank %}
+		--gsp-layer-image-vertical-offset-mobile: {{ vertical_offset_mobile }} !important;
+	{% endif -%}
+	}
+	.gsp-block-{{ block.id }} .gsp-image{
+	{%- if transition_duration != blank and transition_duration != -1 %}
+		animation-duration: {{ transition_duration }}ms !important;
+	{% endif -%}
+	{%- if radius != blank and radius != 0 %}
+		border-radius: {{ radius }}% !important;
+	{% endif -%}
+	}
+{% endstyle %}

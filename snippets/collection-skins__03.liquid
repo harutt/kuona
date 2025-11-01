@@ -1,0 +1,45 @@
+{% comment %}
+  Accepts:
+	- collection: collection object (required)
+	- placeholder: placeholder image
+	- aspect_ratio: Ratio of the image
+	- image_size: image size
+	- hover_style: style hover image
+	- hover_effect: hover effect
+	- animation_type: animation type
+	- featured_image: Custom featured image
+	- title: Custom title collection
+{% endcomment %}
+
+{% liquid
+	assign aspect_ratio = aspect_ratio | default: nil
+	assign image_size = image_size | default: nil
+	assign hover_style = hover_style | default: nil
+	assign hover_effect = hover_effect | default: nil
+	assign placeholder = placeholder | default: nil
+	assign featured_image = featured_image | default: nil
+	assign animation_type = animation_type | default: 'none'
+	assign title = title | default: nil
+	capture animation_attr
+		render 'animation-attr', type: animation_type
+	endcapture
+%}
+<div
+	class="card bg-transparent border-0 gsp-collection-card gsp-collection-card-skin-grid gsp-collection-card-skin-03 img-effect-wrap img-hover-wrap" {{- animation_attr -}}>
+	<figure class="card-img gsp-collection-card-image position-relative">
+		{% render 'collection__featured',
+			collection: collection,
+			image: featured_image,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			placeholder: placeholder,
+			hover_style: hover_style,
+			hover_effect: hover_effect,
+			overlay: true %}
+		<div
+			class="card-img-overlay d-flex flex-column justify-content-end px-2 py-4 mb-2 text-center text-white z-index-15">
+			{% render 'collection-card__title', collection: collection, title: title %}
+			{% render 'collection-card__view-more', collection: collection, custom_css: "btn-link btn-border-bottom lh-1" %}
+		</div>
+	</figure>
+</div>

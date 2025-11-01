@@ -1,0 +1,42 @@
+{% comment %}
+	- classes: Css classes
+{% endcomment %}
+{% liquid
+	assign logo = section.settings.logo
+	assign logo_sticky = section.settings.logo_sticky
+	if classes == blank
+		assign classes = 'gsp-header__logo fs-40px fw-heading'
+	endif
+
+	if section.settings.logo_width != blank
+		assign logo_width = section.settings.logo_width
+	endif
+	if section.settings.logo_sticky_width != blank
+		assign logo_sticky_width = section.settings.logo_sticky_width
+	endif
+
+	if section.settings.homepage_logo != blank and template == 'index'
+		assign logo = section.settings.homepage_logo
+	endif
+	if section.settings.homepage_logo_sticky != blank and template == 'index'
+		assign logo_sticky = section.settings.homepage_logo_sticky
+	endif
+	if section.settings.homepage_logo_width != blank and section.settings.homepage_logo_width != -1 and template == 'index'
+		assign logo_width = section.settings.homepage_logo_width
+	endif
+	if section.settings.homepage_logo_sticky_width != blank and section.settings.homepage_logo_sticky_width != -1 and template == 'index'
+		assign logo_sticky_width = section.settings.homepage_logo_sticky_width
+	endif
+%}
+
+
+{% render 'el__site-logo',
+	id_logo: section.id,
+	logo: logo,
+	logo_width: logo_width,
+	has_sticky: section.settings.header_sticky,
+	logo_sticky: logo_sticky,
+	logo_sticky_width: logo_sticky_width,
+	classes: classes,
+	logo_text: section.settings.logo_text
+%}

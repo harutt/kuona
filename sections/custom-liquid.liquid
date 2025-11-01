@@ -1,0 +1,29 @@
+<div class="gsp-section gsp-section-custom-liquid gsp-section-{{ section.id }} {{ section.settings.custom_class }}">
+	{{ section.settings.custom_liquid }}
+</div>
+{% schema %}
+{
+    "name": "t:sections.custom_liquid.name",
+    "settings": [
+        {
+            "type": "liquid",
+            "id": "custom_liquid",
+            "label": "t:sections.custom_liquid.settings.custom_liquid.label"
+        },
+        {
+            "type": "header",
+            "content": "t:sections.custom_liquid.settings.header__custom_css"
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "t:sections.custom_liquid.settings.custom_class.label"
+        }
+    ],
+    "presets": [
+        {
+            "name": "t:sections.custom_liquid.name"
+        }
+    ]
+}
+{% endschema %}

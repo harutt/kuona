@@ -1,0 +1,35 @@
+{% comment %}
+	- args: Widget settings | Obj
+{% endcomment %}
+
+{% liquid
+	assign name_collection = args.widget_recent_blog_name | default: 'news'
+	assign length = args.widget_blogs_per_page | plus: 0
+	assign show_tag = args.widget_show_tag
+	assign show_date = args.widget_show_date
+	assign selected_blog = blogs[name_collection]
+	assign image_ratio = args.bc_aspect_ratio
+	assign image_size = args.bc_image_size
+%}
+{%- if name_collection != blank -%}
+	<div class="gsp-recent-post-inner">
+		{%- for article in selected_blog.articles limit: length -%}
+			<div
+				class="card bg-transparent border-0 gsp-blogs-card gsp-blogs-card-skin-list d-flex flex-row">
+				<figure class="card-img-top gsp-blogs-card-image position-relative">
+					{% render 'article-image__thumb', article: article, image_ratio: image_ratio, image_size: image_size, placeholder: placeholder, hover_style: hover_style %}
+				</figure>
+				<div class="card-body p-0">
+					{% render 'article-card__meta',
+						article: article,
+						show_author: false,
+						show_first_tag: show_tag,
+						show_date: show_date,
+						custom_css: "text-uppercase fw-heading ls-1px"
+					%}
+					{% render 'article-card__title', article: article, custom_css: "line-clamp-2" %}
+				</div>
+			</div>
+		{%- endfor -%}
+	</div>
+{%- endif -%}

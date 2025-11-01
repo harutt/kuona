@@ -1,0 +1,218 @@
+{% liquid
+	assign aspect_ratio = '2/3'
+	assign collections = ''
+	for collection in item.product.collections
+		assign collections = collections | append: collection.id | append: ','
+	endfor
+	assign placeholder = 'product-1'
+%}
+
+<gsp-cart-drawer id="gsp-cart-drawer"
+				 class="offcanvas gsp-cart-drawer offcanvas-end {% if cart == empty %} gsp-cart-empty{% endif %}"
+				 role="dialog" aria-modal="true" tabindex="-1">
+	<div class="gsp-cart-drawer-inner d-flex flex-column">
+		<div class="offcanvas-header">
+			<h4 class="offcanvas-title">{{ 'cart.general.title' | t }}</h4>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		</div>
+		<div class="offcanvas-body flex-grow-1 gsp-scrollbar">
+			{%- liquid
+				if settings.cs_show_fsg_on_drawer and settings.cs_fsg_minimum_amount != blank
+					assign minimum_amount = settings.cs_fsg_minimum_amount | remove: ' '
+					render 'product__free-shipping-goal', minimum_amount: minimum_amount
+				endif
+			-%}
+			<gsp-cart-drawer-items data-gsp-cart-items class="gsp-cart-drawer__body">
+				<form action="{{ routes.cart_url }}" method="post" id="cart-drawer-form" novalidate>
+					{%- if cart.items.size > 0 -%}
+						<div class="gsp-cart-drawer-items-wrapper">
+							{% for item in cart.items %}
+								{% liquid
+									if item.image == blank and settings.pc_default_image != nil
+										assign image_item = settings.pc_default_image
+									else
+										assign image_item = item.image
+									endif
+								%}
+								<div id="gsp-cart-drawer-item-{{ item.index | plus: 1 }}"
+									 class="gsp-cart-drawer-item position-relative d-flex align-items-center flex-row mb-3">
+									<gps-cart-item--clear class="gps-cart-drawer-item__clear"
+														  data-index="{{ item.index | plus: 1 }}">
+										<a href="#" class="d-block">
+											{% render 'icons', icon: 'xmark' %}
+										</a>
+									</gps-cart-item--clear>
+									<div class="gps-cart-drawer-item__image me-3">
+										<a href="{{- item.url -}}">
+											{% render 'responsive-image', image: image_item, placeholder: placeholder, aspect_ratio: aspect_ratio, image_size: '120px', wrapper_class: ' gsp-cart-item__image ' %}
+										</a>
+									</div>
+									<div class="gps-cart-drawer-item__info me-3">
+										<div class="gps-cart-item__price d-flex flex-wrap fs-14px">
+											{%- if item.original_price != item.final_price %}
+												<span
+													class="gsp-product__price-compare-at-price text-decoration-line-through fw-heading">
+													{% render 'format-currency', price: item.original_price %}
+													</span>
+												<span class="gsp-product__price-regular text-heading fw-semibold">
+													{% render 'format-currency', price: item.final_price %}
+													</span>
+											{% else -%}
+												<span class="gsp-product__price-regular text-heading fw-semibold">
+													{% render 'format-currency', price: item.original_price %}
+													</span>
+											{% endif -%}
+											{%- if item.unit_price_measurement %}
+												<div class="gsp-product__price-unit-measurement ms-2">
+													<span class="separator">-</span>
+													{%- capture unit_price_separator -%}
+														<span class="m-0">/</span>
+													{%- endcapture -%}
+													{%- capture unit_price_base_unit -%}
+														<span class="m-0" data-unit-price-base-unit>
+													{%- if item.unit_price_measurement -%}
+														{%- if item.unit_price_measurement.reference_value != 1 -%}
+															{{- item.unit_price_measurement.reference_value -}}
+														{%- endif -%}
+														{{ item.unit_price_measurement.reference_unit }}
+													{%- endif -%}
+         								 			</span>
+													{%- endcapture -%}
+													<span class="ms-2"
+														  data-unit-price>{{ item.unit_price | money }}</span>
+													{{- unit_price_separator -}}{{- unit_price_base_unit -}}
+												</div>
+											{% endif -%}
+										</div>
+										<a href="{{- item.url -}}"
+										   class="gps-cart-item__title text-heading fs-15px fw-heading text-decoration-none">
+											{{- item.product.title -}}
+										</a>
+										{%- unless item.product.has_only_default_variant %}
+											{% liquid
+												assign variant = ''
+												assign variant_seperate = ''
+												for option in item.options_with_values
+													assign test = test | append: forloop.index
+													if forloop.index > 1
+														assign variant_seperate = ' - '
+													endif
+													assign variant = variant | append: variant_seperate | append: option.name | append: ' : ' | append: option.value
+												endfor
+											-%}
+											<p class="gps-cart-item__variant mb-0 fs-13px mt-1">{{ variant }}</p>
+										{% endunless -%}
+
+										{% comment %}Properties{% endcomment %}
+										{%- liquid
+											assign property_size = item.properties | size
+											assign properties = 'template ' | split: ' '
+											if property_size > 0
+												assign properties = item.properties
+											endif
+										-%}
+										{%- for p in properties -%}
+											{%- assign property_first_char = p.first | slice: 0 -%}
+											<p
+												class="gps-cart-item__property mb-0 fs-13px mt-1 {% if property_size == 0 or p.last == blank or property_first_char == '_' %} d-none{% endif %}"
+												data-cart-item-property
+											>
+												<span data-cart-item-property-name>{{ p.first }}: </span>
+												{%- comment -%}
+												  Check if there was an uploaded file associated
+												{%- endcomment -%}
+												<span data-cart-item-property-value>
+												{%- if p.last contains '/uploads/' -%}
+													<a href="{{ p.last }}" data-role="product-upload" target="_blank">{{ p.last | split: '/' | last }}</a>
+												{%- else -%}
+													{{ p.last }}
+												{%- endif -%}
+											  </span>
+											</p>
+										{%- endfor -%}
+
+										{%- if item.discounts.size > 0 -%}
+											<ul class="gps-cart-item__discount list-unstyled fs-13px mt-1 mb-0 d-flex flex-wrap"
+												role="list">
+												{%- for discount in item.discounts -%}
+													<li class="discount-item text-danger">
+														{% render 'icons', icon: 'tag' %}
+														{{- discount.title -}}
+													</li>
+												{%- endfor -%}
+											</ul>
+										{%- endif -%}
+									</div>
+									<gps-quantity-input
+										class="gps-quantity input-group quantity position-relative ms-auto">
+										<a href="#"
+										   class="gps-quantity-btn quantity-down text-heading position-absolute translate-middle-y top-50 start-0 ps-2 z-index-5 fs-6">
+											{% render 'icons', icon: 'minus' %}
+										</a>
+										<input
+											class="gps-quantity-input text-heading form-control text-center z-index-1 border-0"
+											type="number"
+											data-quantity-variant-id="{{ item.variant.id }}"
+											name="updates[]"
+											value="{{ item.quantity }}"
+											{% # theme-check-disable %}
+											data-cart-quantity="{{ cart | item_count_for_variant: item.variant.id }}"
+											min="{{ item.variant.quantity_rule.min }}"
+											{% if item.variant.quantity_rule.max != null %}
+												max="{{ item.variant.quantity_rule.max }}"
+											{% endif %}
+											step="{{ item.variant.quantity_rule.increment }}"
+											{% # theme-check-enable %}
+											id="gps-quantity-{{ item.index | plus: 1 }}"
+											data-index="{{ item.index | plus: 1 }}"
+										>
+										<a href="#"
+										   class="gps-quantity-btn quantity-up text-heading position-absolute translate-middle-y top-50 end-0 pe-2 z-index-5 fs-6">
+											{% render 'icons', icon: 'plus' %}
+										</a>
+									</gps-quantity-input>
+								</div>
+							{% endfor %}
+						</div>
+					{%- else -%}
+						<div class="gsp-cart-drawer__empty">
+							{{ 'cart.general.empty' | t }}
+						</div>
+					{%- endif -%}
+				</form>
+			</gsp-cart-drawer-items>
+		</div>
+		<div class="offcanvas-footer flex-wrap py-4">
+			{% render 'product-cart__addons', form_id: 'cart-drawer-form' %}
+			<div class="totals d-flex align-items-center justify-content-between w-100 my-1" role="status"
+				 data-cart-subtotal>
+				<span class="totals__total text-heading">{{ 'cart.general.subtotal' | t }}</span>
+				<p class="totals__total-value fs-24px text-heading fw-semibold">    {% render 'format-currency', price: cart.total_price %}</p>
+			</div>
+			<div data-cart-action class="cart__ctas w-100" {{ block.shopify_attributes }}>
+				<button
+					type="submit"
+					id="CartDrawer-Checkout"
+					class="btn btn-dark w-100 mb-2"
+					name="checkout"
+					form="cart-drawer-form"
+					{% if cart == empty %}
+						disabled
+					{% endif %}
+				>
+					{{ 'cart.general.checkout' | t }}
+				</button>
+				{%- if additional_checkout_buttons -%}
+					<div class="additional-checkout-buttons w-100 mb-2">
+						{{ content_for_additional_checkout_buttons }}
+					</div>
+				{%- endif -%}
+				<a class="btn btn-outline-light w-100" href="{{ routes.cart_url }}">
+					{{ 'cart.general.viewcart' | t }}
+				</a>
+			</div>
+		</div>
+		<div class="gsp-cart-drawer-overlay">
+		</div>
+	</div>
+</gsp-cart-drawer>

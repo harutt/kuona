@@ -1,0 +1,35 @@
+{% comment %}
+	Element Heading
+	Accepts:
+	- url: Url video | format MP4, MOV and WEBM
+	- autoplay: Auto play video
+	- muted: muted video
+	- loop: loop video
+	- custom_css: Custom css
+{% endcomment %}
+{% liquid
+	assign autoplay = autoplay | default: false
+	assign muted = muted | default: false
+	assign loop = loop | default: false
+
+%}
+{% if url != blank %}
+	<video class="gsp-video {{ custom_css }}" playsinline {% if muted %} muted {% endif %} {% if autoplay %} autoplay {% endif %} {% if loop %} loop {% endif %} preload="auto">
+		{% liquid
+			assign url = url | split: '?v='
+			assign url = url | first | strip_newlines
+			assign format = 'mp4'
+			if url contains '.webm' or url contains '.WEBM'
+				assign format = 'webm'
+			endif
+
+			if url contains '.mov' or url contains '.MOV'
+				assign format = 'mp4'
+			endif
+		%}
+		{% comment %}theme-check-disable RemoteAsset{% endcomment %}
+		<source src="{{ url }}" type="video/{{ format }}">
+		{% comment %}theme-check-enable RemoteAsset{% endcomment %}
+		{{ 'sections.slider.video.notice' }}
+	</video>
+{% endif %}

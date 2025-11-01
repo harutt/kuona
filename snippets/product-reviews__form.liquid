@@ -1,0 +1,17 @@
+{% liquid
+	assign review_app = settings.review_app
+%}
+<div class="gsp-product-reviews__wrapper">
+	{% if custom_liquid != blank %}
+		{{ custom_liquid }}
+	{% else %}
+		{% case review_app %}
+			{% when 'judge' %}
+				{% render 'product-reviews__judge', widget_type: 'review_widget', product: product %}
+			{% when 'loox' %}
+				{% render 'product-reviews__loox', widget_type: 'write_review_widget', product: product %}
+			{% when 'lai_reviews' %}
+				{% render 'product-reviews__lai', widget_type: 'review_section', product: product %}
+		{% endcase %}
+	{% endif %}
+</div>

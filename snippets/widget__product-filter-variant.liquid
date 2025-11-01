@@ -1,0 +1,40 @@
+{% comment %}
+	- args: Widget settings | Obj
+	- ids: Id widget
+{% endcomment %}
+{%- liquid
+	assign design = args.design
+	assign show_count = args.count
+	assign show_label = args.show_label
+	assign variant_filter = args.variant | downcase | strip
+	if ids == nil
+		assign ids = "variant"
+	endif
+	if args.limit != nil and args.limit != "" and args.limit > 0
+		assign limit = args.limit
+	endif
+	assign source = collection.filters
+	if template contains 'search'
+		assign source = search.filters
+	endif
+-%}
+
+{% if variant_filter != "" %}
+	{%- for filter in source -%}
+		{%- liquid
+			assign scope = filter.param_name | replace: 'filter.v.', '' | split: '.' | first
+			assign filter_type = filter.param_name | replace: 'filter.v.', '' | split: '.' | last
+		-%}
+		{%- if scope == "option" and filter_type == variant_filter and filter.type == "list" -%}
+			{% render 'product-filter__list',
+				filter: filter,
+				design: design,
+				limit_value: limit,
+				show_count: show_count,
+				show_label: show_label,
+				ids: ids	,
+				tag_html: 'gsp-widget-filter-list' %}
+			{% break %}
+		{%- endif -%}
+	{%- endfor -%}
+{% endif %}

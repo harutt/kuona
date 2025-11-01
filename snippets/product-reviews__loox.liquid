@@ -1,0 +1,12 @@
+{% comment %}
+	- product: product object
+	- widget_type: widget type
+{% endcomment %}
+
+{% if widget_type == 'rating_widget' %}
+	<div class="loox-rating" data-id="{{ product.id }}" data-rating="{{ product.metafields.loox.avg_rating }}"
+		 data-raters="{{ product.metafields.loox.num_reviews }}"></div>
+{% endif %}
+{% if widget_type == 'write_review_widget' %}
+	<div id="looxReviews" data-product-id="{{ product.id }}" class="loox-reviews-default"></div>
+{% endif %}

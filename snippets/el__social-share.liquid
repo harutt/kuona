@@ -1,0 +1,45 @@
+{% comment %}
+	- url: link share
+	- page_title: page title
+{% endcomment %}
+{% liquid
+	if page_title == nil
+		assign page_title = 'products.product.site_name' | t
+	endif
+
+%}
+{% if settings.ss_share_on_facebook %}
+	<a href="https://www.facebook.com/sharer/sharer.php?u={{ url }}" class="gsp-modal__social-share-item text-heading text-decoration-none me-3" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ 'socials.facebook' | t }}">
+		{% render 'icons', icon: 'facebook-f' %}
+	</a>
+{% endif %}
+{% if settings.ss_share_on_twitter %}
+	<a href="https://twitter.com/intent/tweet?text={{ page_title }}&url={{ url }}" class="gsp-modal__social-share-item text-heading text-decoration-none me-3" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ 'socials.twitter' | t }}">
+		{% render 'icons', icon: 'x-twitter' %}
+	</a>
+{% endif %}
+{% if settings.ss_share_on_email %}
+	<a href="mailto:?subject={{ page_title }}&body={{ url }}" class="gsp-modal__social-share-item text-heading text-decoration-none me-3" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ 'socials.email' | t }}">
+		{% render 'icons', icon: 'mail' %}
+	</a>
+{% endif %}
+{% if settings.ss_share_on_telegram %}
+	<a href="https://telegram.me/share/url?url={{ url }}&text={{ page_title }}" class="gsp-modal__social-share-item text-heading text-decoration-none me-3" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ 'socials.telegram' | t }}">
+		{% render 'icons', icon: 'telegram' %}
+	</a>
+{% endif %}
+{% if settings.ss_share_on_linkedin %}
+	<a href="http://www.linkedin.com/shareArticle?mini=true&url={{ url }}&title={{ page_title }}" class="gsp-modal__social-share-item text-heading text-decoration-none me-3" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ 'socials.linkedin' | t }}">
+		{% render 'icons', icon: 'linkedin' %}
+	</a>
+{% endif %}
+{% if settings.ss_share_on_tumblr %}
+	<a href="http://www.tumblr.com/share/link?url={{ url }}&name={{ page_title }}" class="gsp-modal__social-share-item text-heading text-decoration-none me-3" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ 'socials.tumblr' | t }}">
+		{% render 'icons', icon: 'tumblr' %}
+	</a>
+{% endif %}
+{% if settings.ss_share_on_pinterest %}
+	<a href="https://pinterest.com/pin/create/button/?url={{ url }}" class="gsp-modal__social-share-item text-heading text-decoration-none me-3" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ 'socials.pinterest' | t }}">
+		{% render 'icons', icon: 'pinterest' %}
+	</a>
+{% endif %}

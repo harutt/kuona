@@ -1,0 +1,220 @@
+{% comment %}
+  Accepts:
+  	- product: product object (required)
+	- layout: layout main product
+	- gallery_mode: media id, If empty, it will turn off
+	- has_badges: [bool] Enable badges on Main image
+	- zoom: [bool] Enable zoome when hover on Main image
+{% endcomment %}
+<link
+	id="ModelViewerStyle"
+	rel="stylesheet"
+	href="https://cdn.shopify.com/shopifycloud/model-viewer-ui/assets/v1.0/model-viewer-ui.css"
+	media="print"
+	onload="this.media='all'"
+>
+{% liquid
+	if has_badges == nil
+		assign has_badges = true
+	endif
+	if layout == nil
+		assign layout = 'layout-01'
+	endif
+	if zoom == nil
+		assign zoom = false
+	endif
+	if gallery_mode == nil
+		assign gallery_mode = ''
+	endif
+	assign total_media = product.media.size
+	assign placeholder = 'product-1'
+
+
+	capture ratio_img_main
+		render 'convert-aspect-ratio', aspect_ratio: settings.main_product_image_aspect_ratio
+	endcapture
+	assign ratio_img_main = ratio_img_main | strip_newlines
+
+	capture ratio_img_thumb
+		render 'convert-aspect-ratio', aspect_ratio: settings.main_product_thumb_aspect_ratio
+	endcapture
+	assign ratio_img_thumb = ratio_img_thumb | strip_newlines
+
+%}
+{%- capture slider_featured -%}
+	<div class="position-relative">
+		<div id="product-slider-featured" class="product-featured slider-featured slick-slider g-0"
+			 data-slick-options='{"slidesToShow": 1,"arrows": false,"dots" : false, "asNavFor" : "#product-slider-thumb"}'>
+			{%- if product.media[0].preview_image != blank -%}
+				{%- for media in product.media -%}
+					{%- if media.media_type != "image" -%}
+						{% assign zoom_featured = false %}
+					{%- else -%}
+						{% assign zoom_featured = zoom %}
+					{%- endif -%}
+					{% render 'product-image__thumbnail',
+						media: media,
+						aspect_ratio: ratio_img_main,
+						placeholder: placeholder,
+						gallery_mode: gallery_mode,
+						zoom: zoom_featured
+					%}
+				{%- endfor -%}
+			{%- else -%}
+				{% render 'product-image__thumbnail',
+					media: nil,
+					aspect_ratio: ratio_img_main,
+					placeholder: placeholder
+				%}
+			{%- endif -%}
+		</div>
+		{%- if has_badges -%}
+			{% render 'product-card__badges', product: product, include_badges: 'sale,custom_badges' %}
+		{%- endif -%}
+	</div>
+{%- endcapture -%}
+{%- capture slider_thumb -%}
+	{%- if total_media > 1 -%}
+		<div id="product-slider-thumb"
+			 class="slider-thumb slick-slider slick-slider-arrow-inside slick-slider-arrow-active-when-hover g-0 mt-3 pt-1 g-2"
+			 data-slick-options='{"slidesToShow": 5,"slidesToScroll": 1 ,"arrows": true,"dots" : false, "asNavFor" : "#product-slider-featured", "focusOnSelect": true}'>
+			{%- for media in product.media -%}
+				{%- if forloop.length > 1 -%}
+					{% render 'product-image__thumbnail',
+						media: media,
+						thumbnail: true,
+						aspect_ratio: ratio_img_thumb,
+						image_size: '200px',
+						placeholder: placeholder
+					%}
+				{%- endif -%}
+
+			{%- endfor -%}
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+<product-media class="gsp-product-media position-relative {{ layout }}" data-product-id="{{ product.id }}"
+			   data-product-handle="{{ product.handle }}" data-product-url="{{ product.url }}">
+	{% case layout %}
+		{% when 'layout-01' %}
+			{{ slider_featured }}
+			{{ slider_thumb }}
+		{% when 'layout-02' %}
+			<div class="row">
+				<div class="col-xl-2 pe-xl-1 order-1 order-xl-0 mt-3 mt-xl-0">
+					{%- if total_media > 1 -%}
+						<div id="product-slider-thumb"
+							 class="slider-thumb slick-slider slick-slider-arrow-inside slick-slider-arrow-active-when-hover g-3"
+							 data-slick-options='{"slidesToShow": 4,"slidesToScroll": 1 ,"arrows": true,"dots" : false, "asNavFor" : "#product-slider-featured", "focusOnSelect": true,"vertical":true, "responsive":[{"breakpoint":1200,"settings":{"vertical":false}}]}'>
+							{%- for media in product.media -%}
+								{%- if forloop.length > 1 -%}
+									{% render 'product-image__thumbnail',
+										media: media,
+										thumbnail: true,
+										aspect_ratio: ratio_img_thumb,
+										image_size: '200px',
+										placeholder: placeholder
+									%}
+								{%- endif -%}
+							{%- endfor -%}
+						</div>
+					{%- endif -%}
+				</div>
+				<div class="col-xl-10 order-0 order-xl-1">
+					{{ slider_featured }}
+				</div>
+			</div>
+		{% when 'layout-03' %}
+			<div class="product-featured">
+				{%- if product.media[0].preview_image != blank -%}
+					{%- for media in product.media -%}
+						{% render 'product-image__thumbnail',
+							media: media,
+							aspect_ratio: ratio_img_main,
+							placeholder: placeholder,
+							custom_class: 'mb-3'
+						%}
+					{%- endfor -%}
+				{%- else -%}
+					{% render 'product-image__thumbnail',
+						media: nil,
+						aspect_ratio: ratio_img_main,
+						placeholder: placeholder
+					%}
+				{%- endif -%}
+			</div>
+		{% when 'layout-04' %}
+			<div class="position-relative">
+				<div id="product-slider-featured"
+					 class="product-featured slider-featured slick-slider slick-slider-arrow-inside slick-slider-arrow-active-when-hover g-0"
+					 data-slick-options='{"slidesToShow": 1,"arrows": true,"dots" : true}'>
+					{%- if product.media[0].preview_image != blank -%}
+						{%- for media in product.media -%}
+							{% render 'product-image__thumbnail',
+								media: media,
+								aspect_ratio: ratio_img_main,
+								placeholder: placeholder
+							%}
+						{%- endfor -%}
+					{%- else -%}
+						{% render 'product-image__thumbnail',
+							media: nil,
+							aspect_ratio: ratio_img_main,
+							placeholder: placeholder
+						%}
+					{%- endif -%}
+				</div>
+				{%- if has_badges -%}
+					{% render 'product-card__badges', product: product, include_badges: 'sale,custom_badges' %}
+				{%- endif -%}
+			</div>
+		{% when 'layout-05' %}
+			<div id="product-slider-featured"
+				 class="product-featured slider-featured slick-slider g-2"
+				 data-slick-options='{"slidesToShow": 2,"slidesToScroll": 2,"arrows": false,"dots" : true}'>
+				{%- if product.media[0].preview_image != blank -%}
+					{%- for media in product.media -%}
+						{% render 'product-image__thumbnail',
+							media: media,
+							aspect_ratio: ratio_img_main,
+							placeholder: placeholder,
+						%}
+					{%- endfor -%}
+				{%- else -%}
+					{% render 'product-image__thumbnail',
+						media: nil,
+						aspect_ratio: ratio_img_main,
+						placeholder: placeholder
+					%}
+				{%- endif -%}
+			</div>
+			{%- if has_badges -%}
+				{% render 'product-card__badges', product: product, include_badges: 'sale,custom_badges' %}
+			{%- endif -%}
+		{% when 'layout-06' %}
+			<div class="product-featured">
+				<div class="row g-2">
+					{%- if product.media[0].preview_image != blank -%}
+						{%- for media in product.media -%}
+							{% render 'product-image__thumbnail',
+								media: media,
+								aspect_ratio: ratio_img_main,
+								placeholder: placeholder,
+								custom_class: 'col-6'
+							%}
+						{%- endfor -%}
+					{%- else -%}
+						{% render 'product-image__thumbnail',
+							media: nil,
+							aspect_ratio: ratio_img_main,
+							placeholder: placeholder,
+							custom_class: 'col-6'
+						%}
+					{%- endif -%}
+				</div>
+				{%- if has_badges -%}
+					{% render 'product-card__badges', product: product, include_badges: 'sale,custom_badges' %}
+				{%- endif -%}
+			</div>
+	{% endcase %}
+</product-media>

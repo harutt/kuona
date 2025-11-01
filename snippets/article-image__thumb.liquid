@@ -1,0 +1,40 @@
+{% comment %}
+	- article: article object (required)
+	- placeholder: placeholder image
+	- image_ratio: Ratio of the image
+	- image_size: Image Size
+	- hover_style: style hover image
+{% endcomment %}
+{% liquid
+	assign hover_style = hover_style | default: settings.bc_hover_style
+	assign url = article.url | default: '#'
+	assign image = settings.bc_default_image | default: nil
+	if article != blank and article.image != blank
+		assign image = article.image
+	endif
+	if article == blank
+		assign image = settings.bc_default_image
+	endif
+	if placeholder == nil
+		assign placeholder = 'lifestyle-1'
+	endif
+	if image_size == blank or image_size == "default"
+		assign image_size = settings.bc_image_size
+	endif
+	capture image_ratio
+		render 'convert-aspect-ratio', aspect_ratio: image_ratio, aspect_ratio_default: settings.bc_aspect_ratio
+	endcapture
+	assign image_ratio = image_ratio | strip_newlines
+	assign title_default = 'blogs.title_example' | t
+%}
+<a href="{{ url }}"
+   class="gsp-blogs-featured position-relative d-block text-inherit {%- if hover_style != 'none' %} img-hover-{{ hover_style }}{% endif %}"
+   title="{{ article.title | default: title_default }}">
+	{% render 'responsive-image',
+		image: image,
+		placeholder: placeholder,
+		aspect_ratio: image_ratio,
+		image_size: image_size,
+		wrapper_class: ' gsp-blogs-thumb-primary '
+	%}
+</a>

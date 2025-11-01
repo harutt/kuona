@@ -1,0 +1,23 @@
+{% comment %}
+	Add templates, html after section Footer
+{% endcomment %}
+<!-- BEGIN after Footer -->
+{% if settings.cs_enable_add_to_cart_drawer and template.name != 'cart' %}
+	{% render 'product-cart__drawer' %}
+{% endif %}
+{% if settings.enable_quick_view %}
+	{% render 'product__modal-quick-view' %}
+{% endif %}
+{% if settings.enable_add_to_cart and settings.pc_select_options_mode == 'open_popup' %}
+	{% render 'product__modal-select-variant' %}
+{% endif %}
+{% if settings.enable_compare and settings.enable_preview_compare and template != 'page.compare' %}
+	{% render 'product__offcanvas-compare-preview' %}
+{% endif %}
+{% if settings.show_scroll_top_button %}
+	{% render 'scroll-top-button' %}
+{% endif %}
+{% if settings.page_loading != 'none' %}
+	{% render 'loading__page' %}
+{% endif %}
+<!-- END after Footer -->

@@ -1,0 +1,36 @@
+<div class="container">
+	<div class="gsp-page-content gsp-compare-page-content gsp-compare-container-wrapper has-loading-section py-6 py-xl-7">
+		<div class="table-responsive gsp-scrollbar">
+			<table class="gsp-table-compare-product table table-bordered table-striped table-hover mb-0">
+				<thead class="align-top">
+				<tr data-compare="action">
+					<th></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr data-compare="price">
+					<th class="text-heading fs-18px fw-heading">{{ 'page.compare.item_price' | t }}</th>
+				</tr>
+				<tr data-compare="availability">
+					<th class="text-heading fs-18px fw-heading">{{ 'page.compare.item_availability' | t }}</th>
+				</tr>
+				<tr data-compare="vendor">
+					<th class="text-heading fs-18px fw-heading">{{ 'page.compare.item_vendor' | t }}</th>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		{% render 'loading__section' %}
+	</div>
+	<div class="gsp-page-content gsp-compare-no-products d-none py-6 py-xl-7">
+		<div class="text-center alert alert-info">
+			{{ 'page.compare.no_products' | t }}
+			<a class="gsp-text-link border-bottom border-currentColor" href="{{ routes.all_products_collection_url }}">
+				{{ 'page.countinue_shopping' | t }}
+			</a>
+		</div>
+	</div>
+</div>
+<script>
+
+</script>

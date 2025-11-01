@@ -1,0 +1,27 @@
+{% comment %}
+	- args: Widget settings | Obj
+{% endcomment %}
+{%- liquid
+	assign design = args.design
+	assign step = 1
+	if args.step != nil or args.step != ""
+		assign step = args.step
+	endif
+	assign source = collection.filters
+	if template contains 'search'
+		assign source = search.filters
+	endif
+-%}
+
+{%- for filter in source -%}
+	{%- liquid
+		assign scope = filter.param_name | replace: 'filter.v.', '' | split: '.' | first
+	-%}
+	{%- if scope == "price" and filter.type == "price_range" -%}
+		{% render 'product-filter__price-range',
+			filter: filter,
+			design: design,
+			step: step,
+			tag_html: 'gsp-widget-filter-price' %}
+	{%- endif -%}
+{%- endfor -%}

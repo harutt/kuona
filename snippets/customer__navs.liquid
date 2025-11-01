@@ -1,0 +1,25 @@
+<nav class="navbar">
+	<div class="navbar-nav flex-row flex-lg-column gap-3">
+
+		<a
+			href="{{ routes.account_url }}"
+			class="nav-link p-0 fw-semibold {% if request.path == routes.account_url %}active{% endif %}"
+		>
+			{{ 'customer.account.dashboard' | t }}
+		</a>
+		<a
+			href="{{ routes.account_addresses_url }}"
+			class="nav-link p-0 fw-semibold {% if request.path == routes.account_addresses_url %}active{% endif %}"
+		>
+			{{ 'customer.account.addresses' | t }}
+		</a>
+		{% if settings.enable_wishlist != blank %}
+			<a href="{{ pages[settings.wishlist_page].url }}" class="nav-link p-0 fw-semibold">
+				{{ 'customer.account.wishlist' | t }}
+			</a>
+		{% endif %}
+		<a href="{{ routes.account_logout_url }}" class="nav-link p-0 fw-semibold">
+			{{ 'customer.account.log_out' | t }}
+		</a>
+	</div>
+</nav>

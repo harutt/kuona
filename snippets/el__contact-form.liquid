@@ -1,0 +1,87 @@
+{% comment %}
+	Element Contact Form
+	Accepts:
+	- args: obj settings
+{% endcomment %}
+{% liquid
+	assign max_width = args.settings.cf_max_width
+	assign alignment = args.settings.cf_alignment | default: "center"
+	assign color_input = args.settings.cf_color_input
+	assign background_input = args.settings.cf_background_input
+	assign color_border = args.settings.cf_color_border
+	assign border_focus = args.settings.cf_color_border_focus
+	assign color_placeholder = args.settings.cf_color_placeholder
+	assign btn_submit_text = 'contact.form.submit' | t
+	assign success_message = 'contact.form.success_message' | t
+	assign form_id = 'contactForm-' | append: args.id
+%}
+<div class="gsp-element gsp-contact-form text-{{ alignment }} gsp-contact-form-{{ args.id }}">
+	{% form 'contact', id: form_id, class: 'gsp-contact-form__form d-inline-block w-100' %}
+		<div class="row">
+			{% if args.settings.cf_show_name %}
+				<div class="gsp-contact-form__field gsp-contact-form__name col-md-6 col-12 mb-4">
+					<input type="text" class="form-control input-focus" placeholder="{{ 'contact.form.name' | t }}"
+						   name="contact[{{ 'contact.form.name' | t }}]"
+						   value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+				</div>
+			{% endif %}
+			<div class="gsp-contact-form__field gsp-contact-form__email col-md-6 col-12 mb-4">
+				<input type="email" class="form-control input-focus" required autocorrect="off" autocapitalize="off"
+					   placeholder="{{ 'contact.form.email' | t }}" name="contact[email]"
+					   value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+			</div>
+		</div>
+		{% if args.settings.cf_show_phone_number %}
+			<div class="row">
+				<div class="gsp-contact-form__field gsp-contact-form__phone col-12 mb-4">
+					<input type="text" class="form-control input-focus" autocorrect="off" autocapitalize="off"
+						   placeholder="{{ 'contact.form.phone_number' | t }}"
+						   name="contact[{{ 'contact.form.phone_number' | t }}]"
+						   value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+				</div>
+			</div>
+		{% endif %}
+		<div class="row">
+			<div class="gsp-contact-form__field gsp-contact-form__message col-12 mb-4">
+				<textarea class="form-control input-focus" placeholder="{{ 'contact.form.message' | t }}" rows="8"
+						  required
+						  name="contact[{{ 'contact.form.message' | t }}]">{%- if form.body -%}{{ form.body }}{%- endif -%}</textarea>
+			</div>
+		</div>
+		{% render 'el__button',
+			text: btn_submit_text,
+			tag_html: "button",
+			button_attrs: 'type="submit"',
+			style: args.settings.cf_el_button_style,
+			color: args.settings.cf_el_button_color,
+			size: args.settings.cf_el_button_size,
+			icon: args.settings.cf_el_button_icon
+		%}
+		{% render 'form__success', form: form, success_message: success_message, extended_css: "p-2 mt-4 mb-0" %}
+		{% render 'form__error', form: form, extended_css: "p-2 mt-4 mb-0" %}
+	{% endform %}
+</div>
+{% style %}
+	.gsp-contact-form-{{ args.id }}{
+	{%- if color_input != blank and color_input != "rgba(0,0,0,0)" %}
+		--gsp-form-field-color: {{ color_input }} !important;
+	{% endif -%}
+	{%- if background_input != blank and background_input != "rgba(0,0,0,0)" %}
+		--gsp-form-field-bg: {{ background_input }} !important;
+	{% endif -%}
+	{%- if color_border != blank and color_border != "rgba(0,0,0,0)" %}
+		--gsp-form-field-border-color: {{ color_border }} !important;
+	{% endif -%}
+	{%- if color_placeholder != blank and color_placeholder != "rgba(0,0,0,0)" %}
+		--gsp-form-field-placeholder: {{ color_placeholder }} !important;
+	{% endif -%}
+	{%- if border_focus != blank and border_focus != "rgba(0,0,0,0)" %}
+		--gsp-form-field-focus-border-color: {{ border_focus }} !important;
+	{% endif -%}
+	}
+	{%- if max_width != blank and max_width != -1 %}
+		.gsp-contact-form-{{ args.id }} .gsp-contact-form__form{
+		max-width: {{ max_width }}px !important;
+		}
+	{% endif -%}
+{% endstyle %}

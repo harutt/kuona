@@ -1,0 +1,70 @@
+{% comment %}
+	- class_id: Class ID | [Required]
+	- render_string: Render string not Style
+	- title_color: Title color
+	- title_mt: Title margin bottom
+	- rating_mt: Rating margin bottom
+	- desc_color: Description color
+	- desc_mt: Description margin bottom
+	- price_mt = Price margin bottom
+	- swatch_mt = Swatch margin bottom
+	- img_spacing = Image margin bottom
+{% endcomment %}
+{% liquid
+	assign title_color = title_color | default: blank
+	assign desc_color = desc_color | default: blank
+	assign price_fs = price_fs | default: blank
+	assign desc_mt = desc_mt | default: blank
+	assign title_mt = title_mt | default: blank
+	assign title_fs = title_fs | default: blank
+	assign rating_mt = rating_mt | default: blank
+	assign price_mt = price_mt | default: blank
+	assign swatch_mt = swatch_mt | default: blank
+	assign img_spacing = img_spacing | default: blank
+	assign render_string = render_string | default: false
+%}
+{%- capture css -%}
+	{%- if title_color != blank and title_color != "rgba(0,0,0,0)" %}
+		--gsp-product-card-title-color: {{ title_color }} !important;
+	{% endif -%}
+	{%- if title_mt != blank and title_mt != -1 %}
+		--gsp-product-card-title-mt: {{ title_mt }}px !important;
+	{% endif -%}
+	{%- if rating_mt != blank and rating_mt != -1 %}
+		--gsp-product-card-rating-mt: {{ rating_mt }}px !important;
+	{% endif -%}
+	{%- if desc_color != blank and desc_color != "rgba(0,0,0,0)" %}
+		--gsp-product-card-desc-color: {{ desc_color }} !important;
+	{% endif -%}
+	{%- if desc_mt != blank and desc_mt != -1 %}
+		--gsp-product-card-desc-mt: {{ desc_mt }}px !important;
+	{% endif -%}
+	{%- if img_spacing != blank and img_spacing != -1 %}
+		--gsp-product-card-img-spacing: {{ img_spacing }}px !important;
+	{% endif -%}
+	{%- if price_mt != blank and price_mt != -1 %}
+		--gsp-product-card-price-mt: {{ price_mt }}px !important;
+	{% endif -%}
+	{%- if swatch_mt != blank and swatch_mt != -1 %}
+		--gsp-product-card-swatch-mt: {{ swatch_mt }}px !important;
+	{% endif -%}
+	{%- if title_fs != blank and title_fs != -1 %}
+		--gsp-product-card-title-fs: {{ title_fs }}px !important;
+	{% endif -%}
+	{%- if price_fs != blank and price_fs != -1 %}
+		--gsp-product-card-price-fs: {{ price_fs }}px !important;
+	{% endif -%}
+{%- endcapture -%}
+{%- if render_string and css != "" %}
+	{{ class_id }} .gsp-product-card{
+	{{ css }}
+	}
+{% else -%}
+	{%- if class_id != blank and css != "" %}
+		{% style %}
+			{{ class_id }} .gsp-product-card{
+			{{ css }}
+			}
+		{% endstyle %}
+	{% endif -%}
+{% endif -%}

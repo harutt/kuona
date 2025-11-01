@@ -1,0 +1,11 @@
+{% liquid
+	assign email = settings.store_contact_email
+%}
+{%- if email != '' and email != blank %}
+	<div class="gsp-header-addons-item gsp-header-addons-item__mail">
+		<a class="d-flex align-items-center text-decoration-none gsp-top-bar-color fs-14px" href="mailto:{{ email }}">
+			{% render 'icons', icon: 'envelope' %}
+			<span class="ms-2">{{ email }}</span>
+		</a>
+	</div>
+{% endif -%}

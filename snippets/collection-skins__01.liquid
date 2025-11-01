@@ -1,0 +1,43 @@
+{% comment %}
+  Accepts:
+	- collection: collection object (required)
+	- placeholder: placeholder image
+	- aspect_ratio: Ratio of the image
+	- image_size: image size
+	- hover_effect: hover effect
+	- hover_style: style hover image
+	- featured_image: Custom featured image
+	- title: Custom title collection
+{% endcomment %}
+
+{% liquid
+	assign aspect_ratio = aspect_ratio | default: nil
+	assign image_size = image_size | default: nil
+	assign hover_style = hover_style | default: nil
+	assign hover_effect = hover_effect | default: nil
+	assign placeholder = placeholder | default: nil
+	assign featured_image = featured_image | default: nil
+	assign title = title | default: nil
+	assign animation_type = animation_type | default: 'none'
+	capture animation_attr
+		render 'animation-attr', type: animation_type
+	endcapture
+%}
+<div
+	class="card bg-transparent border-0 gsp-collection-card gsp-collection-card-skin-grid gsp-collection-card-skin-01 img-effect-wrap img-hover-wrap" {{- animation_attr -}}>
+	<figure class="card-img-top gsp-collection-card-image position-relative">
+		{% render 'collection__featured',
+			collection: collection,
+			image: featured_image,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			placeholder: placeholder,
+			hover_effect: hover_effect,
+			hover_style: hover_style
+		%}
+	</figure>
+	<div class="card-body p-0 text-center">
+		{% render 'collection-card__title', collection: collection, title: title %}
+		{% render 'collection-card__count-product', collection: collection %}
+	</div>
+</div>

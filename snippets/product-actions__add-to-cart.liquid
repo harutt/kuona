@@ -1,0 +1,118 @@
+{% comment %}
+	- product: product object
+	- show_label: boolean
+	- custom_text_cart: Show custom text cart
+	- classes_button: Class Css Button Cart
+	- classes_icon: Class Css Icon Cart
+	- classes_additional : Class css additional
+{% endcomment %}
+{% liquid
+	assign show_label = show_label | default: false
+	if product.available
+		assign variant_id = product.first_available_variant.id
+	else
+		assign variant_id = product.selected_or_first_available_variant.id
+	endif
+	assign selected_variant_id = ''
+	if section.settings.change_product_variant_on_fitlering
+		assign variant_id = product.selected_or_first_available_variant.id
+		assign selected_variant_id = product.selected_variant.id
+	endif
+
+	if custom_text_cart == nil
+		assign text_cart = 'products.product.add_to_cart' | t
+		unless product.has_only_default_variant
+			assign text_cart = 'products.product.select_options' | t
+		endunless
+		unless product.available
+			assign text_cart = 'products.product.sold_out' | t
+		endunless
+	else
+		assign text_cart = custom_text_cart
+	endif
+
+	if classes_button == nil
+		assign classes_button = 'gsp-product-actions-button gsp-spin-wrapper p-0'
+	endif
+%}
+
+{%- capture inner_button -%}
+	<span class="gsp-button__content lh-0 active">
+		{%- if show_label -%}
+			<span>{{ text_cart }}</span>
+		{% else %}
+			{%- if classes_icon -%}
+				<span class="{{ classes_icon }}">
+			{% endif %}
+			{% render 'icons', icon: 'add-cart' %}
+			{%- if classes_icon -%}
+				</span>
+			{% endif %}
+		{% endif %}
+	</span>
+	<span class="gsp-button__spin">
+		{% render 'spin', custom_class: 'fs-18px' %}
+	</span>
+{%- endcapture -%}
+
+<div class="gsp-product-actions-item gsp-product-actions-add-to-cart{% if show_label %} has-label {% endif %} {{ classes_additional }}">
+	{%- if product.has_only_default_variant -%}
+		<product-form class="gsp-product-product-form" data-product-id="{{ product.id }}">
+			{% form 'product', product,
+				id: product_form_id,
+				class: 'product-form',
+				novalidate: 'novalidate',
+				data-product-id: product.id
+			%}
+				<input hidden name="id" required value="{{ variant_id }}"
+					   data-selected-variant="{{ selected_variant_id }}">
+				{%- if show_label -%}
+					<button class="btn {{ classes_button }}" data-product-handle="{{ product.handle }}" name="add"
+							type="submit"
+					{% if product.selected_or_first_available_variant.available == false or product.available == false %}
+						disabled
+						{% endif %}>
+						{{ inner_button }}
+					</button>
+				{% else %}
+					<button data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ text_cart }}"
+							class="btn {{ classes_button }}" data-product-handle="{{ product.handle }}" name="add"
+							type="submit"
+					{% if product.selected_or_first_available_variant.available == false or product.available == false %}
+						disabled
+						{% endif %}>
+						{{ inner_button }}
+					</button>
+				{% endif %}
+			{% endform %}
+		</product-form>
+	{% else %}
+		{%- if settings.pc_select_options_mode == 'open_popup' -%}
+			{%- if show_label -%}
+				<a class="{{ classes_button }} gsp-product-card__select-option" href="#"
+				   data-product-handle="{{ product.handle }}" title="{{ text_cart }}">
+					{{ inner_button }}
+				</a>
+			{% else %}
+				<a class="{{ classes_button }} gsp-product-card__select-option" href="#"
+				   data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title=" {{ text_cart }}"
+				   data-product-handle="{{ product.handle }}" title="{{ text_cart }}">
+					{{ inner_button }}
+				</a>
+			{% endif %}
+		{% else %}
+			{%- if show_label -%}
+				<a class="{{ classes_button }} gsp-product-card__select-option" href="#"
+				   data-product-handle="{{ product.handle }}" title="{{ text_cart }}">
+					{{ inner_button }}
+				</a>
+			{% else %}
+				<a class="{{ classes_button }} gsp-product-card__view-detail" href="{{ product.url }}"
+				   data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ text_cart }}" title="{{ text_cart }}">
+					{{ inner_button }}
+				</a>
+			{% endif %}
+		{% endif %}
+	{% endif %}
+
+</div>

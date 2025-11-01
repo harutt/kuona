@@ -1,0 +1,43 @@
+{% comment %}
+  Accepts:
+	- article: article object (required)
+	- placeholder: placeholder image
+	- image_ratio: Ratio of the image
+	- image_size: Image Size
+	- hover_style: style hover image
+{% endcomment %}
+
+{% liquid
+	assign image_ratio = image_ratio | default: nil
+	assign image_size = image_size | default: nil
+	assign hover_style = hover_style | default: nil
+	assign placeholder = placeholder | default: nil
+	assign animation_type = animation_type | default: 'none'
+	capture animation_attr
+		render 'animation-attr', type: animation_type
+	endcapture
+%}
+<div
+	class="card bg-transparent border-0 gsp-blogs-card gsp-blogs-card-skin-grid gsp-blogs-card-skin-03" {{- animation_attr -}}>
+	<figure class="card-img-top gsp-blogs-card-image position-relative">
+		{% render 'article-image__thumb',
+			article: article,
+			image_ratio: image_ratio,
+			image_size: image_size,
+			placeholder: placeholder,
+			hover_style: hover_style,
+		%}
+		{% render 'article-card__first-tag',
+			article: article,
+			custom_css: "gsp-article-blog-first-tag-inside-card-img position-absolute z-index-10 btn btn-gray btn-hover-dark border-0 px-3 fs-15px py-1 lh-1 fw-heading"
+		%}
+	</figure>
+	<div class="card-body p-0 px-lg-5 text-center">
+		{% render 'article-card__meta',
+			article: article,
+			show_author: true,
+			show_date: true
+		%}
+		{% render 'article-card__title', article: article %}
+	</div>
+</div>

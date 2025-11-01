@@ -1,0 +1,73 @@
+{% comment %}
+  Accepts:
+  - block: {Object} block Liquid object (required)
+  - product_form_id: Form id
+  - index: index block
+{% endcomment %}
+
+{% liquid
+	assign field_type = block.settings.field_type
+	assign field_options = block.settings.field_options
+	assign field_name = block.settings.title
+	assign field_placeholder = block.settings.field_placeholder
+	assign field_required = block.settings.field_required
+	assign show_at_checkout = block.settings.show_at_checkout
+
+	if field_name == blank
+		assign field_name = "custom field " | append: index
+	endif
+%}
+
+<div class="gsp-main-product-block-custom-field-wrap w-100" data-product-custom-field>
+	<label class="text-heading fw-heading fs-15px pb-3">
+		{{ field_name -}}
+		{%- if field_required -%}
+			<sup>*</sup>
+		{%- endif %}
+	</label>
+	{% unless show_at_checkout %}
+		{% assign field_name = field_name | prepend: '_' %}
+	{% endunless %}
+	{% case field_type %}
+		{% when 'text' %}
+			<input type="text"
+				   id="{{ block.id }}"
+				   class="form-control"
+				   placeholder="{{ field_placeholder }}"
+				   name="properties[{{- field_name -}}]"
+				{% if field_required %}
+					required
+				{% endif %}
+				   form="{{ product_form_id }}"
+			>
+		{% when 'textarea' %}
+			<textarea
+				id="{{ block.id }}"
+				class="form-control"
+				placeholder="{{ field_placeholder }}"
+				name="properties[{{- field_name -}}]"
+                {% if field_required %}
+					required
+				{% endif %}
+                form="{{ product_form_id }}"
+			></textarea>
+		{% when 'select' %}
+			{% assign options = field_options | newline_to_br | split: '<br />' %}
+			<select
+				id="{{ block.id }}"
+				class="form-select"
+				name="properties[{{- field_name -}}]"
+				{% if field_required %}
+					required
+				{% endif %}
+				form="{{ product_form_id }}"
+			>
+				{% if field_placeholder != blank %}
+					<option value="">{{ field_placeholder }}</option>
+				{% endif %}
+				{% for option in options %}
+					<option value="{{ option }}" label="{{ option }}">{{ option }}</option>
+				{% endfor %}
+			</select>
+	{% endcase %}
+</div>

@@ -1,0 +1,66 @@
+{% comment %}
+  Accepts:
+	- skin: skin skin product
+	- article: article object (required)
+	- placeholder: placeholder image
+	- image_ratio: Ratio of the image
+	- image_size: Image Size
+{% endcomment %}
+{% liquid
+	if skin == nil or skin == '' or skin == 'default' or skin == 'inherit'
+		assign skin = settings.bc_skin
+	endif
+	assign image_ratio = image_ratio | default: nil
+	assign image_size = image_size | default: nil
+	assign hover_style = hover_style | default: nil
+	assign placeholder = placeholder | default: nil
+%}
+{% case skin %}
+	{% when 'skin-grid-01' %}
+		{% render 'article-skins__01',
+			article: article,
+			image_ratio: image_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			animation_type: animation_type,
+		%}
+	{% when 'skin-grid-02' %}
+		{% render 'article-skins__02',
+			article: article,
+			image_ratio: image_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			animation_type: animation_type
+		%}
+
+	{% when 'skin-grid-03' %}
+		{% render 'article-skins__03',
+			article: article,
+			image_ratio: image_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			animation_type: animation_type
+		%}
+
+	{% when 'skin-list-01' %}
+		{% render 'article-skins__list-01',
+			article: article,
+			image_ratio: image_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			animation_type: animation_type
+		%}
+	{% when 'skin-standard-01' %}
+		{% render 'article-skins__standard-01',
+			article: article,
+			image_ratio: image_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			animation_type: animation_type
+		%}
+{% endcase %}

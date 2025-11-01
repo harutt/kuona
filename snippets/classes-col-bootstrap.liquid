@@ -1,0 +1,105 @@
+{% comment %}
+	- attr: Type attr returned | default: "class"
+	- convert_class: Convert the Item to Show to class bootstrap | default: true
+	- col_xl: Column Show On XL
+	- col_lg: Column Show On LG
+	- col_md: Column Show On MD
+	- col_sm: Column Show On SM
+	- col: Column Show On XS
+	- additional: Additional Classes
+{% endcomment %}
+{%- liquid
+	if attr == nil
+		assign attr = 'class'
+	endif
+	if convert_class == nil
+		assign convert_class = true
+	endif
+
+	comment
+	Convert the Item to Show to class bootstrap.
+	endcomment
+	if convert_class
+		if is_list == nil
+			assign is_list = false
+		endif
+
+		if is_list
+			assign classes = "col-12"
+		else
+			assign additional = additional | default: ''
+			assign col_xl = col_xl | default: 4
+			if col_xl != 5
+				assign col_bst_xl = 12 | divided_by: col_xl
+			else
+				assign col_bst_xl = '1-5'
+			endif
+
+			assign col_lg = col_lg | default: col_xl
+			if col_lg != 5
+				assign col_bst_lg = 12 | divided_by: col_lg
+			else
+				assign col_bst_lg = 'between-xl-1-5'
+			endif
+
+			assign col_md = col_md | default: col_lg
+			if col_md != 5
+				assign col_bst_md = 12 | divided_by: col_md
+			else
+				assign col_bst_md = 'between-lg-1-5'
+			endif
+
+			assign col_sm = col_sm | default: col_md
+			if col_sm != 5
+				assign col_bst_sm = 12 | divided_by: col_sm
+			else
+				assign col_bst_sm = 'between-md-1-5'
+			endif
+
+			assign col = col | default: col_sm
+			if col != 5
+				assign col_bst = 12 | divided_by: col
+			else
+				assign col_bst = 'down-md-1-5'
+			endif
+
+			assign classes = "col-xl-" | append: col_bst_xl
+			assign classes = classes | append: " col-lg-" | append: col_bst_lg
+			assign classes = classes | append: " col-md-" | append: col_bst_md
+			assign classes = classes | append: " col-sm-" | append: col_bst_sm
+			assign classes = classes | append: " col-" | append: col_bst
+		endif
+	else
+		comment
+		Use the value directly as a class bootstrap.
+		endcomment
+		if col == nil
+			assign col = "12"
+		endif
+		assign classes = "col-" | append: col
+		if col_sm != nil
+			assign classes = classes | append: " col-sm-" | append: col_sm
+		endif
+		if col_md != nil
+			assign classes = classes | append: " col-md-" | append: col_md
+		endif
+		if col_lg != nil
+			assign classes = classes | append: " col-lg-" | append: col_lg
+		endif
+		if col_xl != nil
+			assign classes = classes | append: " col-xl-" | append: col_xl
+		endif
+	endif
+
+	comment
+	Additional class
+	endcomment
+	if additional != nil
+		assign classes = classes | append: " " | append: additional
+	endif
+-%}
+{%- if attr == "string" %}
+	{{ classes }}
+{% else -%}
+	{{ attr }}="{{ classes }}"
+{% endif -%}

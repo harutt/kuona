@@ -1,0 +1,40 @@
+{% comment %}
+	Accepts:
+	- args: object settings button
+	- button_style: overwrite button style
+	- button_color: overwrite button color
+	- button_size: overwrite button size
+	- button_link: overwrite button link
+	- button_icon: Icon Btn
+	- button_attrs: extral button attribute
+	- button_classes: extra button class
+	- tag_html: tag html button "a" or "button"
+{% endcomment %}
+{% liquid
+	assign args = args | default: block
+	assign icon_available = false
+	assign button_style = style | default: args.settings.el_button_style
+	assign button_color = color | default: args.settings.el_button_color
+	assign button_size = size | default: args.settings.el_button_size
+	assign button_link = link | default: args.settings.el_button_link
+	assign button_text = text | default: args.settings.el_button_text
+	assign button_icon = icon | default: args.settings.el_button_icon
+	assign button_classes = classes | default: ''
+	assign tag_html = tag_html | default: 'a'
+
+	if button_icon != nil and button_icon != 'none'
+		assign icon_available = true
+	endif
+%}
+
+{% if button_text != blank or icon_available %}
+	<{{ tag_html }} {%- if tag_html == "a" %} href="{{ button_link }}" {% endif %} class="{% unless button_classes == blank %}{{ button_classes }} {% endunless -%} gsp-element btn {%- if button_style == 'link' %} btn-link {% endif %} btn{%- if button_style != 'default' %}-{{ button_style }}{% endif %}-{{ button_color }}{%- if button_size != 'default' %} btn-{{ button_size }}{% endif -%}"
+	title="{{ button_text }}" aria-label="{{ button_text }}" {%- if button_attrs != blank %} {{ button_attrs }}{% endif %}>
+	{% if button_text != blank %}
+		<span {% if icon_available %} class="me-1" {% endif %}>{{ button_text }}</span>
+	{% endif %}
+	{% if icon_available %}
+		{% render 'icons', icon: button_icon %}
+	{% endif %}
+	</{{ tag_html }}>
+{% endif %}

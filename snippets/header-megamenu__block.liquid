@@ -1,0 +1,19 @@
+{% comment %}
+	- Block: Obj block
+{% endcomment %}
+{% case block.type %}
+	{% when 'menu' %}
+		{% render 'header-megamenu__menu', block: block %}
+	{% when 'banner' %}
+		{% render 'header-megamenu__banner', block: block %}
+	{% when 'image_box' %}
+		{% render 'header-megamenu__image-box', block: block %}
+	{% when 'products_list' %}
+		{% render 'header-megamenu__products-list', block: block %}
+	{% when 'products' %}
+		{% render 'header-megamenu__products', block: block %}
+	{% when 'collection' %}
+		{% render 'header-megamenu__collection', block: block %}
+	{% when 'liquid_code' %}
+		{% render 'header-megamenu__liquid', block: block %}
+{% endcase %}

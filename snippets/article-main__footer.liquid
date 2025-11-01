@@ -1,0 +1,34 @@
+{% comment %}
+	- article: obj article
+	- show_tags: [bool] Show tags article | default : true
+	- show_social: [bool] Show social share | default : true
+	- custom_css: Custom css
+{% endcomment %}
+{% liquid
+	if show_tags == nil
+		assign show_tags = true
+	endif
+	if show_social == nil
+		assign show_social = true
+	endif
+%}
+{% if show_social or show_tags %}
+	<div class="gsp-article-footer d-flex flex-md-row flex-column {{ custom_css }}">
+		{% if article.tags.size > 0 and show_tags %}
+			<div class="gsp-article-tags d-inline-flex gap-1 flex-grow-1">
+				{% for tag in article.tags %}
+					<a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="gsp-tag text-lowercase text-inherit text-heading-hover">#{{ tag }}</a>
+				{% endfor %}
+			</div>
+		{% endif %}
+		{% if show_social %}
+			{% assign url = shop.url | append: article.url %}
+			<div class="gsp-article-tags-social-share mt-3 mt-md-0">
+				<span class="gsp-article-social-heading fw-heading text-heading d-inline-block me-3">
+					{{ 'blogs.share' | t }}:
+				</span>
+				{% render 'social-share', url: url, is_modal: false, custom_css: "d-inline-flex" %}
+			</div>
+		{% endif %}
+	</div>
+{% endif %}

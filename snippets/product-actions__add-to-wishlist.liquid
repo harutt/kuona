@@ -1,0 +1,24 @@
+{% comment %}
+	- product: product object
+	- classes_item: Class css item action
+	- label: lable for button
+{% endcomment %}
+{% liquid
+	if classes_item == nil
+		assign classes_item = 'gsp-product-actions-item gsp-product-actions-wishlist rounded-circle text-decoration-none'
+	endif
+	if label != nil
+		assign classes_item = classes_item | append: ' has-label'
+	endif
+%}
+<a class="{{ classes_item }}" href="#" {% if label == nil %} data-bs-toggle="tooltip"
+   data-bs-title="{{ 'products.actions.add_to_wishlist' | t }}"  {% endif %}
+   data-title-wishlist="{{ 'products.actions.add_to_wishlist' | t }}"
+   title="{{ 'products.actions.add_to_wishlist' | t }}"
+   data-title-added-wishlist="{{ 'products.actions.added_to_wishlist' | t }}"
+   data-product-handle="{{ product.handle }}">
+	{% render 'icons', icon: 'wishlist' %}
+	{%- if label != nil -%}
+		<span>{{ label }}</span>
+	{% endif %}
+</a>

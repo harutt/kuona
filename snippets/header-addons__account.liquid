@@ -1,0 +1,11 @@
+{% comment %}
+	Render addons account icon in header
+	Arguments:
+	- classes: extra class
+{% endcomment %}
+<div class="gsp-header-addons-item gsp-header-addons-item__account">
+	<a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+	   class="gsp-header-addons-item-link fs-25px fs-lg-28px {%- if classes != '' %} {{ classes }}{% endif -%}" title="{{ 'header.addon.account' | t }}" aria-label="{{ 'header.addon.account' | t }}">
+		{% render 'icons', icon: 'user' %}
+	</a>
+</div>

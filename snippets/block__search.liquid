@@ -1,0 +1,30 @@
+{% comment %}
+	Contact Form block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+	assign search_mw = block.settings.search_mw
+%}
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-contact-form" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner text-{{ block.settings.search_alignment }}">
+		{% render 'el__search',
+			id: block.id,
+			predictive_search: block.settings.search_enable_predictive,
+			value_keyword: true,
+			size: block.settings.search_size,
+			custom_css: "d-inline-block w-100"
+		%}
+	</div>
+</div>
+{% style %}
+	{%- if search_mw != blank and search_mw != -1 %}
+		.gsp-block__{{ block.id }} gsp-search-form{
+		max-width: {{ search_mw }}px !important;
+		}
+	{% endif -%}
+{% endstyle %}

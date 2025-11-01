@@ -1,0 +1,10 @@
+{% comment %}
+  Accepts:
+  	- article: article object (required)
+	- custom_css: Add class css
+{% endcomment %}
+{%- if article.excerpt_or_content != blank -%}
+	<p class="gsp-blogs-card-excerpt gsp-blogs-card-item mb-0 {{ custom_css }}">
+		{{ article.excerpt_or_content | strip_html | truncatewords: 150, '...' }}
+	</p>
+{%- endif -%}

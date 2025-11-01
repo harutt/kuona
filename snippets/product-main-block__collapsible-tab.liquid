@@ -1,0 +1,23 @@
+{% comment %}
+  Accepts:
+  - block: {Object} block Liquid object (required)
+{% endcomment %}
+{% if block.settings.ct_heading != blank %}
+	<div class="gsp-main-product-block-collapsible-heading py-2">
+		<a class="text-decoration-none d-flex align-items-center justify-content-between pb-1 border-bottom {% if block.settings.ct_default_open == false %} collapsed {% endif %}"
+		   href="#" data-bs-toggle="collapse" data-bs-target="#gsp-collapse-{{ block.id }}"
+		   aria-expanded="true" aria-controls="gsp-collapse-{{ block.id }}">
+			<span>{{ block.settings.ct_heading }}</span>
+			<span
+				class="collapsible-heading-icon lh-0 fs-18px ps-3">{% render 'icons', icon: 'chevron-down-regular' %}</span>
+		</a>
+	</div>
+	<div id="gsp-collapse-{{ block.id }}"
+		 class="collapse gsp-main-product-block-content {% if block.settings.ct_default_open %} show {% endif %}"
+		 data-gsp-collapse-group="product-block-collapse">
+		<div class="pt-3 pb-1">
+			{{ block.settings.ct_content }}
+			{{ block.settings.ct_liquid }}
+		</div>
+	</div>
+{% endif %}

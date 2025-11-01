@@ -1,0 +1,25 @@
+{% comment %}
+	Contact Form block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+	assign spacing_heading = block.settings.spacing_heading
+%}
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-contact-form" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner text-{{ block.settings.content_alignment }}">
+		{% render 'el__heading', args: block %}
+		{% render 'el__contact-form', args: block %}
+	</div>
+</div>
+{% style %}
+	.gsp-block__{{ block.id }} {
+	{%- if spacing_heading != blank and spacing_heading != -1 %}
+		--gsp-block-contact-form-sp-heading: {{ spacing_heading }}px !important;
+	{% endif -%}
+	}
+{% endstyle %}

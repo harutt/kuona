@@ -1,0 +1,41 @@
+{% liquid
+	assign collection = block.settings.collection
+	assign limit = block.settings.limit | default: 5
+	assign heading = block.settings.heading
+	assign heading_fs = block.settings.fs_heading_menu
+%}
+{% if collection != blank %}
+	{% liquid
+		if heading == blank or heading == ''
+			assign heading = collection.title
+		endif
+	%}
+	<div
+		class="gsp-megamenu-block-{{ block.id }} gsp-megamenu-block gsp-megamenu-block__products-list col-{{ block.settings.block_width }} {{ block.settings.custom_css }}" {{ block.shopify_attributes }}>
+		<h3 class="gsp-megamenu-block__heading">
+			<a class="font-semibold text-dark text-decoration-none"
+			   href="{{ collection.url | default: "#" }}">
+				{{ heading }}
+			</a>
+		</h3>
+		<div class="gsp-megamenu-block__content">
+			<ul class="list-unstyled px-0 mb-0 fw-heading text-capitalize">
+				{% for product in collection.products limit: limit %}
+					<li class="gsp-megamenu-item px-0 py-1">
+						<a href="{{ product.url }}"
+						   class="gsp-submenu-link gsp-mega-menu-link text-decoration-none py-0 d-block">
+							{{ product.title }}
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	{% style %}
+		{%- if heading_fs != blank and heading_fs != -1 %}
+			.gsp-megamenu-block-{{ block.id }}{
+			--gsp-megamenu-fs-heading: {{ heading_fs }}px;
+			}
+		{% endif -%}
+	{% endstyle %}
+{% endif %}

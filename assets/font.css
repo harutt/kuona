@@ -1,0 +1,12 @@
+@font-face{
+  font-family:"Acumin Pro Wide";
+  src:url(//2cmw1p-hs.myshopify.com/cdn/shop/t/2/assets/acumin-pro-wide-regular.woff2?v=132392968741696352821757910715) format('woff2'),
+      url(//2cmw1p-hs.myshopify.com/cdn/shop/t/2/assets/acumin-pro-wide-regular.woff?v=133284056410897594971757910715) format('woff');
+  font-weight:400; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:"Avenir Next";
+  src:url(//2cmw1p-hs.myshopify.com/cdn/shop/t/2/assets/avenir-next-regular.woff2?v=173054668657855280381757910714) format('woff2'),
+      url(//2cmw1p-hs.myshopify.com/cdn/shop/t/2/assets/avenir-next-regular.woff?v=38451840877545753741757910713) format('woff');
+  font-weight:400; font-style:normal; font-display:swap;
+}

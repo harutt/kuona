@@ -1,0 +1,164 @@
+{%- liquid
+	capture animation_attr
+		render 'animation-attr', type: section.settings.animation_type
+	endcapture
+-%}
+{% render 'section-start', name: 'main-customer-activate', has_header: false %}
+<div class="gsp-customer-activate-form" {{- animation_attr -}}>
+	<div class="container">
+		<div class="gsp-customer-activate-wrapper row">
+			<div class="col-xl-6 col-md-8 mx-auto">
+				<h2 class="fs-34px mb-5 text-center">{{ 'customer.activate_account.subtext' | t }}</h2>
+				{% form 'activate_customer_password' %}
+					{% render 'form__error', form: form %}
+					<div class="mb-3">
+						<input
+							class="form-control"
+							type="text" placeholder="{{ 'customer.addresses.first_name' | t }}"
+							name="address[first_name]"
+							id="AddressFirstName_{{ form.id }}"
+							value="{{ form.first_name }}"
+							autocapitalize="words"
+						>
+					</div>
+
+					<div class="mb-3">
+						<input
+							type="password"
+							name="customer[password]"
+							id="CustomerPassword"
+							placeholder="{{ 'customer.activate_account.password' | t }}"
+							class="form-control"
+						>
+					</div>
+
+					<div class="mb-4">
+						<input
+							type="password"
+							name="customer[password_confirmation]"
+							id="CustomerPasswordConfirmation"
+							placeholder="{{ 'customer.activate_account.password_confirm' | t }}"
+							class="form-control"
+						>
+					</div>
+					<div class="d-grid gap-3">
+						<input type="submit" class="btn btn-primary"
+							   value="{{ 'customer.activate_account.submit' | t }}">
+						<input type="submit" class="btn btn-link" name="decline"
+							   value="{{ 'customer.activate_account.cancel' | t }}">
+					</div>
+				{% endform %}
+			</div>
+		</div>
+	</div>
+</div>
+{% render 'section-end', has_header: false %}
+{% schema %}
+{
+    "name": "t:sections.main_customer_activate_account.name",
+    "settings": [
+        {
+            "type": "header",
+            "content": "t:general.sections.spacing.header__section_spacing"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:general.sections.spacing.paragraph__5"
+        },
+        {
+            "type": "number",
+            "id": "padding_top",
+            "label": "t:general.sections.spacing.padding_top.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_bottom",
+            "label": "t:general.sections.spacing.padding_bottom.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_top_mobile",
+            "label": "t:general.sections.spacing.padding_top_mobile.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_bottom_mobile",
+            "label": "t:general.sections.spacing.padding_bottom_mobile.label",
+            "default": -1
+        },
+        {
+            "type": "header",
+            "content": "t:general.sections.animations_header_label"
+        },
+        {
+            "type": "select",
+            "id": "animation_type",
+            "label": "t:general.animation_type.label",
+            "default": "inherit",
+            "options": [
+                {
+                    "value": "inherit",
+                    "label": "t:general.animation_type.options__inherit"
+                },
+                {
+                    "value": "none",
+                    "label": "t:general.animation_type.options__none"
+                },
+                {
+                    "value": "fadeIn",
+                    "label": "t:general.animation_type.options__fadeIn"
+                },
+                {
+                    "value": "fadeInUp",
+                    "label": "t:general.animation_type.options__fadeInUp"
+                },
+                {
+                    "value": "fadeInDown",
+                    "label": "t:general.animation_type.options__fadeInDown"
+                },
+                {
+                    "value": "fadeInLeft",
+                    "label": "t:general.animation_type.options__fadeInLeft"
+                },
+                {
+                    "value": "fadeInRight",
+                    "label": "t:general.animation_type.options__fadeInRight"
+                },
+                {
+                    "value": "flipInX",
+                    "label": "t:general.animation_type.options__flipInX"
+                },
+                {
+                    "value": "flip",
+                    "label": "t:general.animation_type.options__flip"
+                },
+                {
+                    "value": "zoomOut",
+                    "label": "t:general.animation_type.options__zoomOut"
+                },
+                {
+                    "value": "zoomIn",
+                    "label": "t:general.animation_type.options__zoomIn"
+                }
+            ]
+        },
+        {
+            "type": "header",
+            "content": "t:general.sections.custom_attrs.header__section_attributes"
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "t:general.sections.custom_attrs.custom_class.label"
+        }
+    ],
+    "enabled_on": {
+        "templates": [
+            "customers/activate_account"
+        ]
+    }
+}
+{% endschema %}

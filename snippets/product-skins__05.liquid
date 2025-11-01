@@ -1,0 +1,70 @@
+{% comment %}
+  Accepts:
+	- product: product object (required)
+	- placeholder: placeholder image
+	- aspect_ratio: Ratio of the image
+	- image_size: Image Size
+	- hover_style: style hover image
+	- show_description: Show description
+	- show_rating: Show rating
+	- show_action: Show action
+	- support_switch_layout: [bool] Enable switch layout support for skins | default false
+{% endcomment %}
+
+{% liquid
+	assign aspect_ratio = aspect_ratio | default: nil
+	assign image_size = image_size | default: nil
+	assign hover_style = hover_style | default: nil
+	assign placeholder = placeholder | default: nil
+	assign show_rating = show_rating | default: nil
+	assign enable_add_to_cart = settings.enable_add_to_cart
+	if show_action == nil
+		assign show_action = true
+	endif
+	if product.available
+		if product.selected_or_first_available_variant
+			assign variant_id = product.selected_or_first_available_variant.id
+		else
+			assign variant_id = product.first_available_variant.id
+		endif
+	endif
+	assign animation_type = animation_type | default: 'none'
+	capture animation_attr
+		render 'animation-attr', type: animation_type
+	endcapture
+%}
+<div class="card bg-transparent border-0 gsp-product-card gsp-product-card-skin-grid gsp-product-card-skin-05" {{- animation_attr -}}>
+	<figure class="card-img-top gsp-product-card-image position-relative overflow-hidden ">
+		{% render 'product-image__featured',
+			product: product,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			placeholder: placeholder,
+			hover_style: hover_style
+		%}
+		{% if product != blank and show_action %}
+			{% render 'product-actions', product: product, layout: "layout-03", custom_css: "gsp-product-actions-pos-right" %}
+		{% endif %}
+		{% if product != blank %}
+			{% render 'product-card__badges', product: product, include_badges: 'sale,custom_badges' %}
+		{% endif %}
+	</figure>
+	<div class="card-body p-0 text-center">
+		{% render 'product-card__prices', product: product %}
+		{% render 'product-card__title', product: product %}
+		{% render 'product-card__app-review', product: product, show_rating: show_rating %}
+		{% render 'product-card__swatch', product: product, content_align: "center" %}
+		{% if product != blank and show_action and enable_add_to_cart %}
+			{% render 'product-actions__add-to-cart', product: product, classes_button: 'btn btn-outline-primary gsp-product-actions-button gsp-spin-wrapper w-100 text-uppercase border', classes_additional: 'gsp-product-actions-secondary gsp-product-card-item', show_label: true %}
+		{% endif %}
+		{% if support_switch_layout %}
+			<div data-gsl-list>
+				{% render 'product-card__description', product: product %}
+				{% if product != blank and show_action %}
+					{% render 'product-actions', product: product, layout: "layout-02", custom_css: "gsp-product-card-item" %}
+				{% endif %}
+			</div>
+		{% endif %}
+	</div>
+	<input hidden name="id" required value="{{ variant_id }}">
+</div>

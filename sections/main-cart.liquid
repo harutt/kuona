@@ -1,0 +1,189 @@
+{% render 'section-start', name: 'main-cart', has_header: false %}
+		{% render 'product-cart__main' %}
+{% render 'section-end', has_header: false %}
+{% schema %}
+{
+    "name": "t:sections.main_cart.name",
+    "limit": 1,
+    "enabled_on": {
+        "templates": [
+            "cart"
+        ]
+    },
+    "settings": [
+        {
+            "type": "header",
+            "content": "t:sections.main_cart.settings.header__section_general"
+        },
+        {
+            "type": "select",
+            "id": "container",
+            "label": "t:general.container.label",
+            "default": "inherit",
+            "options": [
+                {
+                    "value": "inherit",
+                    "label": "t:general.container.options__inherit"
+                },
+                {
+                    "value": "container",
+                    "label": "t:general.container.options__container"
+                },
+                {
+                    "value": "container-xl",
+                    "label": "t:general.container.options__container_xl"
+                },
+                {
+                    "value": "container-xxl",
+                    "label": "t:general.container.options__container_xxl"
+                },
+                {
+                    "value": "container-fluid",
+                    "label": "t:general.container.options__container_fluid"
+                },
+                {
+                    "value": "container-fluid-no-pd",
+                    "label": "t:general.container.options__container_fluid_no_pd"
+                }
+            ]
+        },
+        {
+            "type": "color",
+            "id": "section_bg_color",
+            "label": "t:general.settings.background_group.bg_color.label"
+        },
+        {
+            "type": "image_picker",
+            "id": "section_bg_image",
+            "label": "t:general.settings.background_group.bg_image.label"
+        },
+        {
+            "type": "select",
+            "id": "section_bg_position",
+            "label": "t:general.settings.background_group.bg_position.label",
+            "options": [
+                {
+                    "value": "default",
+                    "label": "t:general.settings.background_group.bg_position.options__default"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__center",
+                    "value": "center center",
+                    "label": "t:general.settings.background_group.bg_position.options__center_center"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__center",
+                    "value": "center left",
+                    "label": "t:general.settings.background_group.bg_position.options__center_left"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__center",
+                    "value": "center right",
+                    "label": "t:general.settings.background_group.bg_position.options__center_right"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__top",
+                    "value": "top center",
+                    "label": "t:general.settings.background_group.bg_position.options__top_center"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__top",
+                    "value": "top left",
+                    "label": "t:general.settings.background_group.bg_position.options__top_left"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__top",
+                    "value": "top right",
+                    "label": "t:general.settings.background_group.bg_position.options__top_right"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__bottom",
+                    "value": "bottom center",
+                    "label": "t:general.settings.background_group.bg_position.options__bottom_center"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__bottom",
+                    "value": "bottom right",
+                    "label": "t:general.settings.background_group.bg_position.options__bottom_right"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__bottom",
+                    "value": "bottom left",
+                    "label": "t:general.settings.background_group.bg_position.options__bottom_left"
+                }
+            ],
+            "default": "default"
+        },
+        {
+            "type": "select",
+            "id": "section_bg_size",
+            "label": "t:general.settings.background_group.bg_size.label",
+            "options": [
+                {
+                    "value": "default",
+                    "label": "t:general.settings.background_group.bg_size.options__default"
+                },
+                {
+                    "value": "auto",
+                    "label": "t:general.settings.background_group.bg_size.options__auto"
+                },
+                {
+                    "value": "cover",
+                    "label": "t:general.settings.background_group.bg_size.options__cover"
+                },
+                {
+                    "value": "contain",
+                    "label": "t:general.settings.background_group.bg_size.options__contain"
+                }
+            ],
+            "default": "default"
+        },
+        {
+            "type": "header",
+            "content": "t:general.sections.spacing.header__section_spacing"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:general.sections.spacing.paragraph__5"
+        },
+        {
+            "type": "number",
+            "id": "padding_top",
+            "label": "t:general.sections.spacing.padding_top.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_bottom",
+            "label": "t:general.sections.spacing.padding_bottom.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_top_mobile",
+            "label": "t:general.sections.spacing.padding_top_mobile.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_bottom_mobile",
+            "label": "t:general.sections.spacing.padding_bottom_mobile.label",
+            "default": -1
+        },
+        {
+            "type": "header",
+            "content": "t:sections.main_cart.settings.header__extended_css_class"
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "t:sections.main_cart.settings.custom_class.label"
+        }
+    ],
+    "presets": [
+        {
+            "name": "t:sections.main_cart.name"
+        }
+    ]
+}
+{% endschema %}

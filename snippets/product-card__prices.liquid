@@ -1,0 +1,48 @@
+{%- liquid
+	assign selected_variant = product.selected_or_first_available_variant
+	if use_variant
+		assign target = selected_variant
+	else
+		assign target = product
+	endif
+	assign price = target.price | default: 2599
+	assign compare_at_price = target.compare_at_price | default: 0
+	assign custom_css = custom_css | default: ""
+
+	assign sale_badge_type = settings.badges_sale_mode
+-%}
+<div class="gsp-product-price gsp-product-card-price gsp-product-card-item d-inline-flex {%- unless product.available %} gsp-price-sold-out {% endunless -%}{%- if compare_at_price > price %} gsp-price-on-sale {% endif -%} {{ custom_css }}" data-sale-badge-type="{{ sale_badge_type }}">
+	{%- if compare_at_price > price %}
+		<div class="gsp-product__price-sale">
+			<span class="gsp-price-item-regular gsp-price-compare-at-price text-decoration-line-through fw-heading">
+				{% render 'format-currency', price: compare_at_price %}
+			</span>
+			<span class="gsp-price-item-sale price-item-last fw-semibold">
+				{% render 'format-currency', price: price %}
+			</span>
+		</div>
+	{% else -%}
+		<div class="gsp-product__price-regular">
+		<span class="gsp-price-item-regular fw-semibold">
+		{% render 'format-currency', price: price %}
+		</span>
+		</div>
+	{% endif -%}
+	<div class="gsp-product__price-unit-measurement ms-2 {% unless selected_variant.unit_price_measurement %} d-none{% endunless %}">
+		<span class="separator">-</span>
+		{%- capture unit_price_separator -%}
+			<span class="m-0">/</span>
+		{%- endcapture -%}
+		{%- capture unit_price_base_unit -%}
+			<span class="m-0" data-unit-price-base-unit>
+            {%- if selected_variant.unit_price_measurement -%}
+				{%- if selected_variant.unit_price_measurement.reference_value != 1 -%}
+					{{- selected_variant.unit_price_measurement.reference_value -}}
+				{%- endif -%}
+				{{ selected_variant.unit_price_measurement.reference_unit }}
+			{%- endif -%}
+          </span>
+		{%- endcapture -%}
+		<span data-unit-price>{{ selected_variant.unit_price | money }}</span>{{- unit_price_separator -}}{{- unit_price_base_unit -}}
+	</div>
+</div>

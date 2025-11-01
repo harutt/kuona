@@ -1,0 +1,98 @@
+{% comment %}
+	Text Block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	assign gutter = block.settings.item_gutter
+	assign title_block = block.settings.title
+	assign desc_block = block.settings.desc
+	assign color_title = block.settings.color_title
+	assign color_desc = block.settings.color_desc
+	assign color_icon = block.settings.color_icon
+	assign fs_title = block.settings.fs_title
+	assign fs_desc = block.settings.fs_desc
+	assign fs_icon = block.settings.fs_icon
+	assign spacing = block.settings.spacing
+	assign spacing_desc = block.settings.spacing_desc
+	assign tag_title = block.settings.title_tag
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+
+	capture aspect_ratio
+		render 'convert-aspect-ratio', aspect_ratio: block.settings.aspect_ratio
+	endcapture
+	assign aspect_ratio = aspect_ratio | strip_newlines
+%}
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-instagram gsp-block-has-title" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div
+		class="gsp-block__inner {%- if block.settings.content_alignment != "default" %} text-{{ block.settings.content_alignment }} {% endif %}">
+		{%- if title_block != blank and title_block != "" %}
+			<{{ tag_title }} class="gsp-block-title">{{ title_block }}</{{ tag_title }}>
+		{% endif %}
+		{% if desc_block != blank %}
+			<p class="gsp-block-desc">{{ desc_block }}</p>
+		{% endif %}
+		<div class="gsp-block-body gsp-text-block-body">
+			{% render 'el__instagram',
+				hover_style: block.settings.hover_style,
+				aspect_ratio: aspect_ratio,
+				limit_item: block.settings.item_limit,
+				slider_enable: block.settings.slider_enable,
+				col_xl: block.settings.item_show_xl,
+				col_lg: block.settings.item_show_lg,
+				col_md: block.settings.item_show_md,
+				col_sm: block.settings.item_show_sm,
+				col_xs: block.settings.item_show_xs,
+				animation_type: block.settings.animation_type,
+				arrows: block.settings.slider_show_navigation,
+				dots: block.settings.slider_show_pagination,
+				auto_height: block.settings.slider_auto_height,
+				autoplay: block.settings.slider_autoplay,
+				autoplay_speed: block.settings.slider_autoplay_timeout,
+				fade: block.settings.slider_fade,
+				loop: block.settings.slider_loop,
+				center_mode: block.settings.slider_center_mode,
+				center_padding: block.settings.slider_center_padding
+			%}
+		</div>
+	</div>
+</div>
+{% style %}
+	.gsp-block__{{ block.id }} {
+	{%- if color_title != blank and color_title != "rgba(0,0,0,0)" %}
+		--gsp-block-color-title: {{ color_title }};
+	{% endif -%}
+	{%- if color_desc != blank and color_desc != "rgba(0,0,0,0)" %}
+		--gsp-block-color-desc: {{ color_desc }};
+	{% endif -%}
+	{% if fs_title != blank and fs_title != 0 %}
+		--gsp-block-fs-title: {{ fs_title }}px;
+	{% endif -%}
+	{% if fs_desc != blank and fs_desc != 0 %}
+		--gsp-block-fs-desc: {{ fs_desc }}px;
+	{% endif -%}
+	{% if spacing != blank and spacing != 0 %}
+		--gsp-block-spacing: {{ spacing }}px;
+	{% endif -%}
+	{% if spacing_desc != blank and spacing_desc != 0 %}
+		--gsp-block-desc-spacing: {{ spacing_desc }}px;
+	{% endif -%}
+	}
+	.gsp-block__{{ block.id }} .gsp-instagram {
+	{%- if color_icon != blank and color_icon != "rgba(0,0,0,0)" %}
+		--gsp-instagram-color-icon: {{ color_icon }};
+	{% endif -%}
+	{% if fs_icon != blank and fs_icon != 0 %}
+		--gsp-instagram-fs-icon: {{ fs_icon }}px;
+	{% endif -%}
+	}
+	{% if gutter != blank and gutter != -1 %}
+		.gsp-block__{{ block.id }} .gsp-instagram-inner{
+		--bs-gutter-x: {{ gutter }}px !important;
+		--bs-gutter-y: {{ gutter }}px !important;
+		}
+	{% endif -%}
+{% endstyle %}

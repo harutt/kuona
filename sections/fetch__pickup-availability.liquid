@@ -1,0 +1,101 @@
+{% comment %}theme-check-disable UndefinedObject{% endcomment %}
+
+{%- assign pick_up_availabilities = product_variant.store_availabilities | where: 'pick_up_enabled', true -%}
+{%- if pick_up_availabilities.size > 0 -%}
+	<pickup-availability-preview class="gsp-pickup-availability-preview mt-3 mb-4 d-block">
+		<div class="gsp-pickup-availability-preview-inner card p-0 border-0 d-flex flex-row gap-2">
+			{%- liquid
+				assign closest_location = pick_up_availabilities.first
+			-%}
+			{% if closest_location.available %}
+				<span class="text-primary">
+					{% render 'icons', icon: 'circle-check-sharp-solid' %}
+				</span>
+			{% endif %}
+			<div class="gsp-pickup-availability-info card-body p-0">
+				{%- if closest_location.available -%}
+					<p class="card-title fs-15px text-heading fw-heading mb-1">{{ 'products.pickup_availability.pick_up_available_at_html' | t: location_name: closest_location.location.name }}</p>
+					<p class="card-text mb-1">{{ closest_location.pick_up_time }}</p>
+					<button
+						data-bs-toggle="offcanvas" data-bs-target="#offcanvasPickupAvailability"
+						class="btn btn-link btn-border-bottom"
+					>
+						{%- if pick_up_availabilities.size == 1 -%}
+							{{ 'products.pickup_availability.view_store_info' | t }}
+						{%- else -%}
+							{{ 'products.pickup_availability.check_other_stores' | t }}
+						{%- endif -%}
+					</button>
+				{%- else -%}
+					<p class="card-title fs-15px text-heading fw-heading mb-1">
+						{{ 'products.pickup_availability.pick_up_unavailable_at_html' | t: location_name: closest_location.location.name }}
+					</p>
+					{%- if pick_up_availabilities.size > 1 -%}
+						<button
+							data-bs-toggle="offcanvas" data-bs-target="#offcanvasPickupAvailability"
+							class="btn btn-link btn-border-bottom"
+						>
+							{{ 'products.pickup_availability.check_other_stores' | t }}
+						</button>
+					{%- endif -%}
+				{%- endif -%}
+			</div>
+		</div>
+	</pickup-availability-preview>
+
+
+	<offcanvasPickupAvailability id="offcanvasPickupAvailability"
+								 class="offcanvas offcanvas offcanvas-end gsp-offcanvas-pickup-availability"
+								 tabindex="-1">
+		<div class="gsp-cart-drawer-inner d-flex flex-column">
+			<div class="offcanvas-header align-items-start">
+				<div>
+					<h4 class="offcanvas-title">
+						{{ product_variant.product.title | escape }}
+					</h4>
+					{%- unless product_variant.product.has_only_default_variant -%}
+						<p class="pickup-availability-variant offcanvas-subtitle fs-13px mt-1">
+							{%- for product_option in product_variant.product.options_with_values -%}
+								{{ product_option.name | escape }}:&nbsp;
+								{%- for value in product_option.values -%}
+									{%- if product_option.selected_value == value -%}
+										<span>{{ value | escape }}</span>
+									{%- endif -%}
+								{%- endfor -%}
+								{%- unless forloop.last -%},&nbsp;{%- endunless -%}
+							{%- endfor -%}
+						</p>
+					{%- endunless -%}
+				</div>
+				<button type="button" class="btn-close mt-1" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+			</div>
+			<div class="offcanvas-body flex-grow-1 gsp-scrollbar">
+				<ul class="gsp-pickup-availability-items list-unstyled" role="list" data-store-availability-drawer-content>
+					{%- for availability in pick_up_availabilities -%}
+						<li class="gsp-pickup-availability-item mb-4">
+							<h4 class="fs-18px">{{ availability.location.name | escape }}</h4>
+							<p class="gsp-pickup-availability-item-time d-flex align-items-center gap-2 fst-italic mb-2">
+								{%- if availability.available -%}
+									<span class="text-primary">
+										{% render 'icons', icon: 'circle-check-sharp-solid' %}
+									</span>
+									<span>
+										{{ 'products.pickup_availability.pick_up_available' | t }}, {{ availability.pick_up_time | downcase }}
+									</span>
+								{%- endif -%}
+							</p>
+
+							{%- assign address = availability.location.address -%}
+							<address class="gsp-pickup-availability-item-address fst-italic">
+								{{ address | format_address }}
+								{%- if address.phone.size > 0 -%}
+									<p>{{ address.phone }}</p>
+								{%- endif -%}
+							</address>
+						</li>
+					{%- endfor -%}
+				</ul>
+			</div>
+		</div>
+	</offcanvasPickupAvailability>
+{%- endif -%}

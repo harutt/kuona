@@ -1,0 +1,16 @@
+{% comment %}
+  Accepts:
+  	- collection: Collection object (required)
+  	- title: Title collection
+	- custom_css: Add class css
+{% endcomment %}
+{% liquid
+	assign title_default = 'collection.title_example' | t
+	if title == blank
+		assign title = collection.title
+	endif
+%}
+<h3 class="gsp-collection-card-title gsp-collection-card-item card-title mb-0 {{ custom_css }}">
+	<a href="{{ collection.url | default: '#' }}"
+	   class="text-decoration-none text-inherit">{{ title | default: title_default }}</a>
+</h3>

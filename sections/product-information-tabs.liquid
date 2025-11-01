@@ -1,0 +1,420 @@
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: section.settings.animation_type
+	endcapture
+%}
+{% render 'section-start', name: 'product-details-tabs', has_header: false %}
+<gsp-product-details-tabs class="gsp-product-details-tabs gsp-collapse-tabs"  {{- animation_attr -}}>
+	<ul class="nav nav-tabs border-0 justify-content-center pb-12 d-none d-md-flex mb-4 pb-xl-3" id="productTabs"
+		role="tablist">
+		{% for block in section.blocks %}
+			<li class="nav-item" role="presentation">
+				<button
+					class="nav-link m-auto  {% if forloop.first %} active {% endif %}"
+					id="gsp-tab-control-{{ block.id }}" data-bs-toggle="tab" data-bs-target="#{{ block.id }}"
+					type="button"
+					role="tab" aria-controls="{{ block.id }}" aria-selected="true">{{ block.settings.tab_heading }}
+				</button>
+			</li>
+		{% endfor %}
+	</ul>
+	<div class="tab-content">
+		<div class="tab-inner">
+			{% for block in section.blocks %}
+				<div class="tab-pane fade {% if forloop.first %} active show {% else %} mt-4 mt-md-0 {% endif %}"
+					 id="{{ block.id }}"
+					 role="tabpanel"
+					 aria-labelledby="gsp-tab-control-{{ block.id }}" tabindex="0">
+					<div class="card border-md-0 border bg-transparent">
+						<div
+							class="card-header border-0 bg-transparent product-tabs-mobile d-block d-md-none p-0">
+							<h5 class="mb-0">
+								<button
+									class="btn lh-2 fs-5 py-1 px-4 shadow-none w-100 border text-heading fs-24px fw-heading rounded-0 border-0 bg-transparent"
+									type="button"
+									data-bs-toggle="collapse" data-bs-target="#collapse-{{ block.id }}"
+									aria-expanded="false" aria-controls="collapse-{{ block.id }}">
+									{{ block.settings.tab_heading }}
+								</button>
+							</h5>
+						</div>
+						<div class="collapse  border-md-0 border-top {% if forloop.first %} show {% endif %} p-md-0 p-4"
+							 id="collapse-{{ block.id }}">
+							{% case block.type %}
+								{% when 'description' %}
+									<div class="rte">
+										{%- assign description = product.description -%}
+										{{ description }}
+									</div>
+								{% when 'reviews' %}
+									<div class="{{ block.settings.container | default: 'container' }}">
+										{% render 'product-reviews__form', custom_liquid: block.settings.custom_liquid %}
+									</div>
+								{% when 'tab' %}
+									{{ block.settings.content }}
+									{{ block.settings.content_page.content }}
+								{% when 'liquid' %}
+									{{ block.settings.custom_liquid }}
+								{% else %}
+							{% endcase %}
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</gsp-product-details-tabs>
+{% render 'section-end', has_header: false %}
+{% schema %}
+{
+    "name": "t:sections.product_information_tabs.name",
+    "settings": [
+        {
+            "type": "header",
+            "content": "t:sections.product_information_tabs.settings.header__section_general"
+        },
+        {
+            "type": "select",
+            "id": "container",
+            "label": "t:general.container.label",
+            "default": "inherit",
+            "options": [
+                {
+                    "value": "inherit",
+                    "label": "t:general.container.options__inherit"
+                },
+                {
+                    "value": "container",
+                    "label": "t:general.container.options__container"
+                },
+                {
+                    "value": "container-xl",
+                    "label": "t:general.container.options__container_xl"
+                },
+                {
+                    "value": "container-xxl",
+                    "label": "t:general.container.options__container_xxl"
+                },
+                {
+                    "value": "container-fluid",
+                    "label": "t:general.container.options__container_fluid"
+                },
+                {
+                    "value": "container-fluid-no-pd",
+                    "label": "t:general.container.options__container_fluid_no_pd"
+                }
+            ]
+        },
+        {
+            "type": "color",
+            "id": "section_bg_color",
+            "label": "t:general.settings.background_group.bg_color.label"
+        },
+        {
+            "type": "image_picker",
+            "id": "section_bg_image",
+            "label": "t:general.settings.background_group.bg_image.label"
+        },
+        {
+            "type": "select",
+            "id": "section_bg_position",
+            "label": "t:general.settings.background_group.bg_position.label",
+            "options": [
+                {
+                    "value": "default",
+                    "label": "t:general.settings.background_group.bg_position.options__default"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__center",
+                    "value": "center center",
+                    "label": "t:general.settings.background_group.bg_position.options__center_center"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__center",
+                    "value": "center left",
+                    "label": "t:general.settings.background_group.bg_position.options__center_left"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__center",
+                    "value": "center right",
+                    "label": "t:general.settings.background_group.bg_position.options__center_right"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__top",
+                    "value": "top center",
+                    "label": "t:general.settings.background_group.bg_position.options__top_center"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__top",
+                    "value": "top left",
+                    "label": "t:general.settings.background_group.bg_position.options__top_left"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__top",
+                    "value": "top right",
+                    "label": "t:general.settings.background_group.bg_position.options__top_right"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__bottom",
+                    "value": "bottom center",
+                    "label": "t:general.settings.background_group.bg_position.options__bottom_center"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__bottom",
+                    "value": "bottom right",
+                    "label": "t:general.settings.background_group.bg_position.options__bottom_right"
+                },
+                {
+                    "group": "t:general.settings.background_group.bg_position.group__bottom",
+                    "value": "bottom left",
+                    "label": "t:general.settings.background_group.bg_position.options__bottom_left"
+                }
+            ],
+            "default": "default"
+        },
+        {
+            "type": "select",
+            "id": "section_bg_size",
+            "label": "t:general.settings.background_group.bg_size.label",
+            "options": [
+                {
+                    "value": "default",
+                    "label": "t:general.settings.background_group.bg_size.options__default"
+                },
+                {
+                    "value": "auto",
+                    "label": "t:general.settings.background_group.bg_size.options__auto"
+                },
+                {
+                    "value": "cover",
+                    "label": "t:general.settings.background_group.bg_size.options__cover"
+                },
+                {
+                    "value": "contain",
+                    "label": "t:general.settings.background_group.bg_size.options__contain"
+                }
+            ],
+            "default": "default"
+        },
+        {
+            "type": "header",
+            "content": "t:general.sections.spacing.header__section_spacing"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:general.sections.spacing.paragraph__5"
+        },
+        {
+            "type": "number",
+            "id": "padding_top",
+            "label": "t:general.sections.spacing.padding_top.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_bottom",
+            "label": "t:general.sections.spacing.padding_bottom.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_top_mobile",
+            "label": "t:general.sections.spacing.padding_top_mobile.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_bottom_mobile",
+            "label": "t:general.sections.spacing.padding_bottom_mobile.label",
+            "default": -1
+        },
+        {
+            "type": "header",
+            "content": "t:general.sections.animations_header_label"
+        },
+        {
+            "type": "select",
+            "id": "animation_type",
+            "label": "t:general.animation_type.label",
+            "default": "inherit",
+            "options": [
+                {
+                    "value": "inherit",
+                    "label": "t:general.animation_type.options__inherit"
+                },
+                {
+                    "value": "none",
+                    "label": "t:general.animation_type.options__none"
+                },
+                {
+                    "value": "fadeIn",
+                    "label": "t:general.animation_type.options__fadeIn"
+                },
+                {
+                    "value": "fadeInUp",
+                    "label": "t:general.animation_type.options__fadeInUp"
+                },
+                {
+                    "value": "fadeInDown",
+                    "label": "t:general.animation_type.options__fadeInDown"
+                },
+                {
+                    "value": "fadeInLeft",
+                    "label": "t:general.animation_type.options__fadeInLeft"
+                },
+                {
+                    "value": "fadeInRight",
+                    "label": "t:general.animation_type.options__fadeInRight"
+                },
+                {
+                    "value": "flipInX",
+                    "label": "t:general.animation_type.options__flipInX"
+                },
+                {
+                    "value": "flip",
+                    "label": "t:general.animation_type.options__flip"
+                },
+                {
+                    "value": "zoomOut",
+                    "label": "t:general.animation_type.options__zoomOut"
+                },
+                {
+                    "value": "zoomIn",
+                    "label": "t:general.animation_type.options__zoomIn"
+                }
+            ]
+        },
+        {
+            "type": "header",
+            "content": "t:general.sections.custom_attrs.header__section_attributes"
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "t:general.sections.custom_attrs.custom_class.label"
+        }
+    ],
+    "enabled_on": {
+        "templates": [
+            "product"
+        ]
+    },
+    "max_blocks": 6,
+    "blocks": [
+        {
+            "type": "description",
+            "name": "t:sections.product_information_tabs.block.description.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "paragraph",
+                    "content": "t:sections.product_information_tabs.block.description.settings.paragraph__5"
+                },
+                {
+                    "type": "text",
+                    "id": "tab_heading",
+                    "label": "t:sections.product_information_tabs.block.description.settings.tab_heading.label",
+                    "default": "Product description"
+                }
+            ]
+        },
+        {
+            "type": "reviews",
+            "name": "t:sections.product_information_tabs.block.reviews.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "tab_heading",
+                    "label": "t:sections.product_information_tabs.block.reviews.settings.tab_heading.label",
+                    "default": "Product reviews"
+                },
+                {
+                    "type": "select",
+                    "id": "container",
+                    "label": "t:sections.product_information_tabs.block.reviews.settings.container.label",
+                    "default": "container",
+                    "options": [
+                        {
+                            "value": "container",
+                            "label": "t:sections.product_information_tabs.block.reviews.settings.container.options__container"
+                        },
+                        {
+                            "value": "container-fluid",
+                            "label": "t:sections.product_information_tabs.block.reviews.settings.container.options__container_fluid"
+                        },
+                        {
+                            "value": "container-narrow",
+                            "label": "t:sections.product_information_tabs.block.reviews.settings.container.options__container_narrow"
+                        }
+                    ]
+                },
+                {
+                    "type": "header",
+                    "content": "t:sections.product_information_tabs.block.reviews.settings.header__other_review_app"
+                },
+                {
+                    "type": "liquid",
+                    "id": "custom_liquid",
+                    "label": "t:sections.product_information_tabs.block.reviews.settings.custom_liquid.label",
+                    "info": "t:sections.product_information_tabs.block.reviews.settings.custom_liquid.info"
+                }
+            ]
+        },
+        {
+            "type": "tab",
+            "name": "t:sections.product_information_tabs.block.tab.name",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "tab_heading",
+                    "label": "t:sections.product_information_tabs.block.tab.settings.tab_heading.label",
+                    "default": "Shipping & Return",
+                    "placeholder": "Shipping & Return"
+                },
+                {
+                    "type": "richtext",
+                    "id": "content",
+                    "label": "t:sections.product_information_tabs.block.tab.settings.content.label",
+                    "default": "<p>Shipping cost is based on weight. Just add products to your cart and use the Shipping Calculator to see the shipping price.</p><p>We want you to be 100% satisfied with your purchase. Items can be returned or exchanged within 30 days of delivery.</p>"
+                },
+                {
+                    "type": "page",
+                    "id": "content_page",
+                    "label": "t:sections.product_information_tabs.block.tab.settings.content_page.label"
+                }
+            ]
+        },
+        {
+            "type": "liquid",
+            "name": "t:sections.product_information_tabs.block.liquid.name",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "tab_heading",
+                    "label": "t:sections.product_information_tabs.block.liquid.settings.tab_heading.label",
+                    "default": "Tab heading"
+                },
+                {
+                    "type": "liquid",
+                    "id": "custom_liquid",
+                    "label": "t:sections.product_information_tabs.block.liquid.settings.custom_liquid.label"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "t:sections.product_information_tabs.name",
+            "blocks": [
+                {
+                    "type": "description"
+                },
+                {
+                    "type": "tab"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

@@ -1,0 +1,21 @@
+{% comment %}
+	Heading block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-heading" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		<div
+			class="gsp-block-heading__content w-100 h-100 d-flex flex-column {% if block.settings.vertical_align != "default" %} justify-content-{{ block.settings.vertical_align }}{% endif %}">
+			{% render 'el__heading',
+				args: block
+			%}
+		</div>
+	</div>
+</div>

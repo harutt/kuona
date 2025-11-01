@@ -1,0 +1,61 @@
+{% liquid
+	assign heading_fs = block.settings.fs_heading_menu
+%}
+<div
+	class="gsp-megamenu-block-{{ block.id }} gsp-megamenu-block gsp-megamenu-block__menu col-{{ block.settings.block_width }} {{ block.settings.custom_css }}" {{ block.shopify_attributes }}>
+	{% if block.settings.heading != blank %}
+		<h3 class="gsp-megamenu-block__heading">{{ block.settings.heading | escape_once }}</h3>
+	{% endif %}
+	<ul class="list-unstyled p-0 m-0 text-capitalize">
+		{% for link in linklists[block.settings["menu"]].links %}
+			<li class="gsp-megamenu-item py-1">
+				<a class="gsp-submenu-link gsp-mega-menu-link text-decoration-none" href="{{ link.url }}">
+					{% if link.title contains 'gsp-menu-badge__' %}
+						{%- liquid
+							assign badge = link.title | split: '__' | last
+							assign content_menu = badge | split: '_' | last | replace: '-', ' '
+							assign content_badge = badge | split: '_' | first
+						-%}
+						<div class="gsp-menu-badge-wrap position-relative">
+							<span>{{ content_menu }}</span> <span
+								class="gsp-menu-badge badge {{ content_badge }}">{{ content_badge }}</span>
+						</div>
+					{% else %}
+						<span>{{ link.title }}</span>
+					{% endif %}
+				</a>
+				{% if link.links.size > 0 %}
+					<ul class="gsp-mega-submenu ps-3 list-unstyled">
+						{% for sub_link in link.links %}
+							<li class="gsp-mega-submenu-item py-1">
+								<a href="{{ sub_link.url }}"
+								   class="gsp-submenu-link gsp-mega-menu-link text-decoration-none">
+									<span>{{ sub_link.title }}</span>
+								</a>
+								{% if sub_link.links.size > 0 %}
+									<ul class="gsp-mega-submenu ps-3 gsp-mega-grandchild-menu list-unstyled">
+										{% for child_link in sub_link.links %}
+											<li class="gsp-mega-grandchild-menu-item py-1">
+												<a href="{{ child_link.url }}"
+												   class="gsp-submenu-link gsp-mega-menu-link text-decoration-none">
+													<span>{{ child_link.title | escape }}</span>
+												</a>
+											</li>
+										{% endfor %}
+									</ul>
+								{% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</li>
+		{% endfor %}
+	</ul>
+	{% style %}
+		{%- if heading_fs != blank and heading_fs != -1 %}
+			.gsp-megamenu-block-{{ block.id }}{
+			--gsp-megamenu-fs-heading: {{ heading_fs }}px;
+			}
+		{% endif -%}
+	{% endstyle %}
+</div>

@@ -1,0 +1,312 @@
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: section.settings.animation_type
+	endcapture
+%}
+{% render 'section-start', name: 'main-customer-order-detail', has_header: false %}
+<div class="gsp-customer-order-detail">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8" {{- animation_attr -}}>
+				<div class="gsp-customer-order-detail__header mb-4">
+					<h3 class="fs-24px">{{ 'customer.order.title' | t: name: order.name }}</h3>
+					<p>{{ 'customer.order.date' | t: date: order.created_at | date: "%B %d, %Y %I:%M%p" }}</p>
+				</div>
+				{% if order.cancelled %}
+					{%- assign cancelled_at = order.cancelled_at | date: "%B %d, %Y %I:%M%p" -%}
+					<p>{{ 'customer.order.cancelled' | t: date: cancelled_at }}</p>
+					<p>{{ 'customer.order.cancelled_reason' | t: reason: order.cancel_reason }}</p>
+				{% endif %}
+				<table
+					class="table table-hover align-middle table-nowrap mb-0 table-bordered text-heading gsp-order-detail-table">
+					<thead class="table-light">
+					<tr>
+						<th class="px-lg-3 py-3" scope="col">{{ 'customer.order.product' | t }}</th>
+						<th class="px-lg-3 py-3" scope="col">{{ 'customer.order.sku' | t }}</th>
+						<th class="px-lg-3 py-3" scope="col">{{ 'customer.order.price' | t }}</th>
+						<th class="px-lg-3 py-3" scope="col">{{ 'customer.order.quantity' | t }}</th>
+						<th class="px-lg-3 py-3" scope="col">{{ 'customer.order.total' | t }}</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for line_item in order.line_items %}
+						<tr id="{{ line_item.key }}">
+							<td class="px-lg-3 py-3" data-label="{{ 'customer.order.product' | t }}">
+								<div>
+									{{ line_item.title | link_to: line_item.product.url, class: "text-decoration-none" }}
+									{%- assign property_size = line_item.properties | size -%}
+									{% unless line_item.selling_plan_allocation == nil and property_size == 0 %}
+										<div class="item-props fs-14px mt-1">
+											{% unless line_item.selling_plan_allocation == nil %}
+												<span class="item-props__property">
+                          							  {{ line_item.selling_plan_allocation.selling_plan.name }}
+                         							 </span>
+											{% endunless %}
+											{% if property_size != 0 %}
+												{% for property in line_item.properties %}
+													{% assign property_first_char = property.first | slice: 0 %}
+													{% if property.last != blank and property_first_char != '_' %}
+														<span class="item-props__property">
+                               							 {{ property.first }}:&nbsp;
+														{%- if property.last contains '/uploads/' -%}
+															<a href="{{ property.last }}">{{ property.last | split: '/' | last }}</a>
+														{%- else -%}
+															{{ property.last }}
+														{%- endif -%}
+                             							 </span>
+													{% endif %}
+												{% endfor %}
+											{% endif %}
+										</div>
+									{% endunless %}
+									{%- if line_item.line_level_discount_allocations != blank -%}
+										<ul class="gps-cart-item__discount list-unstyled fs-14px mt-1 mb-0 d-flex flex-wrap justify-content-end justify-content-md-start"
+											aria-label="{{ 'customer.order.discount' | t }}">
+											{%- for discount_allocation in line_item.line_level_discount_allocations -%}
+												<li class="gsp-order-discount__item text-danger d-flex align-items-center">
+													{% render 'icons', icon: 'tag' %}
+													<span
+														class="ms-1">{{ discount_allocation.discount_application.title }} (-{{ discount_allocation.amount | money }})</span>
+												</li>
+											{%- endfor -%}
+										</ul>
+									{%- endif -%}
+								</div>
+								{%- if line_item.fulfillment -%}
+									<div class="gsp-order-note fs-14px mt-1">
+										{%- assign created_at = line_item.fulfillment.created_at | time_tag: format: 'date' -%}
+										{{ 'customer.order.fulfilled_at_html' | t: date: created_at }}
+										{% if line_item.fulfillment.tracking_url or line_item.fulfillment.tracking_company or line_item.fulfillment.tracking_number %}
+											<div class="gsp-order-tracking">
+												{%- if line_item.fulfillment.tracking_url -%}
+													<a href="{{ line_item.fulfillment.tracking_url }}"
+													   class="text-decoration-none">
+														{{ 'customer.order.track_shipment' | t }}
+													</a>
+												{%- endif -%}
+												{%- if line_item.fulfillment.tracking_company or line_item.fulfillment.tracking_number -%}
+													<div>
+														{{ line_item.fulfillment.tracking_company }}
+														{{ line_item.fulfillment.tracking_number }}
+													</div>
+												{%- endif -%}
+											</div>
+										{%- endif -%}
+									</div>
+								{%- endif -%}
+							</td>
+							<td class="px-lg-3 py-3"
+								data-label="{{ 'customer.order.sku' | t }}">{{ line_item.sku }}</td>
+							<td class="px-lg-3 py-3" data-label="{{ 'customer.order.price' | t }}">
+								<dl class="mb-0">
+									{%- if line_item.original_price != line_item.final_price -%}
+										<dd class="text-decoration-line-through fw-heading mb-0">
+											{% render 'format-currency', price: line_item.original_price %}
+										</dd>
+										<dd class="fw-heading mb-0">
+											{% render 'format-currency', price: line_item.final_price %}
+										</dd>
+									{%- else -%}
+										<dd class="fw-heading mb-0">
+											{% render 'format-currency', price: line_item.original_price %}
+										</dd>
+									{%- endif -%}
+
+									{%- if line_item.unit_price_measurement -%}
+										<dd class="mb-0">
+											<small class="price-unit-price">
+												{%- capture unit_price_separator -%}
+													<span aria-hidden="true">/</span>
+												{%- endcapture -%}
+												{%- capture unit_price_base_unit -%}
+													{%- if line_item.unit_price_measurement.reference_value != 1 -%}
+														{{- line_item.unit_price_measurement.reference_value -}}
+													{%- endif -%}
+													{{ line_item.unit_price_measurement.reference_unit }}
+												{%- endcapture -%}
+												<span
+													data-unit-price>{{ line_item.unit_price | money }}</span>{{- unit_price_separator -}}{{- unit_price_base_unit -}}
+											</small>
+										</dd>
+									{%- endif -%}
+								</dl>
+							</td>
+							<td class="px-lg-3 py-3"
+								data-label="{{ 'customer.order.quantity' | t }}">{{ line_item.quantity }}</td>
+							<td class="px-lg-3 py-3"
+								data-label="{{ 'customer.order.total' | t }}">{{ line_item.quantity | times: line_item.price | money }}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+					<tfoot>
+					<tr>
+						<td class="px-lg-3 py-3 fw-semibold d-none d-md-table-cell"
+							colspan="4">{{ 'customer.order.subtotal' | t }}</td>
+						<td class="px-lg-3 py-3"
+							data-label="{{ 'customer.order.subtotal' | t }}">{{ order.line_items_subtotal_price | money }}</td>
+					</tr>
+					{% for discount in order.discounts %}
+						<tr>
+							<td class="px-lg-3 py-3 fw-semibold d-none d-md-table-cell"
+								colspan="4">{{ discount.code }} {{ 'customer.order.discount' | t }}</td>
+							<td data-label="{{ 'customer.order.discount' | t }}">{{ discount.savings | money }}</td>
+						</tr>
+					{% endfor %}
+					{% for shipping_method in order.shipping_methods %}
+						<tr>
+							<td class="px-lg-3 py-3 fw-semibold d-none d-md-table-cell"
+								colspan="4">{{ 'customer.order.shipping' | t }} ({{ shipping_method.title }})
+							</td>
+							<td class="px-lg-3 py-3"
+								data-label="{{ 'customer.order.shipping' | t }} ({{ shipping_method.title }})">{{ shipping_method.price | money }}</td>
+						</tr>
+					{% endfor %}
+					{% for tax_line in order.tax_lines %}
+						<tr>
+							<td class="px-lg-3 py-3 fw-semibold d-none d-md-table-cell"
+								colspan="4">{{ 'customer.order.tax' | t }}
+								({{ tax_line.title }} {{ tax_line.rate | times: 100 }}%)
+							</td>
+							<td class="px-lg-3 py-3"
+								data-label="{{ 'customer.order.tax' | t }} ({{ tax_line.title }} {{ tax_line.rate | times: 100 }}%)">{{ tax_line.price | money }}</td>
+						</tr>
+					{% endfor %}
+
+					<tr>
+						<td class="px-lg-3 py-3 fw-semibold d-none d-md-table-cell"
+							colspan="4">{{ 'customer.order.total' | t }}</td>
+						<td class="px-lg-3 py-3"
+							data-label="{{ 'customer.order.total' | t }}">{{ order.total_price | money }} {{ order.currency }}</td>
+					</tr>
+					</tfoot>
+				</table>
+			</div>
+			<div
+				class="gsp-customer-order-detail__address col-lg-4 ps-xl-5 mt-lg-0 mt-5 pt-lg-0 pt-2" {{- animation_attr -}}>
+				<div class="gsp-customer-order-detail__billing-address fs-6 mb-5">
+					<h3 class="fs-24px mb-3">{{ 'customer.order.billing_address' | t }}</h3>
+					<p class="mb-0">{{ 'customer.order.payment_status' | t }}: {{ order.financial_status_label }}</p>
+					<div>{{ order.billing_address | format_address }}</div>
+				</div>
+				<div class="gsp-customer-order-detail__shipping-address fs-6">
+					<h3 class="fs-24px mb-3">{{ 'customer.order.shipping_address' | t }}</h3>
+					<p class="mb-0">{{ 'customer.order.fulfillment_status' | t }}
+						: {{ order.fulfillment_status_label }}</p>
+					<div>{{ order.shipping_address | format_address }}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% render 'section-end', has_header: false %}
+{% schema %}
+{
+    "name": "t:sections.main_customer_order.name",
+    "settings": [
+        {
+            "type": "header",
+            "content": "t:general.sections.spacing.header__section_spacing"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:general.sections.spacing.paragraph__5"
+        },
+        {
+            "type": "number",
+            "id": "padding_top",
+            "label": "t:general.sections.spacing.padding_top.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_bottom",
+            "label": "t:general.sections.spacing.padding_bottom.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_top_mobile",
+            "label": "t:general.sections.spacing.padding_top_mobile.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_bottom_mobile",
+            "label": "t:general.sections.spacing.padding_bottom_mobile.label",
+            "default": -1
+        },
+        {
+            "type": "header",
+            "content": "t:general.sections.animations_header_label"
+        },
+        {
+            "type": "select",
+            "id": "animation_type",
+            "label": "t:general.animation_type.label",
+            "default": "inherit",
+            "options": [
+                {
+                    "value": "inherit",
+                    "label": "t:general.animation_type.options__inherit"
+                },
+                {
+                    "value": "none",
+                    "label": "t:general.animation_type.options__none"
+                },
+                {
+                    "value": "fadeIn",
+                    "label": "t:general.animation_type.options__fadeIn"
+                },
+                {
+                    "value": "fadeInUp",
+                    "label": "t:general.animation_type.options__fadeInUp"
+                },
+                {
+                    "value": "fadeInDown",
+                    "label": "t:general.animation_type.options__fadeInDown"
+                },
+                {
+                    "value": "fadeInLeft",
+                    "label": "t:general.animation_type.options__fadeInLeft"
+                },
+                {
+                    "value": "fadeInRight",
+                    "label": "t:general.animation_type.options__fadeInRight"
+                },
+                {
+                    "value": "flipInX",
+                    "label": "t:general.animation_type.options__flipInX"
+                },
+                {
+                    "value": "flip",
+                    "label": "t:general.animation_type.options__flip"
+                },
+                {
+                    "value": "zoomOut",
+                    "label": "t:general.animation_type.options__zoomOut"
+                },
+                {
+                    "value": "zoomIn",
+                    "label": "t:general.animation_type.options__zoomIn"
+                }
+            ]
+        },
+        {
+            "type": "header",
+            "content": "t:general.sections.custom_attrs.header__section_attributes"
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "t:general.sections.custom_attrs.custom_class.label"
+        }
+    ],
+    "enabled_on": {
+        "templates": [
+            "customers/order"
+        ]
+    }
+}
+{% endschema %}
+
+

@@ -1,0 +1,46 @@
+{% comment %}
+	- article: obj article
+	- show_author: [bool] Show author article | default : true
+	- show_first_tag: [bool] Show first tag | default : false
+	- show_date: [bool] Show date public article | default : true
+	- custom_css: Custom css
+{% endcomment %}
+{% liquid
+	if show_author == nil
+		assign show_author = true
+	endif
+	if show_first_tag == nil
+		assign show_first_tag = false
+	endif
+	if show_date == nil
+		assign show_date = true
+	endif
+
+	if show_author or show_first_tag or show_date
+		assign enable_meta = true
+	endif
+%}
+{% if enable_meta and article != nil %}
+	<ul class="gsp-blogs-card-item gsp-article-meta list-unstyled d-inline-flex mb-0 {{ custom_css }}">
+		{% if show_author and article.author != blank %}
+			<li class="gsp-article-meta-item gsp-article-meta-author">
+				{{ 'blogs.meta.by_author' | t }} <span class="gsp-author text-heading">{{ article.author }}</span>
+			</li>
+		{% endif %}
+		{% if show_blog_title %}
+			<li class="gsp-article-meta-item gsp-article-meta-blog-title">
+				{% render 'article-card__blog-title' %}
+			</li>
+		{% endif %}
+		{% if show_first_tag and article.tags.size > 0 %}
+			<li class="gsp-article-meta-item gsp-article-meta-first-tag">
+				{% render 'article-card__first-tag', article: article, custom_css: "text-inherit text-heading-hover" %}
+			</li>
+		{% endif %}
+		{% if show_date and article.published_at != blank %}
+			<li class="gsp-article-meta-item gsp-article-meta-date">
+				<span>{{ article.published_at | time_tag: format: 'month_date__year' }}</span>
+			</li>
+		{% endif %}
+	</ul>
+{% endif %}

@@ -1,0 +1,14 @@
+{% liquid
+	assign title = block.settings.title
+%}
+<div class="d-flex flex-column">
+	{% if title != nil and title != "" %}
+		<span class="block-title">{{ title }}</span>
+	{%- endif -%}
+	{% render 'el__product-recommendations',
+		args: block,
+		section_id: section.id,
+		product_id: product.id,
+		show_action_product: false
+	%}
+</div>

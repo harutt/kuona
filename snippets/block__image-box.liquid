@@ -1,0 +1,16 @@
+{% comment %}
+	Image block
+	Accepts:
+	- block: block object
+	- image_plackholder_index: image plackholder index
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+<div class="gsp-block__{{ block.id }} gsp-block gsp-image-box-block" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		{% render 'el__image-box', args: block , image_plackholder_index: image_plackholder_index %}
+	</div>
+</div>

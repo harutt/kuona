@@ -1,0 +1,13 @@
+{% comment %}
+	Form success message
+	Accepts:
+	- form: obj form
+	- success_message: success message
+	- extended_css : Extended css class
+
+{% endcomment %}
+{% if form.posted_successfully? %}
+	<div class="alert alert-success {% if extended_css != blank %}{{ extended_css }}{% endif %}" role="alert">
+		{{ success_message }}
+	</div>
+{% endif %}

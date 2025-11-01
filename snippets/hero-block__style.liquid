@@ -1,0 +1,53 @@
+{% comment %}
+	Style block
+	Accepts:
+	- block: block obj
+	- extended_css: extended css
+{% endcomment %}
+
+{%- capture style_section -%}
+	.gsp-hero-item-{{ block.id }} {
+	{% if block.settings.bg_color != blank and block.settings.bg_color != "rgba(0,0,0,0)" %}
+		--gsp-hero-bg-color: {{ block.settings.bg_color }}!important;
+	{% endif %}
+	{% if block.settings.bg_image != blank %}
+		--gsp-hero-bg-image: url({{ block.settings.bg_image | image_url }})!important;
+	{% endif %}
+	{% if block.settings.bg_position != blank and block.settings.bg_position != "default" %}
+		--gsp-hero-bg-position: {{ block.settings.bg_position }}!important;
+	{% endif %}
+	{% if block.settings.bg_size != blank and block.settings.bg_size != "default" %}
+		--gsp-hero-bg-size: {{ block.settings.bg_size }}!important;
+	{% endif %}
+	{% if block.settings.padding_top != blank and block.settings.padding_top != -1 %}
+		--gsp-hero-padding-top: {{ block.settings.padding_top }}px!important;
+	{% endif %}
+	{% if block.settings.padding_bottom != blank and block.settings.padding_bottom != -1 %}
+		--gsp-hero-padding-bottom: {{ block.settings.padding_bottom }}px!important;
+	{% endif %}
+	{% if block.settings.padding_top_mobile != blank and block.settings.padding_top_mobile != -1 %}
+		--gsp-hero-padding-mobile-top: {{ block.settings.padding_top_mobile }}px!important;
+	{% endif %}
+	{% if block.settings.padding_bottom_mobile != blank and block.settings.padding_bottom_mobile != -1 %}
+		--gsp-hero-padding-mobile-bottom: {{ block.settings.padding_bottom_mobile }}px!important;
+	{% endif %}
+	{% if block.settings.padding_right != blank and block.settings.padding_right != -1 %}
+		--gsp-hero-padding-right: {{ block.settings.padding_right }}px!important;
+	{% endif %}
+	{% if block.settings.padding_left != blank and block.settings.padding_left != -1 %}
+		--gsp-hero-padding-left: {{ block.settings.padding_left }}px!important;
+	{% endif %}
+	{% if block.settings.padding_right_mobile != blank and block.settings.padding_right_mobile != -1 %}
+		--gsp-hero-padding-mobile-right: {{ block.settings.padding_right_mobile }}px!important;
+	{% endif %}
+	{% if block.settings.padding_left_mobile != blank and block.settings.padding_left_mobile != -1 %}
+		--gsp-hero-padding-mobile-left: {{ block.settings.padding_left_mobile }}px!important;
+	{% endif %}
+	}
+	{% if extended_css != blank %}
+		{{ extended_css }}
+	{% endif %}
+{%- endcapture -%}
+{% style %}
+	{{ style_section | strip_newlines }}
+{% endstyle %}

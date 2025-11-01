@@ -1,0 +1,162 @@
+{% comment %}
+	Header menu
+
+	Arguments:
+	- menu: menu id
+	- style: Menu custom style
+	- classes: class extra
+
+{% endcomment %}
+{% liquid
+	assign main_menu = section.settings.main_menu
+	assign mobile_menu = section.settings.mobile_menu
+
+	if mobile_menu == blank
+		assign menu = main_menu
+	else
+		assign menu = mobile_menu
+	endif
+%}
+
+<ul class="navbar-nav gsp-main-menu-mobile w-100 w-xl-auto fs-15px mt-3 {% if classes != blank %} {{ classes }}{% endif %}"
+	style="{{ style | default: '' }}">
+	{% for link in linklists[menu].links %}
+		{% liquid
+			assign title_handle = link.title | upcase | handle
+			assign has_mega_item = false
+			assign mega_content = blank
+			assign index_sub_item = forloop.index
+			assign id_sub_item = 'sub-menu-mobile' | append: index_sub_item
+		%}
+		{% for block in section.blocks %}
+			{% liquid
+				assign for_item = block.settings.for_item | upcase | handle
+				if for_item == blank or for_item != title_handle
+					continue
+				endif
+			%}
+			{% if for_item == title_handle %}
+				{% liquid
+					assign block_content = blank
+				%}
+
+				{% capture block_content %}
+					{% render 'header-megamenu__block', block: block %}
+				{% endcapture %}
+				{% liquid
+					assign mega_content = mega_content | append: block_content
+					if mega_content != blank
+						assign has_mega_item = true
+					endif
+				%}
+			{% endif %}
+		{% endfor %}
+		<li class="gsp-menu-item nav-item fw-heading position-relative {%- if link.levels >= 1 or has_mega_item == true %} gsp-menu-has-children {% endif %} {%- if has_mega_item == true %} gsp-menu-item__mega {% endif %}">
+			<a href="{{ link.url }}"
+			   class="nav-link gsp-menu-link px-3 py-2 d-flex align-items-center {%- if link.active == true %} gsp-menu-link-active {% endif %} {%- if link.levels >= 1 or has_mega_item == true %} gsp-menu-has-children{% endif -%} {%- if section.settings.uppercase_parent_level %} text-uppercase{% endif %}">
+				{% if link.title contains 'gsp-menu-badge__' %}
+					{%- liquid
+						assign badge = link.title | split: '__' | last
+						assign content_menu = badge | split: '_' | last | replace: '-', ' '
+						assign content_badge = badge | split: '_' | first
+					-%}
+					<div class="gsp-menu-badge-wrap position-relative">
+						<span>{{ content_menu }}</span> <span
+							class="gsp-menu-badge badge {{ content_badge }}">{{ content_badge }}</span>
+					</div>
+				{% else %}
+					{{ link.title | escape }}
+				{% endif %}
+				{% if link.levels >= 1 or has_mega_item == true %}
+					<span class="caret py-2 px-3 position-absolute collapsed" data-bs-toggle="collapse" data-bs-target="#{{ id_sub_item }}">
+						{% render 'icons', icon: 'angle-right' %}
+					</span>
+				{% endif %}
+			</a>
+			{% if link.levels >= 1 or has_mega_item == true %}
+				{%- if has_mega_item == true %}
+					{% liquid
+						assign container_mega = section.settings.container_mega_menu
+						if container_mega == 'inherit'
+							assign container_mega = section.settings.container
+						endif
+						if container_mega != 'container'
+							assign container_mega = 'container ' | append: container_mega
+						endif
+					%}
+					<div id="{{ id_sub_item }}" class="gsp-submenu collapse gsp-mega-menu overflow-hidden position-relative">
+						<div class="p-0 {{ container_mega }}">
+							<div class="row m-0">
+								{{ mega_content }}
+							</div>
+						</div>
+					</div>
+				{% else %}
+					<ul id="{{ id_sub_item }}"
+						class="gsp-submenu collapse list-unstyled position-relative p-0">
+						{% for sub_link in link.links %}
+							{% liquid
+								assign index_grandchild_item = index_sub_item | append: "-" | append: forloop.index
+								assign id_grandchild_item = 'grandchild-menu-mobile-' | append: index_grandchild_item
+							%}
+							<li class="gsp-submenu-item position-relative">
+								<a href="{{ sub_link.url }}"
+								   class="gsp-submenu-link gsp-submenu-link__hover text-decoration-none px-3 py-2 {%- if sub_link.active == true %} gsp-menu-link-active {% endif %}">
+									<span>
+										{% if sub_link.title contains 'gsp-menu-badge__' %}
+											{%- liquid
+												assign sub_badge = sub_link.title | split: '__' | last
+												assign sub_content_menu = sub_badge | split: '_' | last | replace: '-', ' '
+												assign sub_content_badge = sub_badge | split: '_' | first
+											-%}
+											<div class="gsp-menu-badge-wrap position-relative">
+												<span>{{ sub_content_menu }}</span>
+												<span class="gsp-menu-badge badge {{ sub_content_badge }}">
+													{{ sub_content_badge }}
+												</span>
+											</div>
+										{% else %}
+											<span>
+												{{ sub_link.title | escape }}
+											</span>
+										{% endif %}
+									</span>
+									{% if sub_link.levels >= 1 %}
+										<span class="caret py-2 px-3 position-absolute collapsed"
+											  data-bs-toggle="collapse" data-bs-target="#{{ id_grandchild_item }}" aria-controls="{{ id_grandchild_item }}">
+												{% render 'icons', icon: 'angle-right' %}
+										</span>
+									{% endif %}
+								</a>
+								{% if sub_link.links.size > 0 %}
+									<ul id="{{ id_grandchild_item }}" class="gsp-submenu collapse gsp-grandchild-menu border-0 rounded-0 top-0 list-unstyled position-relative p-0">
+										{% for child_link in sub_link.links %}
+											<li class="gsp-submenu-item gsp-grandchild-menu-item position-relative">
+												<a href="{{ child_link.url }}"
+												   class="gsp-submenu-link gsp-submenu-link__hover text-decoration-none px-3 py-2 {%- if child_link.active == true %} gsp-menu-link-active {% endif %}">
+													{% if child_link.title contains 'gsp-menu-badge__' %}
+														{%- liquid
+															assign child_badge = child_link.title | split: '__' | last
+															assign child_content_menu = child_badge | split: '_' | last | replace: '-', ' '
+															assign child_content_badge = child_badge | split: '_' | first
+														-%}
+														<div class="gsp-menu-badge-wrap position-relative">
+															<span>{{ child_content_menu }}</span> <span
+																class="gsp-menu-badge badge {{ child_content_badge }}">{{ child_content_badge }}</span>
+														</div>
+													{% else %}
+														<span>{{ child_link.title | escape }}</span>
+													{% endif %}
+												</a>
+											</li>
+										{% endfor %}
+									</ul>
+								{% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endif %}
+		</li>
+	{% endfor %}
+</ul>

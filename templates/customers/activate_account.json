@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-customer-activate-account",
+      "settings": {
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "animation_type": "none",
+        "custom_class": ""
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

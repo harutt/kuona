@@ -1,0 +1,42 @@
+{% liquid
+	assign color = block.settings.page_title_color
+	assign font_size = block.settings.page_title_font_size
+	assign official_page_title = page_title
+
+	if template.name == 'product'
+		assign official_page_title = 'products.page_title' | t
+	elsif template.name == 'collection'
+		assign official_page_title = collection.title
+	elsif template.name == 'blog'
+		assign official_page_title = blog.title
+	elsif template == 'article'
+		assign official_page_title = blog.title
+	elsif template contains 'page'
+		assign official_page_title = page.title
+	elsif template contains 'search'
+		assign official_page_title = 'search.results_with_count' | t: count: search.results_count, terms: search.terms
+	endif
+	if custom_page_title != blank
+		assign official_page_title = custom_page_title
+	endif
+
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-card" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner text-{{ block.settings.content_alignment }}">
+		<h1 class="gsp-page-title mb-0">{{ official_page_title }}</h1>
+	</div>
+</div>
+{% style %}
+	.gsp-block__{{ block.id }} {
+	{%- if color != blank and color != "rgba(0,0,0,0)" %}
+		--bs-heading-color: {{ color }};
+	{% endif -%}
+	{%- if font_size != blank %}
+		--gsp-h1-font-size: {{ font_size }}px;
+	{% endif -%}
+	}
+{% endstyle %}

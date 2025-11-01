@@ -1,0 +1,371 @@
+{% comment %}
+	Social media links
+	Arguments settings:
+	- show_label: Show social media link label
+	- layout: horizontal or vertical layout | default : horizontal
+	- extended_class: extended class wrap
+	- extended_class_item: extended class item
+	Arguments Social:
+	- instagram_link: instagram link
+	- instagram_label: instagram label
+	- twitter_link: twitter link
+	- twitter_label: twitter label
+	- facebook_link: facebook link
+	- facebook_label: facebook label
+	- pinterest_link: pinterest link
+	- pinterest_label: pinterest label
+	- snapchat_link: snapchat link
+	- snapchat_label: snapchat label
+	- tumblr_link: tumblr link
+	- tumblr_label: tumblr_label
+	- youtube_link: youtube_link
+	- youtube_label: youtube_label
+	- vimeo_link: vimeo_link
+	- vimeo_label: vimeo_label
+	- tiktok_link: tiktok_link
+	- tiktok_label: tiktok_label
+	- discord_link: discord_link
+	- discord_label: discord_label
+	- whatsapp_link: whatsapp_link
+	- whatsapp_label: whatsapp_label
+	- spotify_link: spotify_link
+	- spotify_label: spotify_label
+	- linkedin_link: linkedin_link
+	- linkedin_label: linkedin_label
+	- line_link: line_link
+	- line_label: line_label
+{% endcomment %}
+
+{% liquid
+	if layout == blank
+		assign layout = 'horizontal'
+	endif
+	if extended_class == blank
+		assign extended_class = 'gap-3'
+	endif
+	assign instagram_label = instagram_label | default: settings.social_label_instagram
+	assign twitter_label = twitter_label | default: settings.social_label_twitter
+	assign facebook_label = facebook_label | default: settings.social_label_facebook
+	assign pinterest_label = pinterest_label | default: settings.social_label_pinterest
+	assign snapchat_label = snapchat_label | default: settings.social_label_snapchat
+	assign tumblr_label = tumblr_label | default: settings.social_label_tumblr
+	assign youtube_label = youtube_label | default: settings.social_label_youtube
+	assign vimeo_label = vimeo_label | default: settings.social_label_vimeo
+	assign tiktok_label = tiktok_label | default: settings.social_label_tiktok
+	assign discord_label = discord_label | default: settings.social_label_discord
+	assign whatsapp_label = whatsapp_label | default: settings.social_label_whatsapp
+	assign spotify_label = spotify_label | default: settings.social_label_spotify
+	assign linkedin_label = linkedin_label | default: settings.social_label_linkedin
+	assign line_label = line_label | default: settings.social_label_line
+%}
+<ul class="gsp-element gsp-social-links list-unstyled mb-0 p-0 d-flex {% if layout == 'horizontal' %} flex-wrap {% else %} flex-column {% endif %} {{ extended_class }}">
+	{% if instagram_link != blank %}
+		{% liquid
+			if instagram_label == blank or instagram_label == ''
+				assign instagram_label = 'socials.instagram' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ instagram_link }}"
+			   target="_blank"
+			   title="{{ instagram_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'instagram' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ instagram_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if twitter_link != blank %}
+		{% liquid
+			if twitter_label == blank or twitter_label == ''
+				assign twitter_label = 'socials.twitter' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ twitter_link }}"
+			   target="_blank"
+			   title="{{ twitter_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'x-twitter' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ twitter_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if facebook_link != blank %}
+		{% liquid
+			if facebook_label == blank or facebook_label == ''
+				assign facebook_label = 'socials.facebook' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ facebook_link }}"
+			   target="_blank"
+			   title="{{ facebook_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit  d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'facebook' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ facebook_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if pinterest_link != blank %}
+		{% liquid
+			if pinterest_label == blank or pinterest_label == ''
+				assign pinterest_label = 'socials.pinterest' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ pinterest_link }}"
+			   target="_blank"
+			   title="{{ pinterest_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'pinterest' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ pinterest_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if snapchat_link != blank %}
+		{% liquid
+			if snapchat_label == blank or snapchat_label == ''
+				assign snapchat_label = 'socials.snapchat' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ snapchat_link }}"
+			   target="_blank"
+			   title="{{ snapchat_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'snapchat' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ snapchat_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if tumblr_link != blank %}
+		{% liquid
+			if tumblr_label == blank or tumblr_label == ''
+				assign tumblr_label = 'socials.tumblr' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ tumblr_link }}"
+			   target="_blank"
+			   title="{{ tumblr_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'tumblr' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ tumblr_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if youtube_link != blank %}
+		{% liquid
+			if youtube_label == blank or youtube_label == ''
+				assign youtube_label = 'socials.youtube' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ youtube_link }}"
+			   target="_blank"
+			   title="{{ youtube_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'youtube' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ youtube_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if vimeo_link != blank %}
+		{% liquid
+			if vimeo_label == blank or vimeo_label == ''
+				assign vimeo_label = 'socials.vimeo' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ vimeo_link }}"
+			   target="_blank"
+			   title="{{ vimeo_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'vimeo' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ vimeo_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if tiktok_link != blank %}
+		{% liquid
+			if tiktok_label == blank or tiktok_label == ''
+				assign tiktok_label = 'socials.tiktok' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ tiktok_link }}"
+			   target="_blank"
+			   title="{{ tiktok_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'tiktok' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ tiktok_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if discord_link != blank %}
+		{% liquid
+			if discord_label == blank or discord_label == ''
+				assign discord_label = 'socials.discord' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ discord_link }}"
+			   target="_blank"
+			   title="{{ discord_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'discord' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ discord_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if whatsapp_link != blank %}
+		{% liquid
+			if whatsapp_label == blank or whatsapp_label == ''
+				assign whatsapp_label = 'socials.whatsapp' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ whatsapp_link }}"
+			   target="_blank"
+			   title="{{ whatsapp_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'whatsapp' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ whatsapp_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if spotify_link != blank %}
+		{% liquid
+			if spotify_label == blank or spotify_label == ''
+				assign spotify_label = 'socials.spotify' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ spotify_link }}"
+			   target="_blank"
+			   title="{{ spotify_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'spotify' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ spotify_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if linkedin_link != blank %}
+		{% liquid
+			if linkedin_label == blank or linkedin_label == ''
+				assign linkedin_label = 'socials.linkedin' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ linkedin_link }}"
+			   target="_blank"
+			   title="{{ linkedin_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'linkedin' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ linkedin_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if line_link != blank %}
+
+		{% liquid
+			if line_label == blank or line_label == ''
+				assign line_label = 'socials.line' | t
+			endif
+		%}
+		<li class="gsp-social-item">
+			<a href="{{ line_link }}"
+			   target="_blank"
+			   title="{{ line_label | escape }}"
+			   class="text-decoration-none text-nowrap text-inherit d-flex align-items-center {{ extended_class_item }}">
+				<span class="gsp-social-icon lh-1">
+					{% render 'icons', icon: 'line' %}
+				</span>
+				{% if show_label %}
+					<span class="gsp-social-label ms-1">
+						{{ line_label | escape }}
+					</span>
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+</ul>

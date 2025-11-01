@@ -1,0 +1,83 @@
+{% comment %}
+	Social media links
+
+	Arguments:
+	- show_label: On/off social media link label
+	- include_socials: On/off social media link label
+	- extended_class_inner: extended class inner socials
+{% endcomment %}
+{% liquid
+	if show_label
+		assign gap = " gap-4"
+	else
+		assign gap = " gap-3"
+	endif
+	assign extended_class_inner = extended_class_inner | append: gap
+	if include_socials != blank
+		assign include_socials_downcase = ',' | append: include_socials | strip_newlines | downcase
+	endif
+	if include_socials == blank or include_socials_downcase contains ',instagram'
+		assign instagram_link = settings.social_link_instagram
+	endif
+	if include_socials == blank or include_socials_downcase contains ',twitter'
+		assign twitter_link = settings.social_link_twitter
+	endif
+	if include_socials == blank or include_socials_downcase contains ',facebook'
+		assign facebook_link = settings.social_link_facebook
+	endif
+	if include_socials == blank or include_socials_downcase contains ',pinterest'
+		assign pinterest_link = settings.social_link_pinterest
+	endif
+	if include_socials == blank or include_socials_downcase contains ',snapchat'
+		assign snapchat_link = settings.social_link_snapchat
+	endif
+	if include_socials == blank or include_socials_downcase contains ',tumblr'
+		assign tumblr_link = settings.social_link_tumblr
+	endif
+	if include_socials == blank or include_socials_downcase contains ',youtube'
+		assign youtube_link = settings.social_link_youtube
+	endif
+	if include_socials == blank or include_socials_downcase contains ',vimeo'
+		assign vimeo_link = settings.social_link_vimeo
+	endif
+	if include_socials == blank or include_socials_downcase contains ',tiktok'
+		assign tiktok_link = settings.social_link_tiktok
+	endif
+	if include_socials == blank or include_socials_downcase contains ',discord'
+		assign discord_link = settings.social_link_discord
+	endif
+	if include_socials == blank or include_socials_downcase contains ',whatsapp'
+		assign whatsapp_link = settings.social_link_whatsapp
+	endif
+	if include_socials == blank or include_socials_downcase contains ',spotify'
+		assign spotify_link = settings.social_link_spotify
+	endif
+	if include_socials == blank or include_socials_downcase contains ',linkedin'
+		assign linkedin_link = settings.social_link_linkedin
+	endif
+	if include_socials == blank or include_socials_downcase contains ',line'
+		assign line_link = settings.social_link_line
+	endif
+%}
+<div class="gsp-header-addons-item gsp-header-addons-item__social">
+	{% render 'el__social-links',
+		layout: layout,
+		show_label: show_label,
+		extended_class_item: "gsp-top-bar-color",
+		extended_class: extended_class_inner,
+		instagram_link: instagram_link,
+		twitter_link: twitter_link,
+		facebook_link: facebook_link,
+		pinterest_link: pinterest_link,
+		snapchat_link: snapchat_link,
+		tumblr_link: tumblr_link,
+		youtube_link: youtube_link,
+		vimeo_link: vimeo_link,
+		tiktok_link: tiktok_link,
+		discord_link: discord_link,
+		whatsapp_link: whatsapp_link,
+		spotify_link: spotify_link,
+		linkedin_link: linkedin_link,
+		line_link: line_link
+	%}
+</div>

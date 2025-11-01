@@ -1,0 +1,35 @@
+{% comment %}
+	Accepts:
+	- block: block object
+	- container: Class container
+	- content_align: Align Content Block
+	- custom_css_media: Custom media
+	- height_base: Height slider
+	- custom_attributes: Custom attributes
+{% endcomment %}
+{% liquid
+	assign custom_css_content = 'gsp-hero-wrap position-absolute h-100 w-100 d-flex'
+	assign custom_css_inner = 'position-absolute h-100 w-100'
+	if content_align != 'default'
+		assign custom_css_content = custom_css_content | append: ' align-items-' | append: content_align
+	endif
+	if custom_css_media != blank
+		assign custom_css_inner = custom_css_inner | append: ' ' | append: custom_css_media
+	endif
+%}
+<div
+	class="gsp-hero-item gsp-hero-type-{{ block.type }} gsp-hero-item-{{ block.id }} {{ block.settings.custom_class }}" {{ block.shopify_attributes }} {{ custom_attributes }}>
+	<div class="gsp-hero-item-inner position-relative">
+		{% render 'hero__media', block: block,
+			custom_css: 'gsp-hero-image-overlay h-100 w-100 position-absolute overflow-hidden',
+			custom_css_inner: custom_css_inner
+		%}
+		{% render 'hero__content',
+			block: block,
+			container: container,
+			content_align: content_align,
+			height_base: height_base,
+			custom_css: custom_css_content
+		%}
+	</div>
+</div>

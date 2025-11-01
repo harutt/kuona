@@ -1,0 +1,52 @@
+{% comment %}
+	- section: Obj settings
+{% endcomment %}
+<div class="gsp-sidebar-inner">
+	{%- for block in section.blocks -%}
+		<div
+			class="gsp-widget gsp-widget-{{ block.type }} gsp-widget-{{ block.id }} {{- block.settings.widget_custom_css }}"
+			{{ block.shopify_attributes }}>
+			{%- if block.settings.widget_title != blank -%}
+				<h4 class="gsp-block-title gsp-widget-title fs-20px mb-3">{{ block.settings.widget_title }}</h4>
+			{%- endif -%}
+			<div class="gsp-widget-inner gsp-block-body">
+				{%- case block.type -%}
+					{%- when '@app' -%}
+						{% render block %}
+					{%- when 'product_collections' -%}
+						{% render 'widget__product-collections', args: block.settings %}
+					{%- when 'product_filter_variant' -%}
+						{% render 'widget__product-filter-variant', args: block.settings , ids: block.id %}
+					{%- when 'product_filter_price' -%}
+						{% render 'widget__product-filter-price', args: block.settings %}
+					{%- when 'product_filter_available' -%}
+						{% render 'widget__product-filter-available', args: block.settings, ids: block.id %}
+					{%- when 'product_filter_vendor' -%}
+						{% render 'widget__product-filter-vendor', args: block.settings, ids: block.id %}
+					{%- when 'product_filter_type' -%}
+						{% render 'widget__product-filter-type', args: block.settings, ids: block.id %}
+					{%- when 'product_filter_tag' -%}
+						{% render 'widget__product-filter-tags', args: block.settings, ids: block.id %}
+					{%- when 'search' -%}
+						{% render 'widget__search', args: block.settings %}
+					{%- when 'html' -%}
+						{% render 'widget__html', args: block.settings %}
+					{%- when 'liquid' -%}
+						{% render 'widget__liquid', args: block.settings %}
+					{%- when 'menu' -%}
+						{% render 'widget__menu', args: block.settings %}
+					{%- when 'text_block' -%}
+						{% render 'widget__text-block', args: block.settings %}
+					{%- when 'instagram' -%}
+						{% render 'widget__instagram', args: block.settings, ids: block.id %}
+					{%- when 'recent_post' -%}
+						{% render 'widget__post-recent', args: block.settings, ids: block.id %}
+					{%- when 'post_tags' -%}
+						{% render 'widget__post-tags', args: block.settings, ids: block.id %}
+					{%- when 'banner' -%}
+						{% render 'widget__banner', args: block %}
+				{%- endcase -%}
+			</div>
+		</div>
+	{%- endfor -%}
+</div>

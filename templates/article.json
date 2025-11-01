@@ -1,0 +1,47 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-article",
+      "settings": {
+        "layout_sidebar_desktop": "off",
+        "sidebar_sticky": true,
+        "hide_sidebar_mobile": true,
+        "layout": "layout-01",
+        "show_author": true,
+        "show_date": true,
+        "show_tags": true,
+        "show_social": true,
+        "enable_navigation_post": true,
+        "enable_comment": true,
+        "enable_related": true,
+        "bc_skin": "skin-grid-02",
+        "bc_hover_style": "default",
+        "bc_aspect_ratio": "default",
+        "rp_per_page": 6,
+        "rp_slider_show_pagination": true,
+        "rp_slider_show_navigation": false,
+        "rp_slider_auto_height": false,
+        "rp_slider_loop": false,
+        "rp_slider_fade": false,
+        "rp_slider_center_mode": false,
+        "rp_slider_center_padding": "",
+        "rp_slider_autoplay": false,
+        "rp_item_show_xl": 3,
+        "rp_item_show_lg": 3,
+        "rp_item_show_md": 2,
+        "rp_item_show_sm": 2,
+        "rp_item_show_xs": 1,
+        "container": "inherit",
+        "section_bg_color": "",
+        "padding_top": 66,
+        "padding_bottom": 100,
+        "padding_top_mobile": 60,
+        "padding_bottom_mobile": 80,
+        "custom_class": ""
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

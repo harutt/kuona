@@ -1,0 +1,25 @@
+{% comment %}
+	Accepts:
+	- attr: Type attr returned | default "data-animate"
+	- type: animation type
+{% endcomment %}
+{%- liquid
+	if attr == nil
+		assign attr = ' data-animate'
+	endif
+	assign animation_type = type
+	if default_section != nil
+		assign attr = ' data-animate'
+	endif
+	if animation_type == 'inherit' and section.settings.animation_type != nil
+		assign animation_type = section.settings.animation_type
+	endif
+	if animation_type == 'inherit'
+		assign animation_type = settings.animation_type
+	endif
+	assign animation_attr = ' '
+	if animation_type != 'none'
+		assign animation_attr = attr | append: '="*" ' | replace: '*', animation_type
+	endif
+-%}
+{{- animation_attr -}}

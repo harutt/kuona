@@ -1,0 +1,54 @@
+{% comment %}
+  Accepts:
+  - block: {Object} block Liquid object (required)
+{% endcomment %}
+{% liquid
+	assign show_delivery = block.settings.show_delivery
+	assign deliver_text = block.settings.deliver_text
+	assign deliver_days = block.settings.deliver_days
+	assign date_format = block.settings.date_formats
+	assign show_info = block.settings.show_info
+	assign shipping_title = block.settings.shipping_title
+	assign shipping_text = block.settings.shipping_text
+%}
+{% if show_delivery and show_info %}
+	<div class="gsp-main-product-block-shipping-info">
+		<ul class="list-unstyled">
+			{% if show_delivery %}
+				{% liquid
+					assign range = 2 | times: 24 | times: 60 | times: 60
+					assign deliver_in = deliver_days | times: 24 | times: 60 | times: 60
+					assign now = 'now' | date: '%s'
+					assign from_timestamp = now | plus: deliver_in | minus: range
+					assign from = from_timestamp | time_tag: format: date_format
+					assign to_timestamp = now | plus: deliver_in | plus: range
+					assign to = to_timestamp | time_tag: format: date_format
+				%}
+				<li class="d-flex align-items-center">
+					<div class="fs-20px mb-0 text-heading lh-1 me-2">
+						{% render 'icons', icon: 'delivery' %}
+					</div>
+					<div class="mb-0">
+						{% if deliver_text != nil %}
+							<span class="text-heading">{{ deliver_text | strip_html }}</span>
+						{% endif %}
+						<span>{{ from }} - {{ to }}</span>
+					</div>
+				</li>
+			{% endif %}
+			{% if show_info %}
+				<li class="d-flex align-items-center mt-2">
+					<div class="fs-20px mb-0 text-heading lh-1 me-2">
+						{% render 'icons', icon: 'package' %}
+					</div>
+					<div class="mb-0">
+						{% if shipping_title != nil %}
+							<span class="text-heading">{{ shipping_title | strip_html }}</span>
+						{% endif %}
+						<span class="mb-0">{{ shipping_text }}</span>
+					</div>
+				</li>
+			{% endif %}
+		</ul>
+	</div>
+{% endif %}

@@ -1,0 +1,31 @@
+{% comment %}
+	- product: product object
+	- label: lable for button
+	- compare_settings: Settings for compare
+	- classes_item: Class css item action
+{% endcomment %}
+{% liquid
+	if classes_item == nil
+		assign classes_item = 'gsp-product-actions-item gsp-product-actions-compare rounded-circle gsp-spin-wrapper text-decoration-none'
+	endif
+	if label != nil
+		assign classes_item = classes_item | append: ' has-label'
+	endif
+%}
+<a class="{{ classes_item }}"
+   href="#" {%- if compare_settings != nil -%} data-compare-settings='{{ compare_settings }}' {% endif %}
+   data-product-handle="{{ product.handle }}" {% if label == nil %} data-bs-toggle="tooltip"
+	data-bs-placement="top" data-bs-title="{{ 'products.actions.compare_title' | t }}"  {% endif %}
+	data-title-compare="{{ 'products.actions.add_to_compare' | t }}"
+   title="{{ 'products.actions.add_to_compare' | t }}"
+	data-title-added-compare="{{ 'products.actions.added_to_compare' | t }}">
+	<span class="gsp-button__content lh-0 active">
+		{% render 'icons', icon: 'compare' %}
+		{%- if label != nil -%}
+			<span>{{ label }}</span>
+		{% endif %}
+	</span>
+	<span class="gsp-button__spin">
+		{% render 'spin', custom_class: 'fs-18px' %}
+	</span>
+</a>

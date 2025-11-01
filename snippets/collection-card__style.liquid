@@ -1,0 +1,52 @@
+{% comment %}
+	- class_id: Class ID | [Required]
+	- render_string: Render string not Style
+	- title_color: Title color
+	- count_color: Count color
+	- btn_color: Button color
+	- btn_mt: Button margin bottom
+	- count_mt: Count margin bottom
+	- img_spacing = Image margin bottom
+{% endcomment %}
+{% liquid
+	assign title_color = title_color | default: blank
+	assign count_color = count_color | default: blank
+	assign btn_color = btn_color | default: blank
+	assign count_mt = count_mt | default: blank
+	assign btn_mt = btn_mt | default: blank
+	assign img_spacing = img_spacing | default: blank
+	assign render_string = render_string | default: false
+%}
+{%- capture css -%}
+	{%- if title_color != blank and title_color != "rgba(0,0,0,0)" %}
+		--gsp-collection-card-title-color: {{ title_color }} !important;
+	{% endif -%}
+	{%- if count_color != blank and count_color != "rgba(0,0,0,0)" %}
+		--gsp-collection-card-count-color: {{ count_color }} !important;
+	{% endif -%}
+	{%- if btn_color != blank and btn_color != "rgba(0,0,0,0)" %}
+		--gsp-collection-card-view-more-color: {{ btn_color }} !important;
+	{% endif -%}
+	{%- if count_mt != blank and count_mt != 0 %}
+		--gsp-collection-card-count-mt: {{ count_mt }}px !important;
+	{% endif -%}
+	{%- if btn_mt != blank and btn_mt != 0 %}
+		--gsp-collection-card-view-more-mt: {{ btn_mt }}px !important;
+	{% endif -%}
+	{%- if img_spacing != blank and img_spacing != 0 %}
+		--gsp-collection-card-img-spacing: {{ img_spacing }}px ;
+	{% endif -%}
+{%- endcapture -%}
+{%- if render_string and css != "" %}
+	{{ class_id }} .gsp-collection-card{
+	{{ css }}
+	}
+{% else -%}
+	{%- if class_id != blank and css != "" %}
+		{% style %}
+			{{ class_id }} .gsp-collection-card{
+			{{ css }}
+			}
+		{% endstyle %}
+	{% endif -%}
+{% endif -%}

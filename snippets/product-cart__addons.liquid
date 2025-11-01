@@ -1,0 +1,174 @@
+{% if settings.cs_enable_cart_note or settings.cs_enable_discount_code or settings.cs_enable_estimate_shipping %}
+	<gsp-cart-addons data-cart-addons class="gsp-cart-addon w-100">
+		<div class="gsp-cart-addon-actions px-2 d-flex">
+			{% if settings.cs_enable_cart_note %}
+				<button
+					class="btn gsp-cart-addon-toggle-button position-relative bg-transparent d-inline-flex border-0 flex-column align-items-center text-heading"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#gsp-cart-addon-note" aria-expanded="false" aria-controls="gsp-cart-addon-note">
+					<span class="cart-addon-noti cart-addon-note-noti rounded-circle"></span>
+					<span class="fs-22px">
+						{% render 'icons', icon: 'note' %}
+					</span>
+					<span class="d-block mt-1">{{ 'cart.general.note' | t }}</span>
+				</button>
+			{% endif %}
+			{% if settings.cs_enable_discount_code %}
+				<button
+					class="btn gsp-cart-addon-toggle-button position-relative bg-transparent d-inline-flex border-0 flex-grow-1 flex-column align-items-center text-heading"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#gsp-cart-addon-discount-code" aria-expanded="false"
+					aria-controls="gsp-cart-addon-discount-code">
+					<span class="cart-addon-noti cart-addon-discount-noti rounded-circle"></span>
+					<span class="fs-22px">
+						{% render 'icons', icon: 'badge-percent' %}
+					</span>
+					<span class="d-block mt-1">{{ 'cart.general.discount_code' | t }}</span>
+				</button>
+			{% endif %}
+			{% if settings.cs_enable_estimate_shipping %}
+				<button
+					class="btn gsp-cart-addon-toggle-button position-relative bg-transparent d-inline-flex border-0 flex-grow-1 flex-column align-items-center text-heading"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#gsp-cart-addon-estimate-shipping" aria-expanded="false"
+					aria-controls="gsp-cart-addon-estimate-shipping">
+					<span class="fs-22px">
+						{% render 'icons', icon: 'shipping' %}
+					</span>
+					<span class="d-block mt-1">{{ 'cart.general.estimate_shipping' | t }}</span>
+				</button>
+			{% endif %}
+		</div>
+		{% if settings.cs_enable_estimate_shipping %}
+			{%- liquid
+				assign show_delivery_days = settings.cs_show_delivery_days
+			-%}
+			<gsp-cart-addon-estimate-shipping
+				class="gsp-cart-addon-content gsp-cart-addon-content-estimate-shipping collapse position-absolute bg-white start-0 bottom-0 z-index-15 w-100 py-4"
+				id="gsp-cart-addon-estimate-shipping"
+				data-show-delivery-days="{{ show_delivery_days }}"
+				{% if show_delivery_days %}data-delivery-one="{{ 'cart.general.delivery_days.one' | t }}"
+				data-delivery-other="{{ 'cart.general.delivery_days.other' | t }}" {% endif %}
+			>
+				<div class="card border-0">
+					<div class="card-body">
+						<p class="d-block card-title mb-3 fs-20px fw-heading text-heading">
+							<span class="align-text-bottom">
+								{% render 'icons', icon: 'badge-percent' %}
+							</span>
+							{{ 'cart.general.estimate_shipping_title' | t }}
+						</p>
+						<div data-address="root">
+							<div class="mb-3" id="MadrressCountry">
+								<label for="AddressCountry"
+									   class="form-label text-heading fw-heading">{{ 'customer.addresses.country' | t }}</label>
+								<select class="form-control" id="AddressCountry" name="address[country]"
+										data-default="{{ settings.cs_default_country_estimate_shipping | default: 'US' }}"></select>
+							</div>
+
+							<div class="mb-3" id="AddressProvinceContainer">
+								<label for="AddressProvince"
+									   class="form-label text-heading fw-heading">{{ 'customer.addresses.province' | t }}</label>
+								<select class="form-control" id="AddressProvince" name="address[province]"
+										data-default="{{ form.province }}"></select>
+							</div>
+
+							<div class="mb-3">
+								<label for="AddressZip"
+									   class="form-label text-heading fw-heading">{{ 'customer.addresses.zip' | t }}</label>
+								<input class="form-control" type="text" id="AddressZip" name="address[zip]"
+									   value="{{ form.zip }}" autocapitalize="characters">
+							</div>
+						</div>
+						<div class="gsp-cart-addon__shipping-rate"></div>
+					</div>
+					<div class="card-footer border-0 bg-white">
+						<button class="btn btn-dark gsp-cart-estimate-shipping-match gsp-spin-wrapper" type="button"
+								data-action="shipping">
+							<span class="gsp-button__content lh-0 active">
+								{{ 'cart.general.calculate_shipping_rates' | t }}
+							</span>
+							<span class="gsp-button__spin">
+								{% render 'spin', custom_class: 'fs-18px' %}
+							</span>
+						</button>
+						<button class="btn btn-link btn-border-bottom ms-3" type="button" data-bs-toggle="collapse"
+								data-bs-target="#gsp-cart-addon-estimate-shipping" aria-expanded="false"
+								aria-controls="gsp-cart-addon-estimate-shipping" data-action="shipping">
+							{{ 'cart.general.cancel' | t }}
+						</button>
+					</div>
+				</div>
+			</gsp-cart-addon-estimate-shipping>
+		{% endif %}
+		{% if settings.cs_enable_discount_code %}
+			<gsp-cart-addon-discount-code
+				class="gsp-cart-addon-content gsp-cart-addon-content-discount-code collapse position-absolute bg-white start-0 bottom-0 z-index-15 w-100 pt-3 pb-4"
+				id="gsp-cart-addon-discount-code">
+				<div class="card border-0">
+					<div class="card-body">
+						<p class="d-block card-title mb-3 fs-20px fw-heading text-heading">
+							<span class="align-text-bottom">
+								{% render 'icons', icon: 'badge-percent' %}
+							</span>
+							{{ 'cart.general.discount_code_title' | t }}
+						</p>
+						<input
+							{% if form_id %}form="{{ form_id }}"{% endif %}
+							placeholder="{{ 'cart.general.discount_placeholder' | t }}"
+							type="text"
+							name="discount"
+							class="form-control"
+						/>
+					</div>
+					<div class="card-footer border-0 bg-white">
+						<button class="btn btn-dark gsp-cart-addon-save" type="button" data-bs-toggle="collapse"
+								data-bs-target="#gsp-cart-addon-discount-code" aria-expanded="false"
+								aria-controls="gsp-cart-addon-discount-code" data-action="discount">
+							{{ 'cart.general.save' | t }}
+						</button>
+						<button class="btn btn-link btn-border-bottom ms-3" type="button" data-bs-toggle="collapse"
+								data-bs-target="#gsp-cart-addon-discount-code" aria-expanded="false"
+								aria-controls="gsp-cart-addon-discount-code" data-action="discount">
+							{{ 'cart.general.cancel' | t }}
+						</button>
+					</div>
+				</div>
+			</gsp-cart-addon-discount-code>
+		{% endif %}
+		{% if settings.cs_enable_cart_note %}
+			<gsp-cart-addon-note
+				class="gsp-cart-addon-content gsp-cart-addon-content-note collapse position-absolute bg-white start-0 bottom-0 z-index-15 w-100 pt-3 pb-4"
+				id="gsp-cart-addon-note">
+				<div class="card border-0">
+					<div class="card-body">
+						<p class="d-block card-title mb-3 fs-20px fw-heading text-heading">
+							<span class="align-text-bottom">
+								{% render 'icons', icon: 'pen' %}
+							</span>
+							{{ 'cart.general.note_title' | t }}
+						</p>
+						<textarea name="note" class="form-control"
+								  {% if form_id %}form="{{ form_id }}"{% endif %} rows="7"
+								  placeholder="{{ 'cart.general.note_placeholder' | t }}">{{ cart.note }}</textarea>
+					</div>
+					<div class="card-footer border-0 bg-white">
+						<button class="btn btn-dark gsp-cart-addon-save" type="button" data-bs-toggle="collapse"
+								data-bs-target="#gsp-cart-addon-note" aria-expanded="false"
+								aria-controls="gsp-cart-addon-note" data-action="note">
+							{{ 'cart.general.save' | t }}
+						</button>
+						<button class="btn btn-link btn-border-bottom ms-3" type="button" data-bs-toggle="collapse"
+								data-bs-target="#gsp-cart-addon-note" aria-expanded="false"
+								aria-controls="gsp-cart-addon-note" data-action="note">
+							{{ 'cart.general.cancel' | t }}
+						</button>
+					</div>
+				</div>
+			</gsp-cart-addon-note>
+		{% endif %}
+	</gsp-cart-addons>
+{% endif %}

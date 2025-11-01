@@ -1,0 +1,90 @@
+{
+  "sections": {
+    "page_title_iT46ha": {
+      "type": "page-title",
+      "blocks": {
+        "page_title_4eUNn6": {
+          "type": "page_title",
+          "settings": {
+            "page_title_color": "",
+            "page_title_font_size": 40,
+            "content_alignment": "center",
+            "col_xl": 12,
+            "col_lg": 12,
+            "col_md": 12,
+            "col_sm": 12,
+            "col_xs": 12,
+            "animation_type": "inherit",
+            "custom_class": ""
+          }
+        }
+      },
+      "block_order": [
+        "page_title_4eUNn6"
+      ],
+      "settings": {
+        "container": "container-xxl",
+        "vertical_align": "default",
+        "section_bg_color": "",
+        "section_bg_position": "default",
+        "section_bg_size": "default",
+        "item_gap": -1,
+        "show_on_home": true,
+        "show_on_product": true,
+        "show_on_collection": true,
+        "show_on_blog": true,
+        "show_on_article": true,
+        "show_on_search": true,
+        "show_on_customers": true,
+        "show_on_page": true,
+        "custom_page_not_display": "",
+        "padding_top": 40,
+        "padding_bottom": 37,
+        "padding_top_mobile": -1,
+        "padding_bottom_mobile": -1,
+        "custom_class": ""
+      }
+    },
+    "main": {
+      "type": "main-search",
+      "settings": {
+        "layout_sidebar_desktop": "off",
+        "sidebar_sticky": true,
+        "hide_sidebar_mobile": true,
+        "item_per_page": 12,
+        "item_gap": -1,
+        "paginate_type": "pagination",
+        "item_show_xl": 4,
+        "item_show_lg": 3,
+        "item_show_md": 2,
+        "item_show_sm": 2,
+        "item_show_xs": 1,
+        "enable_toolbar": true,
+        "enable_filter": true,
+        "enable_result_count": true,
+        "enable_applied_filters": true,
+        "enable_ordering": true,
+        "enable_toolbar_mobile": true,
+        "enable_filter_mobile": true,
+        "enable_result_count_mobile": false,
+        "enable_applied_filters_mobile": true,
+        "enable_ordering_mobile": true,
+        "container": "container-xl",
+        "section_bg_color": "",
+        "section_bg_position": "default",
+        "section_bg_size": "default",
+        "padding_top": 20,
+        "padding_bottom": 100,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 80,
+        "extended_css_item": "",
+        "custom_class": "",
+        "animation_type": "fadeInUp"
+      }
+    }
+  },
+  "order": [
+    "page_title_iT46ha",
+    "main"
+  ]
+}

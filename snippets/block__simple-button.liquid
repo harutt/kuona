@@ -1,0 +1,16 @@
+{% comment %}
+	Simple Button block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	assign alignment = block.settings.block_sb_alignment
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+<div class="gsp-block__{{ block.id }} gsp-block gsp-block-simple-button {%- if alignment != "default" %} text-{{ alignment }} {% endif -%}" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		{% render 'el__button', args: block %}
+	</div>
+</div>

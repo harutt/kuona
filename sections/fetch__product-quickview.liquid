@@ -1,0 +1,67 @@
+{% comment %}
+	Content inner modal quickview
+	Section Functional : Will not be found in the build page editor
+{% endcomment %}
+
+{%- liquid
+	assign current_variant = product.selected_or_first_available_variant
+	assign product_form_id = 'product-form-' | append: section.id
+	assign product_form_class = 'product-form-' | append: section.id
+	assign enable_wishlist = settings.enable_wishlist
+	assign enable_compare = settings.enable_compare
+	assign compare_title = 'products.actions.compare_title' | t
+	assign wishlist_title = 'products.actions.add_to_wishlist' | t
+-%}
+
+<div class="gsp-product-quickview gsp-main-product-wrapper row" data-view="quick-view"
+	 data-section-id="{{ section.id }}" style="--column-gap: 30px;">
+	<div class="gsp-product-quickview-media col-md-6 pe-xl-5">
+		{% render 'product-image__media' %}
+	</div>
+	<div class="gsp-product-quickview-info col-md-6 mt-md-0 mt-5">
+		<div class="gsp-product-info-wrapper">
+			<div class="gsp-main-product-block gsp-main-product-block-price fs-18px">
+				{% render 'product-card__prices', product: product, use_variant: true %}
+			</div>
+			<div class="gsp-main-product-block gsp-main-product-block-title">
+				<h1 class="gsp-product-title fs-24px mb-0"><a class="text-decoration-none"
+															  href="{{ product.url }}">{{ product.title }}</a></h1>
+			</div>
+			<div class="gsp-main-product-block gsp-main-product-block-description fs-15px mb-3">
+				{{ product.description | strip_html | truncatewords: 15 }}
+				<a class="viewmore" href="{{ product.url }}">{{ 'products.product.view_details' | t }}</a>
+			</div>
+			{%- unless product.has_only_default_variant -%}
+				<div class="gsp-main-product-block gsp-main-product-block-variant-picker">
+					{% render 'product-main-block__variants', product: product, product_form_id: product_form_id %}
+				</div>
+			{%- endunless -%}
+			{% render 'product-main-block__add-to-cart',
+				product: product,
+				product_form_id: product_form_id,
+				product_form_class: product_form_class,
+				current_variant: current_variant,
+				enable_dynamic_checkout: settings.enable_dynamic_checkout_on_quick_view,
+				show_quantity_selector: true
+			%}
+			<div class="gsp-main-product-block gsp-main-product-block-action d-flex flex-md-row flex-column fw-heading py-1">
+				{% if enable_compare == true %}
+					{% render 'product-actions__compare', product: product, label: compare_title, compare_settings: '{"enablePreviewCompare": false}', classes_item: 'gsp-product-actions-item gsp-product-actions-compare rounded-circle gsp-spin-wrapper text-decoration-none text-heading text-primary-hover' %}
+				{% endif %}
+				{% if enable_wishlist == true %}
+					{% render 'product-actions__add-to-wishlist', product: product, label: wishlist_title, classes_item: 'gsp-product-actions-item gsp-product-actions-wishlist rounded-circle text-decoration-none ms-md-4 mt-md-0 mt-2 text-heading text-primary-hover' %}
+				{% endif %}
+			</div>
+			<div class="gsp-main-product-block gsp-main-product-block-meta border-top pt-4">
+				{% render 'product-main-block__meta',
+					product: product,
+					enable_vendor: true,
+					enable_type: true,
+					enable_collections: true,
+					enable_availability: true,
+					enable_sku: true
+				%}
+			</div>
+		</div>
+	</div>
+</div>

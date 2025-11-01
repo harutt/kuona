@@ -1,0 +1,47 @@
+{% comment %}
+	Element Client Logo
+{% endcomment %}
+{% liquid
+	if args_style == blank
+		assign args_style = args
+	endif
+	assign image_mw = args.settings.client_logo_mw
+	assign opacity = args_style.settings.cl_opacity
+	assign opacity_hover = args_style.settings.cl_opacity_hover
+	assign gray_scale = args_style.settings.cl_gray_scale
+	assign gray_scale_hover = args_style.settings.cl_gray_scale_hover
+%}
+<div
+	class="gsp-element gsp-client-logo text-center gsp-client-logo-{{ args.id }} {% if args_style.settings.cl_hover_type != "none" %} gsp-client-logo-hover-{{ args_style.settings.cl_hover_type }} {% endif %}">
+
+{% if args.settings.client_logo_link != blank %}
+	<a href="{{ args.settings.client_logo_link }}" class="d-block text-inherit" title="client logo">
+		{% endif %}
+		{% render 'responsive-image',
+			image: args.settings.client_logo,
+			wrapper_class: "d-inline-block",
+			placeholder: "image"
+		%}
+		{% if args.settings.client_logo_link != blank %}
+	</a>
+	{% endif %}
+</div>
+{% style %}
+	.gsp-client-logo-{{ args.id }} {
+	{%- if image_mw != blank and image_mw != -1 %}
+		--gsp-client-logo-width: {{ image_mw }}px !important;
+	{% endif -%}
+	{%- if opacity != blank and opacity != 0 %}
+		--gsp-client-logo-opacity: {{ opacity }}% !important;
+	{% endif -%}
+	{%- if opacity_hover != blank and opacity_hover != 0 %}
+		--gsp-client-logo-opacity-hover: {{ opacity_hover }}% !important;
+	{% endif -%}
+	{%- if gray_scale != blank and gray_scale != 0 %}
+		--gsp-client-logo-grayscale: grayscale({{ gray_scale }}%) !important;
+	{% endif -%}
+	{%- if gray_scale_hover != blank and gray_scale_hover != 0 %}
+		--gsp-client-logo-grayscale-hover: grayscale({{ gray_scale_hover }}%) !important;
+	{% endif -%}
+	}
+{% endstyle %}

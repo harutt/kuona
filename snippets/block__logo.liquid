@@ -1,0 +1,62 @@
+{% comment %}
+	Block Logo
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	assign logo = block.settings.logo
+	assign logo_text = block.settings.logo_text
+	assign logo_width = block.settings.logo_width
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+	assign content_alignment = block.settings.content_alignment
+%}
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-logo" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div
+		class="gsp-block__inner {%- if content_alignment != "default" %} text-{{ content_alignment }} {% endif %}">
+		{% render 'el__site-logo',
+			id_logo: block.id,
+			logo: logo,
+			logo_width: logo_width,
+			has_sticky: false,
+			logo_text: logo_text,
+			classes:  'text-heading fs-40px fw-heading'
+		%}
+	</div>
+</div>
+{% style %}
+	.gsp-block__{{ block.id }} {
+	{%- if color_title != blank and color_title != "rgba(0,0,0,0)" %}
+		--gsp-block-color-title: {{ color_title }};
+	{% endif -%}
+	{% if fs_title != blank and fs_title != 0 %}
+		--gsp-block-fs-title: {{ fs_title }}px;
+	{% endif -%}
+	{% if spacing != blank and spacing != 0 %}
+		--gsp-block-spacing: {{ spacing }}px;
+	{% endif -%}
+	{% if color_icon != blank and color_icon != "rgba(0,0,0,0)" %}
+		--gsp-block-color-icon: {{ color_icon }};
+	{% endif -%}
+	{% if color_icon_hover != blank and color_icon_hover != "rgba(0,0,0,0)" %}
+		--gsp-block-color-icon-hover: {{ color_icon_hover }};
+	{% endif -%}
+	{% if color_label != blank and color_label != "rgba(0,0,0,0)" %}
+		--gsp-block-color-label: {{ color_label }};
+	{% endif -%}
+	{% if color_label_hover != blank and color_label_hover != "rgba(0,0,0,0)" %}
+		--gsp-block-color-label-hover: {{ color_label_hover }};
+	{% endif -%}
+	{% if fs_icon != blank and fs_icon != 0 %}
+		--gsp-block-fs-icon: {{ fs_icon }}px;
+	{% endif -%}
+	{% if fs_label != blank and fs_label != 0 %}
+		--gsp-block-fs-label: {{ fs_label }}px;
+	{% endif -%}
+	{% if spacing_social != blank and spacing_social != 0 %}
+		--gsp-block-gap-icon: {{ spacing_social }}px;
+	{% endif -%}
+	}
+{% endstyle %}

@@ -1,0 +1,33 @@
+{% comment %}
+	Accepts:
+	- name: section name
+	- has_header: section has header
+	- has_sidebar: section has sidebar
+	- custom_class: Custom class for section
+{% endcomment %}
+{% liquid
+	capture classContainer
+		render 'classes-container', container: section.settings.container
+	endcapture
+	assign classContainer = classContainer | strip_newlines
+	if has_header == nil
+		assign has_header = true
+	endif
+	if has_sidebar == nil
+		assign has_sidebar = false
+	endif
+	assign header_inline = section.settings.header_inline | default: false
+%}
+<div
+	class="gsp-section__wrap gsp-{{ name }}__wrap {% if header_inline %} gsp-section__header-inline {% endif %} {% if has_sidebar %} gsp-section__has-sidebar {% endif %} gsp-section-{{ section.id }} {{ section.settings.custom_class }} {{ custom_class }}">
+	{% if header_inline %}
+	<div class="{{ classContainer }}">
+		<div class="gsp-section-has-header-inline-inner d-xl-flex flex-xl-row align-items-{{ section.settings.header_inline_align }}">
+	{% endif %}
+		{% if has_header %}
+			{% render 'section-header', custom_header_addon: custom_header_addon %}
+		{% endif %}
+		{% if header_inline != true %}
+			<div class="{{ classContainer }}">
+			{% endif %}
+			<div class="gsp-section-content__wrap">

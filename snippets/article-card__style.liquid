@@ -1,0 +1,57 @@
+{% comment %}
+	- class_id: Class ID | [Required]
+	- render_string: Render string not Style
+	- title_color: Title color
+	- title_mt: Title margin bottom
+	- meta_color: Title color
+	- meta_mt: Title margin bottom
+	- excerpt_color: Excerpt color
+	- excerpt_mt: Excerpt margin bottom
+	- img_spacing = Image margin bottom
+{% endcomment %}
+{% liquid
+	assign title_color = title_color | default: blank
+	assign title_mt = title_mt | default: blank
+	assign excerpt_color = excerpt_color | default: blank
+	assign excerpt_mt = excerpt_mt | default: blank
+	assign meta_color = meta_color | default: blank
+	assign meta_mt = meta_mt | default: blank
+	assign img_spacing = img_spacing | default: blank
+	assign render_string = render_string | default: false
+%}
+{%- capture css -%}
+	{%- if title_color != blank and title_color != "rgba(0,0,0,0)" %}
+		--gsp-blogs-card-title-color: {{ title_color }} !important;
+	{% endif -%}
+	{%- if title_mt != blank and title_mt != 0 %}
+		--gsp-blogs-card-title-mt: {{ title_mt }}px !important;
+	{% endif -%}
+	{%- if excerpt_color != blank and excerpt_color != "rgba(0,0,0,0)" %}
+		--gsp-blogs-card-excerpt-color: {{ excerpt_color }} !important;
+	{% endif -%}
+	{%- if excerpt_mt != blank and excerpt_mt != 0 %}
+		--gsp-blogs-card-excerpt-mt: {{ excerpt_mt }}px !important;
+	{% endif -%}
+	{%- if meta_color != blank and meta_color != "rgba(0,0,0,0)" %}
+		--gsp-blogs-card-meta-color: {{ meta_color }} !important;
+	{% endif -%}
+	{%- if meta_mt != blank and meta_mt != 0 %}
+		--gsp-blogs-card-meta-mt: {{ meta_mt }}px !important;
+	{% endif -%}
+	{%- if img_spacing != blank and img_spacing != 0 %}
+		--gsp-blogs-card-img-spacing: {{ img_spacing }}px !important;
+	{% endif -%}
+{%- endcapture -%}
+{%- if render_string and css != "" %}
+	{{ class_id }} .gsp-blogs-card{
+	{{ css }}
+	}
+{% else -%}
+	{%- if class_id != blank and css != "" %}
+		{% style %}
+			{{ class_id }} .gsp-blogs-card{
+			{{ css }}
+			}
+		{% endstyle %}
+	{% endif -%}
+{% endif -%}

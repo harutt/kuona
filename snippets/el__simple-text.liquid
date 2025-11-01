@@ -1,0 +1,28 @@
+{% comment %}
+	Element Simple Text
+	Accepts:
+	- args: args object
+{% endcomment %}
+{% liquid
+	assign text_block = args.settings.el_simple_text
+	assign custom_liquid = args.settings.el_simple_text_custom_liquid
+	assign color = args.settings.el_simple_text_color
+	assign font_size = args.settings.el_simple_text_fs
+	assign alignment = args.settings.el_simple_text_alignment
+%}
+{%- if text_block != blank or custom_liquid != blank %}
+	<div class="gsp-simple-text gsp-element gsp-simple-text-{{ args.id }} {%- if alignment != "default" %} text-{{ alignment }} {% endif -%}">
+		{{ text_block }}
+		{{ custom_liquid }}
+	</div>
+	{% style %}
+		.gsp-simple-text-{{ args.id }} {
+		{%- if color != blank and color != "rgba(0,0,0,0)" %}
+			color: {{ color }} !important;
+		{% endif -%}
+		{%- if font_size != blank and font_size != -1 %}
+			font-size: {{ font_size }}px !important;
+		{% endif -%}
+		}
+	{% endstyle %}
+{% endif %}

@@ -1,0 +1,111 @@
+{% comment %}
+	Shopify template script
+{% endcomment %}
+{%- liquid
+	assign money_format = shop.money_format
+	assign adv_custom_js = settings.adv_custom_js | raw
+	if settings.currency_code_enabled
+		assign money_format = shop.money_with_currency_format | strip_html
+	endif
+-%}
+
+<script>
+	window.gspSetting = {
+		template: {{ template | json }},
+		money_format: {{ money_format | json }},
+		templateName: {{ template.name | json }},
+		base_url: window.location.origin + Shopify.routes.root,
+		shop: {
+			{%- if template.name == "product" -%}
+			productHandle: {{ product.handle | json }},
+			productId: {{ product.id | json }},
+			{%- endif -%}
+			enable_add_to_cart_drawer: {{ settings.cs_enable_add_to_cart_drawer | json }},
+			enable_quick_view: {{ settings.enable_quick_view | json }},
+			enable_compare: {{ settings.enable_compare | json }},
+			enable_preview_compare: {{ settings.enable_preview_compare | json }},
+			enable_wishlist: {{ settings.enable_wishlist | json }},
+			enable_add_to_cart: {{ settings.enable_add_to_cart | json }},
+			select_options_mode: {{ settings.pc_select_options_mode | json }},
+		},
+		routes: {
+			root: {{ routes.root_url | json }},
+			cart_add_url: '{{ routes.cart_add_url }}',
+			cart_change_url: '{{ routes.cart_change_url }}',
+			cart_clear_url: '{{ routes.cart_clear_url }}',
+			cart_update_url: '{{ routes.cart_update_url }}',
+			cart_url: '{{ routes.cart_url }}',
+			predictive_search_url: '{{ routes.predictive_search_url }}',
+			cart: {{ routes.cart_url | json }},
+		},
+		access_token: {
+			instagram: {{ settings.api_instagram_token | json }},
+			mapbox: {{ settings.api_map_box | json }},
+		}
+	};
+
+	window.gspString = {
+		addToCart: {{ 'products.product.add_to_cart' | t | json }},
+		requiredField: {{ 'products.product.requiredField' | t | json }},
+		cartError: {{ 'cart.general.cart_error' | t | json }},
+		quantityError: "{{ 'products.product.not_enough_items_message' | t: quantity: '[quantity]' }}",
+		itemAdded: {{ 'products.notifications.item_added' | t | json }},
+		soldOut: {{ 'products.product.sold_out' | t | json }},
+		inStock: {{ 'products.product.in_stock' | t | json }},
+		unavailable: {{ 'products.product.unavailable' | t | json }},
+		shippingRatesResult: {{ 'cart.general.shipping_rates_result' | t | json }},
+		noShippingRate: {{ 'cart.general.no_found_shipping_rate' | t | json }},
+		cartPage: {
+			saveNoteSuccess: {{ 'cart.notifications.save_note_success' | t | json }},
+			saveNoteError: {{ 'cart.notifications.save_note_error' | t | json }},
+			saveDiscountCode: {{ 'cart.notifications.save_discountCode' | t | json }},
+			valueHasNotChanged: {{ 'cart.notifications.value_has_not_changed' | t | json }},
+		}
+	}
+	if (!window.gspTheme) {
+		window.gspTheme = {};
+	}
+	window.gspThemeLibs = {};
+	window.gspThemeAssets = {
+		mapboxHandle: {
+			style: "{{ 'mapbox-gl.js' | asset_url | prepend: 'https:' }}",
+			script: "{{ 'mapbox-gl.css' | asset_url | prepend: 'https:' }}",
+		},
+		countUpHandle: {
+			script: "{{ 'countUp.js' | asset_url | prepend: 'https:' }}",
+		},
+		isotopeHandle: {
+			script: "{{ 'isotope.js' | asset_url | prepend: 'https:' }}",
+		},
+		driftHandle: {
+			style: "{{ 'drift-basic.css' | asset_url | prepend: 'https:' }}",
+			script: "{{ 'drift.js' | asset_url | prepend: 'https:' }}",
+		},
+		countdownHandle: {
+			script: "{{ 'countdown.section.js' | asset_url | prepend: 'https:' }}",
+		},
+		instagramHandle: {
+			script: "{{ 'instagram.section.js' | asset_url | prepend: 'https:' }}",
+		},
+		bulletOnePageScrollHandle: {
+			script: "{{ 'bullet-one-page-scroll.section.js' | asset_url | prepend: 'https:' }}",
+		},
+		pickupAvailabilityHandle: {
+			script: "{{ 'pickup-availability.section.js' | asset_url | prepend: 'https:' }}",
+		},
+		lightGalleryHandle: {
+			style: "{{ 'lightgallery-bundle.css' | asset_url | prepend: 'https:' }}",
+			script: "{{ 'lightgallery.js' | asset_url | prepend: 'https:' }}",
+			scriptPluginThumbnail: "{{ 'lightgallery-plugin-thumbnail.js' | asset_url | prepend: 'https:' }}",
+			scriptPluginVideo: "{{ 'lightgallery-plugin-video.js' | asset_url | prepend: 'https:' }}",
+			scriptPluginVideoThumbnail: "{{ 'lightgallery-plugin-vimeo-thumbnail.js' | asset_url | prepend: 'https:' }}",
+			scriptPluginZoom: "{{ 'lightgallery-plugin-zoom.js' | asset_url | prepend: 'https:' }}",
+		}
+	}
+</script>
+
+{%- if adv_custom_js != blank -%}
+	<script id="gsp-custom-js">
+		{{ adv_custom_js }}
+	</script>
+{%- endif -%}

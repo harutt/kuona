@@ -1,0 +1,29 @@
+{% comment %}
+	Accepts:
+	- block: block object
+	- container: Class container
+	- height_base: Height slider
+	- content_align: Align Content Block
+{% endcomment %}
+{% liquid
+	assign custom_css_content = 'gsp-hero-wrap d-flex'
+	if content_align != 'default'
+		assign custom_css_content = custom_css_content | append: ' align-items-' | append: content_align
+	endif
+%}
+<div
+	class="gsp-hero-item gsp-hero-type-{{ block.type }} gsp-hero-item-{{ block.id }} {{ block.settings.custom_class }}" {{ block.shopify_attributes }}>
+	<div class="{{ container }}">
+		<div class="gsp-hero-item-inner d-flex flex-column flex-lg-row" data-gsp-attr-width>
+			{% render 'hero__media', block: block,
+				custom_css: 'gsp-hero-image-overlay position-relative',
+				custom_css_inner: 'position-lg-absolute h-100'
+			%}
+			{% render 'hero__content',
+				block: block,
+				content_align: content_align,
+				height_base: height_base,
+				custom_css: custom_css_content %}
+		</div>
+	</div>
+</div>

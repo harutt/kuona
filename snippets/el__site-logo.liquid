@@ -1,0 +1,54 @@
+{% comment %}
+	- id_logo: Id
+	- logo: Image logo
+	- has_sticky: Image logo
+	- logo_sticky: Image logo sticky
+	- logo_text: Image logo sticky
+	- logo_width: Width logo
+	- logo_sticky_width: Width logo
+	- classes: Additional css classes
+{% endcomment %}
+
+{% liquid
+	if has_sticky == blank
+		assign has_sticky = false
+	endif
+	if logo_text == blank
+		assign logo_text = page_title
+	endif
+%}
+<a class="gsp-element gsp-site-logo gsp-site-logo-{{ id_logo }} text-decoration-none d-inline-flex {%- if has_sticky %} has-sticky-logo {%- endif %} {%- if classes != blank %} {{ classes }}{% endif -%}"
+   href="{{ routes.root_url }}">
+	{%- if logo != blank -%}
+		<img src="{{ logo | image_url }}" class="gsp-main-logo" loading="lazy" alt="{{ page_title | escape }}"
+			 width="{{ logo.width }}" height="{{ logo.height }}">
+		{% if has_sticky %}
+			{% liquid
+				if logo_sticky == blank
+					assign logo_sticky = logo
+				endif
+				if logo_sticky_width == blank
+					assign logo_sticky_width = logo_width
+				endif
+			%}
+			<img src="{{ logo_sticky | image_url }}" class="sticky-logo" loading="lazy" alt="{{ page_title | escape }}"
+				 width="{{ logo_sticky.width }}" height="{{ logo_sticky.height }}">
+		{% endif %}
+	{%- else -%}
+		<span class="gsp-site-logo-text d-inline-block">
+			{{- logo_text -}}
+		</span>
+	{%- endif -%}
+</a>
+{% style %}
+	{%- if logo_width != blank %}
+		.gsp-site-logo-{{ id_logo }} .gsp-main-logo{
+			max-width: {{ logo_width }}px !important;
+		}
+	{% endif -%}
+	{%- if logo_sticky_width != blank %}
+		.gsp-site-logo-{{ id_logo }} .sticky-logo{
+			max-width: {{ logo_sticky_width }}px !important;
+		}
+	{% endif -%}
+{% endstyle %}

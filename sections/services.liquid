@@ -1,0 +1,346 @@
+{% comment %}
+  KUONA – Services Section (grid with optional per-card buttons + global CTA)
+  File: sections/services.liquid
+{% endcomment %}
+
+<section
+  class="kuona-services"
+  aria-label="{{ section.settings.heading | default: 'Services' }}"
+  data-style="{{ section.settings.card_style }}"
+  style="
+    --sec-bg: {{ section.settings.bg_color }};
+    --heading-color: {{ section.settings.heading_color }};
+    --sub-color: {{ section.settings.sub_color }};
+    --overline-color: {{ section.settings.overline_color }};
+    --card-bg: {{ section.settings.card_bg }};
+    --card-border: {{ section.settings.card_border }};
+    --card-radius: {{ section.settings.card_radius }}px;
+    --card-pad: {{ section.settings.card_padding }}px;
+    --title-size: {{ section.settings.title_size }}px;
+    --btn-color: {{ section.settings.btn_color }};
+    --btn-hover: {{ section.settings.btn_hover }};
+    --heading-size: {{ section.settings.heading_size }}px;
+  "
+>
+  <div class="kuona-services__wrap page-width">
+    {% if section.settings.overline != blank %}
+      <p class="kuona-services__overline">{{ section.settings.overline }}</p>
+    {% endif %}
+
+    {% if section.settings.heading != blank %}
+      <h2 class="kuona-services__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    {% if section.settings.subheading != blank %}
+      <p class="kuona-services__sub">{{ section.settings.subheading }}</p>
+    {% endif %}
+
+    {% if section.settings.cta_label != blank and section.settings.cta_link != blank and section.settings.cta_position == 'top' %}
+      <div class="kuona-services__cta">
+        <a class="kuona-btn" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label }}</a>
+      </div>
+    {% endif %}
+
+    <div class="kuona-services__grid" style="--cols: {{ section.settings.cols_desktop }}; --gap: {{ section.settings.gap }}px;">
+      {% for block in section.blocks %}
+        {% if block.type == 'service' %}
+          {% assign b = block.settings %}
+          <article class="kuona-card" {{ block.shopify_attributes }}>
+            {% if b.card_link != blank %}<a class="kuona-card__link" href="{{ b.card_link }}" aria-label="{{ b.title | escape }}"></a>{% endif %}
+
+            {% if b.image != blank %}
+              <div class="kuona-card__media">
+                {{ b.image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 33vw, 100vw', alt: b.title }}
+              </div>
+            {% endif %}
+
+            <div class="kuona-card__body">
+              {% if b.title != blank %}<h3 class="kuona-card__title">{{ b.title }}</h3>{% endif %}
+              {% if b.desc != blank %}<p class="kuona-card__desc">{{ b.desc }}</p>{% endif %}
+
+              {% if b.btn_label != blank and b.btn_link != blank %}
+                <div class="kuona-card__actions">
+                  <a class="kuona-btn kuona-btn--ghost" href="{{ b.btn_link }}">{{ b.btn_label }}</a>
+                </div>
+              {% endif %}
+            </div>
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if section.settings.cta_label != blank and section.settings.cta_link != blank and section.settings.cta_position == 'bottom' %}
+      <div class="kuona-services__cta kuona-services__cta--bottom">
+        <a class="kuona-btn" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label }}</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  /* Scoped to this section only */
+  #shopify-section-{{ section.id }} .kuona-services{
+    padding: clamp(24px, 5vw, 72px) 0;
+    background: var(--sec-bg);
+  }
+  #shopify-section-{{ section.id }} .kuona-services__wrap{
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+  #shopify-section-{{ section.id }} .kuona-services__overline{
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    font-size: 12px;
+    opacity: .8;
+    text-align: center;
+    margin: 0 0 6px;
+    color: var(--overline-color);
+  }
+  #shopify-section-{{ section.id }} .kuona-services__heading{
+    text-align: center;
+    margin: 0;
+    font-size: clamp(18px, 3vw, var(--heading-size));
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--heading-color);
+  }
+  #shopify-section-{{ section.id }} .kuona-services__sub{
+    text-align: center;
+    max-width: 720px;
+    margin: 8px auto 24px;
+    opacity: .85;
+    color: var(--sub-color);
+  }
+  #shopify-section-{{ section.id }} .kuona-services__cta{
+    text-align: center;
+    margin: 12px 0 24px;
+  }
+
+  #shopify-section-{{ section.id }} .kuona-services__grid{
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: var(--gap);
+  }
+  @media (max-width: 990px){
+    #shopify-section-{{ section.id }} .kuona-services__grid{
+      grid-template-columns: repeat({{ section.settings.cols_tablet }}, minmax(0,1fr));
+    }
+  }
+  @media (max-width: 640px){
+    #shopify-section-{{ section.id }} .kuona-services__grid{
+    grid-template-columns: repeat({{ section.settings.cols_mobile }}, minmax(0,1fr));
+    }
+  }
+
+  #shopify-section-{{ section.id }} .kuona-card{
+    position: relative;
+    border: 1px solid var(--card-border);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    background: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  #shopify-section-{{ section.id }} .kuona-card:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.06);
+  }
+  #shopify-section-{{ section.id }} .kuona-card__link{
+    position:absolute; inset:0; z-index:1;
+  }
+  #shopify-section-{{ section.id }} .kuona-card__media img{
+    width: 100%; height: auto; display:block;
+    aspect-ratio: {{ section.settings.aspect_w }} / {{ section.settings.aspect_h }};
+    object-fit: cover;
+  }
+  #shopify-section-{{ section.id }} .kuona-card__body{
+    padding: calc(var(--card-pad) * 1px);
+  }
+  #shopify-section-{{ section.id }} .kuona-card__title{
+    font-size: clamp(14px, 1.6vw, var(--title-size));
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+  #shopify-section-{{ section.id }} .kuona-card__desc{
+    margin: 0;
+    opacity: .9;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  #shopify-section-{{ section.id }} .kuona-card__actions{
+    margin-top: 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Buttons */
+  #shopify-section-{{ section.id }} .kuona-btn{
+    display:inline-block;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--btn-color);
+    color: var(--btn-color);
+    text-decoration: none;
+    font-size: 14px;
+  }
+  #shopify-section-{{ section.id }} .kuona-btn:hover{
+    background: var(--btn-hover);
+    border-color: var(--btn-hover);
+    color: #fff;
+  }
+  #shopify-section-{{ section.id }} .kuona-btn.kuona-btn--ghost{
+    background: transparent;
+  }
+
+  /* ===== Classy style variants ===== */
+
+  /* A) LIST (classy default): alt çizgili liste, köşesiz */
+  #shopify-section-{{ section.id }} [data-style="list"] .kuona-card{
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  #shopify-section-{{ section.id }} [data-style="list"] .kuona-card + .kuona-card{
+    border-top: 1px solid rgba(0,0,0,.10);
+  }
+  #shopify-section-{{ section.id }} [data-style="list"] .kuona-card__body{
+    padding: 14px 0;
+  }
+  #shopify-section-{{ section.id }} [data-style="list"] .kuona-card__title{
+    letter-spacing: .02em;
+    font-weight: 600;
+    text-transform: none;
+  }
+  #shopify-section-{{ section.id }} [data-style="list"] .kuona-card__title:hover{
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  #shopify-section-{{ section.id }} [data-style="list"] .kuona-services__grid{
+    gap: 8px;
+  }
+  #shopify-section-{{ section.id }} [data-style="list"] .kuona-card__media{
+    display: none; /* list modda görseli gizliyoruz */
+  }
+
+  /* B) SQUARE: köşe yok, ince çerçeve */
+  #shopify-section-{{ section.id }} [data-style="square"] .kuona-card{
+    border-radius: 0;
+    border: 1px solid rgba(0,0,0,.08);
+    background: #fff;
+    box-shadow: none;
+  }
+
+  /* C) PILL: yumuşak köşe (eski görünüm) */
+  #shopify-section-{{ section.id }} [data-style="pill"] .kuona-card{
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.08);
+  }
+
+  /* Hover minimal (square & pill) */
+  #shopify-section-{{ section.id }} [data-style="square"] .kuona-card:hover,
+  #shopify-section-{{ section.id }} [data-style="pill"] .kuona-card:hover{
+    transform: none;
+    box-shadow: 0 6px 18px rgba(0,0,0,.05);
+  }
+
+  /* Sadece Services section'ını etkiler */
+  .section-kuona-services .kuona-card{
+    align-items: center;                 /* kart içeriğini ortala */
+  }
+  .section-kuona-services .kuona-card__body{
+    text-align: center;                  /* başlık & açıklama ortalı */
+  }
+  .section-kuona-services .kuona-card__actions{
+    display: flex; 
+    justify-content: center;             /* butonlar ortalı */
+  }
+  /* List stilinde açıklama satır uzunluğunu toparla */
+  .section-kuona-services [data-style="list"] .kuona-card__desc{
+    max-width: 60ch; 
+    margin-left: auto; 
+    margin-right: auto;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Services",
+  "tag": "section",
+  "class": "section-kuona-services",
+  "settings": [
+    { "type": "text", "id": "overline", "label": "Overline (optional)", "default": "Services" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Eye care, elevated." },
+    { "type": "range", "id": "heading_size", "min": 18, "max": 56, "step": 1, "default": 36, "label": "Heading size (px)" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "From comprehensive exams to dry eye therapy." },
+
+    { "type": "select", "id": "cta_position", "label": "Global CTA position", "default": "bottom",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "bottom", "label": "Bottom" }
+      ] },
+    { "type": "text", "id": "cta_label", "label": "Global CTA label", "default": "Book a styling consultation" },
+    { "type": "url", "id": "cta_link", "label": "Global CTA link" },
+
+    { "type": "select", "id": "card_style", "label": "Card style", "default": "list",
+      "options": [
+        { "value": "list", "label": "List with dividers (classy)" },
+        { "value": "square", "label": "Square tile" },
+        { "value": "pill", "label": "Soft pill" }
+      ]
+    },
+
+    { "type": "range", "id": "cols_desktop", "min": 2, "max": 4, "step": 1, "default": 3, "label": "Columns (desktop)" },
+    { "type": "range", "id": "cols_tablet", "min": 1, "max": 3, "step": 1, "default": 2, "label": "Columns (tablet)" },
+    { "type": "range", "id": "cols_mobile", "min": 1, "max": 3, "step": 1, "default": 1, "label": "Columns (mobile)" },
+    { "type": "range", "id": "gap", "min": 8, "max": 40, "step": 1, "default": 16, "label": "Grid gap (px)" },
+
+    { "type": "number", "id": "max_width", "label": "Max width (px)", "default": 1200 },
+    { "type": "number", "id": "aspect_w", "label": "Image aspect width", "default": 4 },
+    { "type": "number", "id": "aspect_h", "label": "Image aspect height", "default": 3 },
+
+    { "type": "color", "id": "bg_color", "label": "Section background", "default": "#F6F7FA" },
+    { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#111111" },
+    { "type": "color", "id": "sub_color", "label": "Subheading color", "default": "rgba(0,0,0,0.55)" },
+    { "type": "color", "id": "overline_color", "label": "Overline color", "default": "rgba(0,0,0,0.7)" },
+
+    { "type": "color", "id": "card_bg", "label": "Card background", "default": "#FFFFFF" },
+    { "type": "color", "id": "card_border", "label": "Card border", "default": "rgba(0,0,0,0.08)" },
+    { "type": "range", "id": "card_radius", "min": 0, "max": 32, "step": 2, "default": 16, "label": "Card border radius (px)" },
+    { "type": "range", "id": "card_padding", "min": 8, "max": 28, "step": 2, "default": 16, "label": "Card inner padding (px)" },
+
+    { "type": "range", "id": "title_size", "min": 14, "max": 28, "step": 1, "default": 20, "label": "Card title size (px)" },
+
+    { "type": "color", "id": "btn_color", "label": "Button text/border color", "default": "#7C3F2F" },
+    { "type": "color", "id": "btn_hover", "label": "Button hover fill", "default": "#9E5C44" }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service card",
+      "limit": 12,
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Title", "default": "COMPREHENSIVE EYE EXAMS" },
+        { "type": "textarea", "id": "desc", "label": "Short description" },
+        { "type": "text", "id": "btn_label", "label": "Button label (optional)" },
+        { "type": "url", "id": "btn_link", "label": "Button link (optional)" },
+        { "type": "url", "id": "card_link", "label": "Make entire card clickable (optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Services",
+      "category": "KUONA",
+      "blocks": [
+        { "type": "service" },
+        { "type": "service" },
+        { "type": "service" }
+      ]
+    }
+  ]
+}
+{% endschema %}

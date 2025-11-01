@@ -1,0 +1,18 @@
+{% comment %}
+	- classes: extra class
+{% endcomment %}
+{% liquid
+	assign button_text = button_text | default: ''
+%}
+{% if button_text != nil %}
+	<div class="gsp-header-addons-item gsp-header-addons-item__button">
+		{% render 'el__button',
+			style: 'default',
+			color: 'secondary',
+			size: 'default',
+			link: button_link,
+			text: button_text,
+			icon: button_icon
+		%}
+	</div>
+{% endif %}

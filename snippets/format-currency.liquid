@@ -1,0 +1,8 @@
+{%- liquid
+	assign price = price | default: ''
+	assign format_price = price | money
+	if settings.currency_code_enabled
+		assign format_price = price | money_with_currency
+	endif
+-%}
+{{ format_price }}

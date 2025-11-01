@@ -1,0 +1,165 @@
+{% comment %}
+	Cart main items
+	Accepts:
+	- item: item object
+	- is_first: forloop is first
+{% endcomment %}
+
+{% liquid
+	assign aspect_ratio = '2/3'
+%}
+<div id="gsp-main-cart-item-{{ item.index | plus: 1 }}"
+	 class="gsp-main-cart-item p-4 {% if is_first %} border-top {%- endif %} border-bottom border-start border-end">
+	<div class="row align-items-center">
+		<div class="gsp-main-cart-item-product col-md-6 d-flex d-xl-block justify-content-between mb-md-0 mb-4">
+			<div class="gsp-main-cart-item-label d-md-none pe-3 text-heading text-uppercase fw-heading">
+				{{ 'cart.label.product' | t }}
+			</div>
+			<div class="gsp-main-cart-item-inner">
+				<div class="card border-0">
+					<div class="d-flex">
+						<div class="gps-cart-main-item-image d-none d-md-block">
+							{% render 'product-image__featured', product: item.product, image_size: '150px', aspect_ratio: aspect_ratio %}
+						</div>
+						<div class="card-body gps-cart-item-info p-0 ps-md-3 text-end text-md-start">
+							<h5 class="card-title">
+								<a href="{{- item.url -}}"
+								   class="gps-cart-item__title text-heading fs-15px fw-heading text-decoration-none">
+									{{- item.product.title -}}
+								</a>
+							</h5>
+							<div class="gps-cart-item__price fs-14px d-none d-md-block">
+								{%- if item.original_price != item.final_price %}
+									<span
+										class="gsp-product__price-compare-at-price text-decoration-line-through fw-heading">
+									{% render 'format-currency', price: item.original_price %}
+								</span>
+									<span class="gsp-product__price-regular text-heading fw-semibold">
+									{% render 'format-currency', price: item.final_price %}
+								</span>
+								{% else -%}
+									<span class="gsp-product__price-regular text-heading fw-semibold">
+									{% render 'format-currency', price: item.original_price %}
+								</span>
+								{% endif -%}
+							</div>
+							{%- unless item.product.has_only_default_variant %}
+								{% liquid
+									assign variant = ''
+									assign variant_seperate = ''
+									for option in item.options_with_values
+										assign test = test | append: forloop.index
+										if forloop.index > 1
+											assign variant_seperate = ' - '
+										endif
+										assign variant = variant | append: variant_seperate | append: option.name | append: ' : ' | append: option.value
+									endfor
+								-%}
+								<p class="gps-cart-item-variant mb-0 fs-13px mt-1">{{ variant }}</p>
+							{% endunless -%}
+							{% if item.selling_plan_allocation != empty %}
+								<p class="gps-cart-item-selling-plan mb-0 fs-13px mt-1"> {{ item.selling_plan_allocation.selling_plan.name }}</p>
+							{% endif %}
+							{%- liquid
+								assign property_size = item.properties | size
+								assign properties = 'template ' | split: ' '
+								if property_size > 0
+									assign properties = item.properties
+								endif
+							-%}
+							{%- for p in properties -%}
+								{%- assign property_first_char = p.first | slice: 0 -%}
+								<p
+									class="gps-cart-item__property mb-0 fs-13px mt-1 {% if property_size == 0 or p.last == blank or property_first_char == '_' %} d-none{% endif %}"
+									data-cart-item-property
+								>
+									<span data-cart-item-property-name>{{ p.first }}: </span>
+									<span data-cart-item-property-value>
+												{%- if p.last contains '/uploads/' -%}
+													<a href="{{ p.last }}" data-role="product-upload" target="_blank">{{ p.last | split: '/' | last }}</a>
+												{%- else -%}
+													{{ p.last }}
+												{%- endif -%}
+											  </span>
+								</p>
+							{%- endfor -%}
+							{%- if item.discounts.size > 0 -%}
+								<ul class="gps-cart-item-discount list-unstyled fs-13px mt-1 mb-0 d-inline-flex flex-wrap"
+									role="list">
+									{%- for discount in item.discounts -%}
+										<li class="discount-item text-danger">
+											{% render 'icons', icon: 'tag' %}
+											{{- discount.title -}}
+										</li>
+									{%- endfor -%}
+								</ul>
+							{%- endif -%}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="gsp-main-cart-item-quantity col-md-2 d-flex d-xl-block justify-content-between mb-md-0 mb-4">
+			<div class="gsp-main-cart-item-label d-md-none pe-3 text-heading text-uppercase fw-heading">
+				{{ 'cart.label.quantity' | t }}
+			</div>
+			<div class="gsp-main-cart-item-inner">
+				<gps-quantity-input
+					class="gps-quantity input-group quantity position-relative">
+					<a href="#"
+					   class="gps-quantity-btn quantity-down text-heading position-absolute translate-middle-y top-50 start-0 ps-2 z-index-5 fs-6">
+						{% render 'icons', icon: 'minus' %}
+					</a>
+					<input
+						class="gps-quantity-input text-heading form-control text-center z-index-1 border-0"
+						type="number"
+						data-quantity-variant-id="{{ item.variant.id }}"
+						name="updates[]"
+						value="{{ item.quantity }}"
+						{% # theme-check-disable %}
+						data-cart-quantity="{{ cart | item_count_for_variant: item.variant.id }}"
+						min="{{ item.variant.quantity_rule.min }}"
+						{% if item.variant.quantity_rule.max != null %}
+							max="{{ item.variant.quantity_rule.max }}"
+						{% endif %}
+						step="{{ item.variant.quantity_rule.increment }}"
+						{% # theme-check-enable %}
+						id="gps-quantity-{{ item.index | plus: 1 }}"
+						data-index="{{ item.index | plus: 1 }}"
+					>
+					<a href="#"
+					   class="gps-quantity-btn quantity-up text-heading position-absolute translate-middle-y top-50 end-0 pe-2 z-index-5 fs-6">
+						{% render 'icons', icon: 'plus' %}
+					</a>
+				</gps-quantity-input>
+			</div>
+		</div>
+		<div class="gsp-main-cart-item-price col-md-3 text-end d-flex d-xl-block justify-content-between mb-md-0 mb-4">
+			<div class="gsp-main-cart-item-label d-md-none pe-3 text-heading text-uppercase fw-heading">
+				{{ 'cart.label.price' | t }}
+			</div>
+			<div class="gsp-main-cart-item-inner">
+				{%- if item.original_line_price != item.final_line_price %}
+					<span class="gsp-product__price-compare-at-price text-decoration-line-through fw-heading">
+						{% render 'format-currency', price: item.original_line_price %}
+					</span>
+					<span class="gsp-product__price-regular text-heading fw-semibold">
+						{% render 'format-currency', price: item.final_line_price %}
+					</span>
+				{% else -%}
+					<span class="gsp-product__price-regular text-heading fw-semibold">
+						{% render 'format-currency', price: item.original_line_price %}
+					</span>
+				{% endif -%}
+			</div>
+		</div>
+		<div class="gsp-main-cart-item-remove col-md-1 text-end">
+			<gps-cart-item--clear class="gps-cart-item__clear"
+								  data-index="{{ item.index | plus: 1 }}">
+				<a href="#" class="d-block text-danger-hover">
+					{% render 'icons', icon: 'xmark' %}
+				</a>
+			</gps-cart-item--clear>
+		</div>
+	</div>
+</div>

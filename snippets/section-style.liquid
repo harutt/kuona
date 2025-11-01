@@ -1,0 +1,43 @@
+{%- capture style_section -%}
+	.gsp-section-{{ section.id }} {
+	{% if section.settings.section_bg_color != blank and section.settings.section_bg_color != "rgba(0,0,0,0)" %}
+		--gsp-section-bg-color: {{ section.settings.section_bg_color }};
+	{% endif %}
+	{% if section.settings.section_bg_image != blank %}
+		--gsp-section-bg-image: url({{ section.settings.section_bg_image | image_url }});
+	{% endif %}
+	{% if section.settings.section_bg_position != blank and section.settings.section_bg_position != "default" %}
+		--gsp-section-bg-position: {{ section.settings.section_bg_position }};
+	{% endif %}
+	{% if section.settings.section_bg_size != blank and section.settings.section_bg_size != "default" %}
+		--gsp-section-bg-size: {{ section.settings.section_bg_size }};
+	{% endif %}
+	{% if section.settings.header_width != blank and section.settings.header_width != -1 %}
+		--gsp-section-header-inline-width: {{ section.settings.header_width }}%;
+	{% endif %}
+	{% if section.settings.header_margin_bottom != blank and section.settings.header_margin_bottom != -1 %}
+		--gsp-section-header-margin-bottom: {{ section.settings.header_margin_bottom }}px;
+	{% endif %}
+	{% if section.settings.item_gap != blank and section.settings.item_gap != -1 %}
+		--gsp-section-item-gap: {{ section.settings.item_gap }}px;
+	{% endif %}
+	{% if section.settings.padding_top != blank and section.settings.padding_top != -1 %}
+		--gsp-section-padding-top: {{ section.settings.padding_top }}px;
+	{% endif %}
+	{% if section.settings.padding_bottom != blank and section.settings.padding_bottom != -1 %}
+		--gsp-section-padding-bottom: {{ section.settings.padding_bottom }}px;
+	{% endif %}
+	{% if section.settings.padding_top_mobile != blank and section.settings.padding_top_mobile != -1 %}
+		--gsp-section-padding-mobile-top: {{ section.settings.padding_top_mobile }}px;
+	{% endif %}
+	{% if section.settings.padding_bottom_mobile != blank and section.settings.padding_bottom_mobile != -1 %}
+		--gsp-section-padding-mobile-bottom: {{ section.settings.padding_bottom_mobile }}px;
+	{% endif %}
+	}
+	{% if extended_css != blank %}
+		{{ extended_css }}
+	{% endif %}
+{%- endcapture -%}
+{% style %}
+	{{ style_section | strip_newlines }}
+{% endstyle %}

@@ -1,0 +1,44 @@
+{% liquid
+	assign product = all_products[block.settings.product]
+	assign placeholder = 'product-' | append: image_plackholder_index
+	assign aspect_ratio = nil
+	if block.settings.pc_aspect_ratio != 'default'
+		assign aspect_ratio = block.settings.pc_aspect_ratio
+	endif
+	assign hover_style = nil
+	if block.settings.pc_hover_style != 'default'
+		assign hover_style = block.settings.pc_hover_style
+	endif
+	assign description_enable = block.settings.pc_description_enable
+	assign class_id = '.gsp-block__' | append: block.id
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-card" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		{% render 'product-skins__item',
+			product: product,
+			aspect_ratio: aspect_ratio,
+			image_size: block.settings.pc_image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			description_enable: description_enable,
+			skin: block.settings.pc_skin
+		%}
+	</div>
+</div>
+{% render 'product-card__style',
+	class_id: class_id,
+	title_color: block.settings.pc_title_color,
+	title_mb: block.settings.pc_title_mb,
+	title_fs: block.settings.pc_title_fs,
+	desc_color: block.settings.pc_desc_color,
+	desc_mb: block.settings.pc_desc_mb,
+	price_fs: block.settings.pc_price_fs,
+	price_mb: block.settings.pc_price_mb,
+	img_spacing: block.settings.pc_image_spacing,
+	rating_mb: section.settings.pc_rating_mb
+%}

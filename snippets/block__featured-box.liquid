@@ -1,0 +1,15 @@
+{% comment %}
+	Featured Promotion block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+<div class="gsp-block__{{ block.id }} gsp-block gsp-featured-box-block" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		{% render 'el__featured-box', args: block %}
+	</div>
+</div>

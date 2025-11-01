@@ -1,0 +1,136 @@
+{% liquid
+	assign enable_account = section.settings.mobile_show_account_icon
+	assign enable_search = section.settings.mobile_show_search
+	assign enable_cart = section.settings.mobile_show_cart_icon
+	assign enable_currency = section.settings.mobile_show_currency_switcher
+	assign enable_language = section.settings.mobile_show_language_switcher
+	assign enable_country = section.settings.mobile_show_country_selector
+	assign enable_button = section.settings.mobile_show_button
+	assign button_text = section.settings.header_addon_el_button_text
+	assign button_link = section.settings.header_addon_el_button_link
+	assign button_icon = section.settings.header_addon_el_button_icon
+
+	assign enable_wishlist = false
+	assign enable_compare = false
+	if section.settings.mobile_show_wishlist_icon and settings.enable_wishlist
+		assign enable_wishlist = true
+	endif
+	if section.settings.mobile_show_compare_icon and settings.enable_compare
+		assign enable_compare = true
+	endif
+	if section.settings.mobile_logo != blank
+		assign logo = section.settings.mobile_logo
+	else
+		assign logo = section.settings.logo
+	endif
+
+
+	if section.settings.mobile_logo_sticky != blank
+		assign logo_sticky = section.settings.mobile_logo_sticky
+	else
+		if section.settings.logo_sticky != blank
+			assign logo_sticky = section.settings.logo_sticky
+		endif
+	endif
+
+	if section.settings.mobile_logo_width != blank and section.settings.mobile_logo_width != -1
+		assign logo_width = section.settings.mobile_logo_width
+	else
+		assign logo_width = section.settings.logo_width
+	endif
+	if section.settings.mobile_logo_sticky_width != blank and section.settings.mobile_logo_sticky_width != -1
+		assign logo_sticky_width = section.settings.mobile_logo_sticky_width
+	else
+		assign logo_sticky_width = section.settings.logo_sticky_width
+	endif
+
+	if template == 'index'
+		if section.settings.homepage_mobile_logo != blank
+			assign logo = section.settings.homepage_mobile_logo
+		else
+			if section.settings.homepage_logo != blank
+				assign logo = section.settings.homepage_logo
+			endif
+		endif
+		if section.settings.homepage_mobile_logo_sticky != blank
+			assign logo_sticky = section.settings.homepage_mobile_logo_sticky
+		else
+			if section.settings.homepage_logo_sticky != blank
+				assign logo_sticky = section.settings.homepage_logo_sticky
+			endif
+		endif
+
+		if section.settings.homepage_mobile_logo_width != blank and section.settings.homepage_mobile_logo_width != -1
+			assign logo_width = section.settings.homepage_mobile_logo_width
+		else
+			if section.settings.homepage_logo_width != blank and section.settings.homepage_logo_width != -1
+				assign logo_width = section.settings.homepage_logo_width
+			endif
+		endif
+
+		if section.settings.homepage_mobile_logo_sticky_width != blank and section.settings.homepage_mobile_logo_sticky_width != -1
+			assign logo_sticky_width = section.settings.homepage_mobile_logo_sticky_width
+		else
+			if section.settings.homepage_logo_sticky_width != blank and section.settings.homepage_logo_sticky_width != -1
+				assign logo_sticky_width = section.settings.homepage_logo_sticky_width
+			endif
+		endif
+	endif
+
+	assign logo_menu = section.settings.menu_mobile_logo | default: logo
+	if logo_menu != blank
+		assign logo_menu = logo_sticky | default: logo
+	endif
+	assign id_logo = 'header-mobile-' | append: section.id
+%}
+<div class="gsp-header__mobile d-block d-xl-none w-100">
+	<div
+		class="main-header__mobile {% if section.settings.header_sticky %} header-sticky header-sticky-smart disable-transition-all {% endif %}">
+		<div class="gsp-header__wrap {% if section.settings.header_sticky %} sticky-area w-100 {% endif %}">
+			<div class="{{ container }}">
+				<div class="fs-5 d-flex align-items-center w-100">
+					<div class="w-50">
+						<div class="gsp-header__menu-toggle navbar-toggler border-0 p-0 text-inherit"
+							 data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenuMobile">
+							<span class="toggle-icon"></span>
+						</div>
+					</div>
+					{% render 'el__site-logo',
+						id_logo: id_logo,
+						logo: logo,
+						logo_width: logo_width,
+						has_sticky: section.settings.header_sticky,
+						logo_sticky_width: logo_sticky_width,
+						logo_sticky: logo_sticky,
+						classes: 'gsp-header__logo fs-40px fw-heading',
+						logo_text: section.settings.logo_text
+					%}
+					{% render 'header-addons',
+						search: enable_search,
+						account: enable_account,
+						wishlist: enable_wishlist,
+						compare: enable_compare,
+						cart: enable_cart,
+						currency: enable_currency,
+						language: enable_language,
+						country: enable_country,
+						button: enable_button,
+						button_text: button_text,
+						button_link: button_link,
+						button_icon: button_icon,
+						classes: "gsp-header__mobile-icons w-50 d-flex justify-content-end gap-3"
+					%}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% render 'offcanvas-menu-mobile',
+	logo: logo_menu,
+	logo_width: section.settings.menu_mobile_logo_width,
+	logo_text: section.settings.logo_text,
+	addon_language: section.settings.menu_mobile_show_language_switcher,
+	addon_country: section.settings.menu_mobile_show_country_selector,
+	addon_button_login: section.settings.menu_mobile_show_login,
+	addon_social_links: section.settings.menu_mobile_show_social_links,
+%}

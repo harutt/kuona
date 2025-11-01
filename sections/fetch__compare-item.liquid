@@ -1,0 +1,64 @@
+{% comment %}
+	Section Functional : Will not be found in the build page editor
+{% endcomment %}
+{% liquid
+	assign custom_text_cart = 'page.compare.quick_add_to_cart' | t
+%}
+{% if product %}
+	<div class="gsp-compare-item-action gsp-compare-item">
+		<div class="card bg-transparent border-0 gsp-product-card gsp-product-card-compare text-center">
+			<a class="gsp-product-actions-remove-form-compare d-inline-block text-decoration-none text-danger-hover text-uppercase fs-12px fw-heading mb-3"
+			   href="#"
+			   data-product-handle="{{ product.handle }}">
+				{{ 'page.compare.remove' | t }}
+			</a>
+			<figure class="card-img-top gsp-product-card-image position-relative overflow-hidden ">
+				{% render 'product-image__featured', product: product %}
+				{% render 'product-card__badges', product: product, include_badges: 'sale,custom_badges' %}
+			</figure>
+			<div class="card-body p-0 text-center">
+				{% render 'product-card__title', product: product %}
+				<div class="gsp-product__compare-actions d-flex align-items-center justify-content-center mt-3">
+					{% if settings.enable_add_to_cart %}
+						{% render 'product-actions__add-to-cart',
+							product: product, classes_icon: 'fs-23px me-1',
+							classes_button: 'btn btn-dark gsp-product-actions-button gsp-spin-wrapper px-4 py-2',
+							custom_text_cart: custom_text_cart,
+							show_label: true
+						%}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="gsp-compare-item-price gsp-compare-item">
+		{% render 'product-card__prices', product: product %}
+	</div>
+	<div class="gsp-compare-item-vendor gsp-compare-item">
+		<span>{{ product.vendor }}</span>
+	</div>
+	<div class="gsp-compare-item-availability gsp-compare-item">
+		{% if product.available %}
+			<div class="product-instock">
+				{% render 'icons', icon: 'circle-check-sharp-solid' %}
+				<span>{{ 'products.product.in_stock' | t }}</span>
+			</div>
+		{% else %}
+			<div class="product-outstock">
+				{% render 'icons', icon: 'circle-xmark-solid' %}
+				<span>{{ 'products.product.unavailable' | t }}</span>
+			</div>
+		{% endif %}
+	</div>
+	{%- unless product.has_only_default_variant -%}
+		<div class="gsp-compare-item-variant gsp-compare-item">
+			{%- for option in product.options_with_values -%}
+				<div class="gsp-compare-variant" data-variant-compare="{{ option.name }}">
+					{%- for value in option.values -%}
+						<span class="text-capitalize">{{- value -}}</span>
+					{%- endfor -%}
+				</div>
+			{%- endfor -%}
+		</div>
+	{%- endunless -%}
+{% endif %}

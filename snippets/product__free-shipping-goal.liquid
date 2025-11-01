@@ -1,0 +1,29 @@
+{%- liquid
+	assign minimum_amount_in_cents = minimum_amount | plus: 0
+	assign total_price = cart.total_price | plus: 0
+-%}
+{%- capture left_to_spend -%}
+	<strong data-left-to-spend>{{ limit_currency | minus: cart.total_price | money }}</strong>
+{%- endcapture -%}
+
+<gsp-free-shipping-goal
+	data-cart-total="{{ total_price }}"
+	data-minimum-amount="{{ minimum_amount_in_cents }}"
+	class="gsp-free-shipping-goal{% if classes %} {{ classes }}{% endif %}"
+>
+	  <span class="gsp-free-shipping-goal-label gsp-free-shipping-goal-label-success">
+		  <span class="text-success d-inline-block me-1">{% render 'icons', icon: 'circle-check-sharp-solid' %}</span>
+  		  {{- 'cart.free_shipping_goal.congratulations_html' | t -}}
+  		</span>
+	<span class="gsp-free-shipping-goal-label gsp-free-shipping-goal-label-default">
+    	{{- 'cart.free_shipping_goal.remaining_html' | t: remaining_amount: left_to_spend -}}
+  	</span>
+
+	<div class="progress position-relative">
+		<div class="gsp-free-shipping-goal-bar progress-bar progress-bar-striped progress-bar-animated">
+			<div class="target-progress position-absolute d-flex align-items-center justify-content-center">
+				{% render 'icons', icon: "truck" %}
+			</div>
+		</div>
+	</div>
+</gsp-free-shipping-goal>

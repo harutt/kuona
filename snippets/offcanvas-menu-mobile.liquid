@@ -1,0 +1,47 @@
+{% comment %}
+	Menu Offcanvas
+	Accepts:
+	- logo: logo menu
+	- logo_width: logo max width
+	- logo_text: logo text
+	- addon_language: addon language
+	- addon_country: addon language
+	- addon_button_login: addon login
+	- addon_social_links: addon socials link
+{% endcomment %}
+
+<div id="offcanvasMenuMobile" class="gsp-menu-offcanvas offcanvas offcanvas-start" tabindex="-1">
+	<div class="offcanvas-header px-3">
+		{% render 'el__site-logo',
+			id_logo: 'offcanvasMenuMobile',
+			logo: logo,
+			logo_width: logo_width,
+			classes: 'offcanvas-title text-uppercase text-heading fs-28px h3',
+			logo_text: logo_text
+		%}
+		<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body p-0">
+		{% render 'header__menu-mobile' %}
+	</div>
+	<div class="offcanvas-footer d-block p-0 pt-3">
+		<div class="gsp-menu-offcanvas-addon px-3 py-2">
+			{%- if addon_language or addon_country -%}
+				<div class="d-flex flex-row gap-3 justify-content-center gsp-header-addons-group">
+					{%- if addon_language -%}
+						{% render 'header-addons__language' %}
+					{%- endif -%}
+					{%- if addon_country -%}
+						{% render 'header-addons__country' %}
+					{%- endif -%}
+				</div>
+			{%- endif -%}
+			{%- if addon_social_links -%}
+				{% render 'header-addons__social', show_label: false, extended_class_inner: "text-heading fs-18px justify-content-center" %}
+			{%- endif -%}
+			{%- if addon_button_login -%}
+				{% render 'header-addons__button-login' %}
+			{%- endif -%}
+		</div>
+	</div>
+</div>

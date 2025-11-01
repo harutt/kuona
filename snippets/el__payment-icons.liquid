@@ -1,0 +1,49 @@
+{% liquid
+	if args.settings.vertical_align != blank
+		assign alignment_class = " align-items-" | append: args.settings.vertical_align
+	endif
+	if args.settings.content_alignment != blank
+		assign alignment_class = alignment_class | append: " justify-content-" | append: args.settings.content_alignment
+	endif
+%}
+
+<div class="gsp-element gsp-element-{{ args.id }} gsp-element-payment-icons h-100">
+	{% if args.settings.pay_icons_custom == blank %}
+		<ul class="gsp-payment-icons list-unstyled d-flex flex-wrap mb-0 lh-1 h-100 {{ alignment_class }}">
+			{%- for type in shop.enabled_payment_types -%}
+				<li class="gsp-payment-icons-item">
+					{{ type | payment_type_svg_tag }}
+				</li>
+			{%- endfor -%}
+		</ul>
+	{% else %}
+		{% liquid
+			if aspect_ratio == blank
+				capture aspect_ratio
+					render 'convert-aspect-ratio', aspect_ratio: args.settings.pay_icons_aspect_ratio
+				endcapture
+				assign aspect_ratio = aspect_ratio | strip_newlines
+			endif
+			if image_size == blank
+				assign image_size = args.settings.pay_icons_image_size | default: 'full'
+			endif
+		%}
+
+		<div class="gsp-payment-custom d-flex h-100 {{ alignment_class }}">
+			{% render 'responsive-image', image: args.settings.pay_icons_custom, aspect_ratio: aspect_ratio, image_size: image_size, placeholder: 'image' %}
+		</div>
+	{% endif %}
+	{% style %}
+		.gsp-element-{{ args.id }} {
+		{%- if args.settings.pay_icons_max_width != blank and args.settings.pay_icons_max_width != -1 %}
+			--gsp-payment-icons-image-mw: {{ args.settings.pay_icons_max_width }}px;
+		{% endif -%}
+		{%- if args.settings.pay_icons_size != blank and args.settings.pay_icons_size != -1 %}
+			--gsp-payment-icons-size: {{ args.settings.pay_icons_size }}px;
+		{% endif -%}
+		{%- if args.settings.pay_icons_gap != blank and args.settings.pay_icons_gap != -1 %}
+			--gsp-payment-icons-gap: {{ args.settings.pay_icons_gap }}px;
+		{% endif -%}
+		}
+	{% endstyle %}
+</div>

@@ -1,0 +1,27 @@
+{% comment %}
+  Accepts:
+  - block: {Object} block Liquid object (required)
+{% endcomment %}
+{% liquid
+	capture aspect_ratio
+		render 'convert-aspect-ratio', aspect_ratio: block.settings.aspect_ratio
+	endcapture
+	assign aspect_ratio = aspect_ratio | strip_newlines
+	if image_size == blank
+		assign image_size = block.settings.image_size | default: 'full'
+	endif
+%}
+<div
+	class="gsp-main-product-block-image-wrap d-flex flex-column w-100 align-items-{{ block.settings.content_alignment }}">
+	{% render 'responsive-image', image: block.settings.image, image_size: image_size, aspect_ratio: aspect_ratio, placeholder: 'image' %}
+	{%- if block.settings.caption != blank %}
+		<p class="gsp-main-product-block-image-caption fs-14px mb-0 mt-2">{{ block.settings.caption | strip_html }}</p>
+	{% endif -%}
+</div>
+{% style %}
+	{%- if block.settings.img_max_width != blank and block.settings.img_max_width != 0 %}
+		.gsp-block__{{ block.id }} .gsp-image{
+		max-width: {{ block.settings.img_max_width }}px;
+		}
+	{% endif -%}
+{% endstyle %}

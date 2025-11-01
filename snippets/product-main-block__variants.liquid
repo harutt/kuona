@@ -1,0 +1,258 @@
+{% comment %}
+  Accepts:
+  - product: {Object} Product Liquid object (required)
+  - product_form_id: form id
+  - allow_size_chart: Allow size chart | default: false
+  - size_chart_title: Options title displays size chart button
+{% endcomment %}
+{% liquid
+	assign variant_types = ''
+	assign allow_size_chart = allow_size_chart | default: false
+	assign design_default = settings.pvd_design_default | default: 'button'
+
+	assign customs_design = ',' | append: settings.pvd_custom_design | strip_newlines | downcase | append: ',' | replace: ': ', ':' | replace: ' :', ':' | strip
+	for option in product.options_with_values
+		assign variant_name = option.name | downcase | strip
+		assign variant_name = ',' | append: variant_name | append: ':'
+		assign has_customs_design = false
+		if customs_design contains variant_name and variant_name != ""
+			unless has_customs_design == true
+				assign current_design_custom = customs_design | split: variant_name | last | split: ',' | first | strip
+				assign has_customs_design = true
+			endunless
+		endif
+		if has_customs_design
+			assign design = current_design_custom | prepend: ','
+		else
+			assign design = design_default | prepend: ','
+		endif
+		assign variant_types = variant_types | append: design
+	endfor
+	assign variant_types = variant_types | remove_first: ',' | split: ','
+
+%}
+
+{% if allow_size_chart %}
+	{% liquid
+		assign size_chart_content = product.metafields.gsp.size_chart
+		if size_chart_content == blank and size_chart_from_page != blank
+			assign size_chart_content = pages[size_chart_from_page].content
+		endif
+	%}
+	{%- capture size_chart_html -%}
+		<div class="gsp-size-chart ps-5">
+			<button type="button" class="btn btn-link-dark btn-link btn-border-bottom" data-bs-toggle="modal" data-bs-target="#gsp-size-chart-modal">
+				{{'products.product.size_chart' | t }}
+			</button>
+			<div class="modal gsp-size-chart-modal fade" id="gsp-size-chart-modal" tabindex="-1" aria-labelledby="{{'products.product.size_chart' | t }}" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header border-bottom-0">
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{'general.close' | t }}"></button>
+						</div>
+						<div class="modal-body overflow-hidden pt-0">
+							{{ size_chart_content }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{%- endcapture -%}
+{% endif %}
+<div class="gsp-product-variant"
+	 data-variant-picker data-product-id="{{ product.id }}"
+	 data-enable-variant-group-images="{{ enableVariantGroupImg }}" data-section="{{ section.id }}"
+	 data-product-handle="{{ product.handle }}" data-product-url="{{ product.url }}"
+	 data-max-options="{{ product.options_with_values.size }}">
+	<variant-picker data-update-url="false" data-show-featured-media="{{ section.settings.show_featured_media }}">
+		{%- unless product.has_only_default_variant -%}
+			{%- for option in product.options_with_values -%}
+				{% liquid
+					assign variant_type = variant_types[forloop.index0]
+					assign option_name_downcase = option.name | downcase
+					assign size_chart_title = size_chart_title | downcase
+					assign attach_size_chart = false
+					if size_chart_title != nil and size_chart_title contains option_name_downcase and allow_size_chart and size_chart_content != nil
+						assign attach_size_chart = true
+					endif
+				%}
+				{%- case variant_type -%}
+					{% when 'button' %}
+						<variant-button class="gsp-product-option-type-button d-flex mb-4 {% if attach_size_chart %} justify-content-between {% endif %}" data-picker-field="radio"
+										data-option-name="{{ option.name }}"
+										data-selected-value="{{ option.selected_value }}">
+							<div class="gsp-product-option-inner">
+								<div class="gsp-product-option-title">
+									<span class="title">{{ option.name }}:</span>
+									<span class="option-title--selected">{{ option.selected_value }}</span>
+								</div>
+								<div class="gsp-product-option-content d-flex flex-wrap fw-heading">
+									{%- for value in option.values -%}
+										<div
+											class="gsp-product-option-item"
+											data-option-position="{{ option.position }}"
+											data-option-type="{{ variant_type }}"
+											data-value="{{- value | escape -}}"
+										>
+											<input type="radio"
+												   id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+												   name="{{ option.name }}"
+												   value="{{ value | escape }}"
+												   form="{{ product_form_id }}"
+												   {% if option.selected_value == value %}checked{% endif %}
+											>
+											<label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+												   class="gsp-product-option-label text-capitalize text-center fs-14px p-2 d-block rounded border">
+												{{- value -}}
+											</label>
+										</div>
+									{%- endfor -%}
+								</div>
+							</div>
+							{% if attach_size_chart %}
+								{{ size_chart_html }}
+							{% endif %}
+						</variant-button>
+					{% when 'dropdown' %}
+						<variant-select class="gsp-product-option-type-select d-flex mb-4 {% if attach_size_chart %} justify-content-between {% endif %}" data-picker-field="select"
+										data-option-name="{{ option.name }}"
+										data-selected-value="{{ option.selected_value }}">
+							<div class="gsp-product-option-inner">
+								<div class="gsp-product-option-title text-dark">
+									<span class="title">{{ option.name }}:</span>
+									<span class="option-title--selected">{{ option.selected_value }}</span>
+								</div>
+								<div class="gsp-product-option-content">
+									<select id="Option-{{ section.id }}-{{ forloop.index0 }}"
+											class="form-select"
+											name="options[{{ option.name | escape }}]"
+											form="{{ product_form_id }}">
+										{%- for value in option.values -%}
+											<option value="{{ value | escape }}" class="gsp-product-option-item gsp-product-option--node"
+													data-value="{{- value | escape -}}"
+													data-option-position="{{ option.position }}"
+													{% if option.selected_value == value %}selected="selected"{% endif %}>
+												{{- value -}}
+											</option>
+										{%- endfor -%}
+									</select>
+								</div>
+							</div>
+							{% if attach_size_chart %}
+								{{ size_chart_html }}
+							{% endif %}
+						</variant-select>
+					{% when 'color' %}
+						{% liquid
+							assign color_base = ',' | append: settings.pvd_display_type_color | strip_newlines | downcase | append: ',' | replace: ': ', ':' | replace: ' :', ':'
+						%}
+						<variant-color class="gsp-product-option-type-color d-flex mb-4 {% if attach_size_chart %} justify-content-between {% endif %}" data-picker-field="radio"
+									   data-option-name="{{ option.name }}"
+									   data-selected-value="{{ option.selected_value }}">
+							<div class="gsp-product-option-inner">
+								<div class="gsp-product-option-title">
+									<span class="title">{{ option.name }}:</span>
+									<span class="option-title--selected">{{ option.selected_value }}</span>
+								</div>
+								<div class="gsp-product-option-content d-flex flex-wrap fw-heading">
+									{%- for value in option.values -%}
+										{% liquid
+											assign color_display = value | downcase | strip
+											assign value_downcase = value | downcase | strip
+											assign value_downcase = ',' | append: value_downcase | append: ':'
+											if color_base contains value_downcase and value_downcase != ""
+												assign color_display = color_base | split: value_downcase | last | split: ',' | first | strip
+											endif
+										%}
+										<div
+											class="gsp-product-option-item"
+											data-option-position="{{ option.position }}"
+											data-option-type="{{ variant_type }}"
+											data-value="{{- value | escape -}}"
+										>
+											<input type="radio"
+												   id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+												   name="{{ option.name }}"
+												   value="{{ value | escape }}"
+												   form="{{ product_form_id }}"
+												   {% if option.selected_value == value %}checked{% endif %}
+											>
+											<label data-bs-toggle="tooltip" data-bs-placement="top"
+												   data-bs-title="{{ value }}" data-option-type="{{ variant_type }}"
+												   data-view="product"
+												   for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+												   class="gsp-product-option-label d-block fs-0"
+												   style="--gsp-variant-type-color: {{ color_display }}">
+												{{- value -}}
+											</label>
+										</div>
+									{%- endfor -%}
+								</div>
+							</div>
+							{% if attach_size_chart %}
+								{{ size_chart_html }}
+							{% endif %}
+						</variant-color>
+					{% when 'image' %}
+						<variant-image class="gsp-product-option-type-image d-flex mb-4 {% if attach_size_chart %} justify-content-between {% endif %}" data-picker-field="radio"
+									   data-option-name="{{ option.name }}"
+									   data-selected-value="{{ option.selected_value }}">
+							<div class="gsp-product-option-inner">
+								<div class="gsp-product-option-title">
+									<span class="title">{{ option.name }}:</span>
+									<span class="option-title--selected">{{ option.selected_value }}</span>
+								</div>
+								<div class="gsp-product-option-content  d-flex flex-wrap fw-heading">
+									{%- for value in option.values -%}
+
+										{% liquid
+											assign img = 'null'
+											for i in (1..50)
+												assign variable_option_name = "pvd_option_name_type_image_" | append: i
+												assign variable_custom_image = "pvd_custom_image_" | append: i
+												assign custom_image = settings[variable_custom_image]
+												assign option_name = settings[variable_option_name]
+												assign value_downcase = value | downcase
+												assign option_name_downcase = option_name | downcase
+												if option_name != blank and custom_image != blank and option_name_downcase == value_downcase
+													assign img = settings[variable_custom_image] | image_url: width: 100, height: 100
+												endif
+											endfor
+										%}
+										<div
+											class="gsp-product-option-item"
+											data-option-position="{{ option.position }}"
+											data-option-type="{{ variant_type }}"
+											data-value="{{- value | escape -}}"
+										>
+											<input type="radio"
+												   id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+												   name="{{ option.name }}"
+												   value="{{ value | escape }}"
+												   form="{{ product_form_id }}"
+												   {% if option.selected_value == value %}checked{% endif %}
+											>
+											<label data-bs-toggle="tooltip" data-bs-placement="top"
+												   data-bs-title="{{ value }}" data-option-type="{{ variant_type }}"
+												   for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+												   class="gsp-product-option-label d-block fs-0"
+												   {% if img != 'null' %}style="background-image: url({{ img }})"{% endif %}
+											>
+												{{- value -}}
+											</label>
+										</div>
+									{%- endfor -%}
+								</div>
+							</div>
+							{% if attach_size_chart %}
+								{{ size_chart_html }}
+							{% endif %}
+						</variant-image>
+				{%- endcase -%}
+			{%- endfor -%}
+		{%- endunless -%}
+	</variant-picker>
+	<script id="productVariants" type="application/json">
+    {{ product.variants | json }}
+	</script>
+</div>

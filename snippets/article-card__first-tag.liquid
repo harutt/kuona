@@ -1,0 +1,14 @@
+{% comment %}
+	- custom_css: Custom css
+{% endcomment %}
+{%- if article.tags.size > 0 -%}
+	{% liquid
+		assign class_css = "gsp-blogs-card-item gsp-article-blog-first-tag"
+		if custom_css != nil
+			assign class_css = class_css | append: ' ' | append: custom_css
+		endif
+	%}
+	{%- for tag in article.tags limit: 1 -%}
+		<a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="{{ class_css }}">{{ tag }}</a>
+	{%- endfor -%}
+{%- endif -%}

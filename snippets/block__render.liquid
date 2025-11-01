@@ -1,0 +1,99 @@
+{% comment %}
+	- Block: Obj block
+{% endcomment %}
+{% case block.type %}
+	{%- when '@app' -%}
+		{% render 'block__app', block: block %}
+	{% when 'banner' %}
+		{% if block.settings.image == blank %}
+			{% capture current %}{% cycle 1, 2, 3 %}{% endcapture %}
+		{% endif %}
+		{% render 'block__banner', block: block, image_plackholder_index: current %}
+	{% when 'heading' %}
+		{% render 'block__heading', block: block %}
+	{% when 'video-popup' %}
+		{% if block.settings.image == blank %}
+			{% capture current %}{% cycle 1, 2, 3 %}{% endcapture %}
+		{% endif %}
+		{% render 'block__video-popup', block: block, image_plackholder_index: current %}
+	{% when 'collection' %}
+		{% if block.settings.image == blank %}
+			{% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+		{% endif %}
+		{% render 'block__collection', block: block, image_plackholder_index: current %}
+	{% when 'image' %}
+		{% render 'block__image', block: block %}
+	{% when 'custom_html' %}
+		{% render 'block__custom-html', block: block %}
+	{% when 'contact_form' %}
+		{% render 'block__contact-form', block: block %}
+	{% when 'newsletter' %}
+		{% render 'block__newsletter', block: block %}
+	{% when 'password' %}
+		{% render 'block__password', block: block %}
+	{% when 'counter' %}
+		{% render 'block__counter', block: block %}
+	{% when 'countdown' %}
+		{% render 'block__countdown', block: block %}
+	{% when 'card' %}
+		{% render 'block__card', block: block %}
+	{% when 'product' %}
+		{% if block.settings.image == blank %}
+			{% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+		{% endif %}
+		{% render 'block__product', block: block, image_plackholder_index: current %}
+	{% when 'featured-collection' %}
+		{% render 'block__featured-collection', block: block %}
+	{% when 'text_block' %}
+		{% render 'block__text-block', block: block %}
+	{% when 'menu' %}
+		{% render 'block__menu', block: block %}
+	{% when 'offset_block' %}
+		{% render 'block__offset', block: block %}
+	{% when 'social' %}
+		{% render 'block__socials', block: block %}
+	{% when 'logo' %}
+		{% render 'block__logo', block: block %}
+	{% when 'featured-box' %}
+		{% render 'block__featured-box', block: block %}
+	{% when 'image-box' %}
+		{% if block.settings.image == blank %}
+			{% capture current %}{% cycle 1, 2 %}{% endcapture %}
+		{% endif %}
+		{% render 'block__image-box', block: block , image_plackholder_index: current  %}
+	{% when 'client-logo' %}
+		{% render 'block__client-logo', block: block %}
+	{% when 'testimonial' %}
+		{% render 'block__testimonial', block: block %}
+	{% when 'team-member' %}
+		{% render 'block__team-member', block: block %}
+	{% when 'simple-countdown' %}
+		{% render 'block__simple-countdown', block: block %}
+	{% when 'simple-text' %}
+		{% render 'block__simple-text', block: block %}
+	{% when 'simple-button' %}
+		{% render 'block__simple-button', block: block %}
+	{% when 'instagram' %}
+		{% render 'block__instagram', block: block %}
+	{% when 'post' %}
+		{% if block.settings.image == blank %}
+			{% capture current %}{% cycle 1, 2 %}{% endcapture %}
+		{% endif %}
+		{% render 'block__post', block: block, image_plackholder_index: current %}
+	{% when 'search' %}
+		{% render 'block__search', block: block %}
+	{% when 'divider' %}
+		{% render 'block__divider', block: block %}
+	{% when 'copyright' %}
+		{% render 'block__copyright', block: block %}
+	{% when 'follow-on-shop' %}
+		{% render 'block__follow-on-shop', block: block %}
+	{% when 'payment-icons' %}
+		{% render 'block__payment-icons', block: block %}
+	{% when 'page_title' %}
+		{% render 'block__page-title', block: block %}
+	{% when 'breadcrumb' %}
+		{% render 'block__breadcrumb', block: block %}
+	{% when 'collection_desc' %}
+		{% render 'block__collection-desc', block: block %}
+{% endcase %}

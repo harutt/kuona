@@ -1,0 +1,21 @@
+{% comment %}
+	Form success message
+	Accepts:
+	- form: obj form
+	- error_message: Error message
+	- extended_css : Extended css class
+
+{% endcomment %}
+
+{% if form.errors %}
+	<div
+		class="gsp-form-error alert alert-danger d-flex align-items-center {% if extended_css != blank %}{{ extended_css }}{% endif %}"
+		role="alert">
+		<span class="me-3 fs-18">{% render 'icons', icon: 'circle-exclamation-sharp-solid' %}</span>
+		{% if error_message != blank %}
+			{{ error_message }}
+		{% else %}
+			{{ form.errors | default_errors }}
+		{% endif %}
+	</div>
+{% endif %}

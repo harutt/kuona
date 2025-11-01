@@ -1,0 +1,168 @@
+{% comment %}
+	Element Testimonial
+	Accepts:
+	- args: heading settings | Obj
+	- args_style: args style | Obj
+{% endcomment %}
+{% liquid
+	if args_style == blank
+		assign args_style = args
+	endif
+
+	assign layout = args_style.settings.testimonial_layout
+	assign content_alignment = args_style.settings.testimonial_alignment
+	assign class_wrap = "gsp-element gsp-testimonial gsp-testimonial-" | append: args.id | append: " gsp-testimonial-" | append: layout
+	assign class_wrap = class_wrap | append: " text-" | append: content_alignment
+
+	assign padding = args_style.settings.testimonial_padding
+	assign background = args_style.settings.testimonial_bg
+	assign name_color = args_style.settings.testimonial_name_color
+	assign position_color = args_style.settings.testimonial_position_color
+	assign quote_color = args_style.settings.testimonial_quote_color
+	assign stars_color = args_style.settings.testimonial_stars_color
+	assign name_fs = args_style.settings.testimonial_name_fs
+	assign avatar_size = args_style.settings.testimonial_avatar_size
+	assign position_fs = args_style.settings.testimonial_position_fs
+	assign quote_fs = args_style.settings.testimonial_quote_fs
+	assign stars_fs = args_style.settings.testimonial_stars_fs
+	assign name_sp = args_style.settings.testimonial_name_sp
+	assign position_sp = args_style.settings.testimonial_position_sp
+	assign quote_sp = args_style.settings.testimonial_quote_sp
+	assign stars_sp = args_style.settings.testimonial_stars_sp
+	assign avatar_sp = args_style.settings.testimonial_avatar_sp
+	assign show_avatar = args.settings.testimonial_show_avatar
+%}
+{%- capture html_stars -%}
+	{%- if args.settings.testimonial_stars > 0 -%}
+		<div class="gsp-stars gsp-element-item">
+			{% for i in (1..5) -%}
+				{%- if i <= args.settings.testimonial_stars -%}
+					{% render 'icons', icon: 'star-solid' %}
+				{%- else -%}
+					{% render 'icons', icon: 'star' %}
+				{%- endif -%}
+			{%- endfor %}
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+{%- capture html_avatar -%}
+	{%- if show_avatar -%}
+		<div class="gsp-testimonial-avatar gsp-element-item card-img">
+			{% render 'responsive-image',
+				image: args.settings.testimonial_avatar,
+				placeholder: "image",
+				aspect_ratio: '1/1'
+			%}
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+{%- capture html_name -%}
+	{% if args.settings.testimonial_name != nil and args.settings.testimonial_name != '' %}
+		<h3 class="gsp-testimonial-name text-uppercase fw-bold ls-1d5px gsp-element-item {{ args.settings.custom_class_name }}">
+			{{ args.settings.testimonial_name | newline_to_br }}
+		</h3>
+	{% endif %}
+{%- endcapture -%}
+{%- capture html_position -%}
+	{% if args.settings.testimonial_position != nil and args.settings.testimonial_position != '' %}
+		<p class="gsp-testimonial-position gsp-element-item {{ args.settings.custom_class_position }}">
+			{{ args.settings.testimonial_position | newline_to_br }}
+		</p>
+	{% endif %}
+{%- endcapture -%}
+{%- capture html_quote -%}
+	{% if args.settings.testimonial_quote != nil and args.settings.testimonial_quote != '' %}
+		<p class="gsp-testimonial-quote gsp-element-item {{ args.settings.custom_class_quote }}">
+			{{ args.settings.testimonial_quote | newline_to_br }}
+		</p>
+	{% endif %}
+{%- endcapture -%}
+<div class="{{ class_wrap }}">
+	{% if layout == "layout-01" %}
+		{{ html_stars }}
+		{{ html_quote }}
+		<div class="gsp-testimonial-info d-inline-flex align-items-center">
+			{{ html_avatar }}
+			<div class="text-start">
+				{{ html_name }}
+				{{ html_position }}
+			</div>
+		</div>
+	{% endif %}
+	{% if layout == "layout-02" %}
+		{{ html_avatar }}
+		{{ html_stars }}
+		{{ html_quote }}
+		<div class="gsp-testimonial-info">
+			{{ html_name }}
+			{{ html_position }}
+		</div>
+	{% endif %}
+	{% if layout == "layout-03" %}
+		<p class="gsp-testimonial-icon-quote gsp-element-item fs-32px lh-1 text-secondary">
+			{% render 'icons', icon: 'quote' %}
+		</p>
+		{{ html_stars }}
+		{{ html_quote }}
+
+		<div class="gsp-testimonial-info d-inline-flex align-items-center">
+			{{ html_avatar }}
+			<div class="text-start">
+				{{ html_name }}
+				{{ html_position }}
+			</div>
+		</div>
+	{% endif %}
+</div>
+{% style %}
+	.gsp-testimonial-{{ args.id }} {
+	{%- if padding != blank and padding != -1 %}
+		--gsp-testimonial-padding: {{ padding }}px !important;
+	{% endif -%}
+	{%- if background != blank and background != "rgba(0,0,0,0)" %}
+		--gsp-testimonial-bg: {{ background }} !important;
+	{% endif -%}
+	{%- if name_color != blank and name_color != "rgba(0,0,0,0)" %}
+		--gsp-testimonial-color-name: {{ name_color }} !important;
+	{% endif -%}
+	{%- if position_color != blank and position_color != "rgba(0,0,0,0)" %}
+		--gsp-testimonial-color-position: {{ position_color }} !important;
+	{% endif -%}
+	{%- if quote_color != blank and quote_color != "rgba(0,0,0,0)" %}
+		--gsp-testimonial-color-quote: {{ quote_color }} !important;
+	{% endif -%}
+	{%- if stars_color != blank and stars_color != "rgba(0,0,0,0)" %}
+		--gsp-testimonial-color-stars: {{ stars_color }} !important;
+	{% endif -%}
+	{%- if name_fs != blank and name_fs != -1 %}
+		--gsp-testimonial-fs-name: {{ name_fs }}px !important;
+	{% endif -%}
+	{%- if avatar_size != blank and avatar_size != -1 %}
+		--gsp-testimonial-mw-avatar: {{ avatar_size }}px !important;
+	{% endif -%}
+	{%- if position_fs != blank and position_fs != -1 %}
+		--gsp-testimonial-fs-position: {{ position_fs }}px !important;
+	{% endif -%}
+	{%- if quote_fs != blank and quote_fs != -1 %}
+		--gsp-testimonial-fs-quote: {{ quote_fs }}px !important;
+	{% endif -%}
+	{%- if stars_fs != blank and stars_fs != -1 %}
+		--gsp-testimonial-fs-stars: {{ stars_fs }}px !important;
+	{% endif -%}
+	{%- if name_sp != blank and name_sp != -1 %}
+		--gsp-testimonial-sp-name: {{ name_sp }}px !important;
+	{% endif -%}
+	{%- if position_sp != blank and position_sp != -1 %}
+		--gsp-testimonial-sp-position: {{ position_sp }}px !important;
+	{% endif -%}
+	{%- if quote_sp != blank and quote_sp != -1 %}
+		--gsp-testimonial-sp-quote: {{ quote_sp }}px !important;
+	{% endif -%}
+	{%- if stars_sp != blank and stars_sp != -1 %}
+		--gsp-testimonial-sp-stars: {{ stars_sp }}px !important;
+	{% endif -%}
+	{%- if avatar_sp != blank and avatar_sp != -1 %}
+		--gsp-testimonial-sp-avatar: {{ avatar_sp }}px !important;
+	{% endif -%}
+	}
+{% endstyle %}

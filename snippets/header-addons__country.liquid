@@ -1,0 +1,51 @@
+{% comment %}
+	Render addons country switcher in header
+	Arguments:
+	- classes_btn: extra class css btn
+	- classes_dropdown: extra class css for dropdown menu
+{% endcomment %}
+{% if localization.available_countries.size > 1 %}
+	<div class="gsp-header-addons-item gsp-header-addons-item__country dropdown">
+		{% unless form_id %}
+			{% assign random_number = 'now' | date: '%N' | modulo: 10 | plus: 25 %}
+			{% assign form_id = 'country-' | append: random_number %}
+			{% assign countries_active = "" %}
+		{% endunless %}
+		<gsp-dropdown data-submit="true" data-form-id="{{ form_id }}">
+			{% form 'localization', data-localization-form: '', id: form_id %}
+				<select name="country_code" class="d-none dropdown-select" data-localization-select>
+					{%- for country in localization.available_countries -%}
+						{%- liquid
+							if country.iso_code == localization.country.iso_code
+								assign countries_active = country.name | append: " (" | append: country.currency.iso_code | append: " " | append: country.currency.symbol | append: ")"
+							endif
+						-%}
+						<option
+							value="{{ country.iso_code }}"
+							{% if country.iso_code == localization.country.iso_code %}
+								selected
+							{% endif %}
+						>
+							{{ country.name }} ({{ country.currency.iso_code }}
+							{{ country.currency.symbol }})
+						</option>
+					{%- endfor -%}
+				</select>
+				<button class="gsp-header-addons-dropdown btn btn-link dropdown-toggle {{ classes_btn }}"
+						type="button" data-bs-toggle="dropdown"
+						aria-expanded="false">{{ countries_active }}
+					<span
+						class="arrown-dropdown ms-2 lh-1">{% render 'icons', icon: 'angle-down-sharp-regular' %}</span>
+				</button>
+				<div class="dropdown-menu py-0 {{ classes_dropdown }}">
+					{%- for country in localization.available_countries -%}
+						<a class="dropdown-item text-heading text-uppercase fw-heading py-2 {% if country.iso_code == localization.country.iso_code %}active{% endif %}"
+						   href="#"
+						   data-value="{{ country.iso_code }}">{{ country.name }}
+							({{ country.currency.iso_code }}{{ country.currency.symbol }})</a>
+					{% endfor %}
+				</div>
+			{%- endform -%}
+		</gsp-dropdown>
+	</div>
+{% endif %}

@@ -1,0 +1,92 @@
+{% liquid
+	assign current_variant = product.selected_or_first_available_variant
+	assign product_form_id = 'product-form-' | append: section.id
+	assign product_form_class = 'product-form-' | append: section.id
+%}
+
+<div class="gsp-main-product-blocks">
+	{%- for block in section.blocks -%}
+		<div
+			class="gsp-block gsp-main-product-block gsp-main-product-block-{{ block.type }} gsp-block__{{ block.id }} {{ block.settings.custom_css }}" {{ block.shopify_attributes }}>
+			<div class="gsp-block__inner">
+				{%- case block.type -%}
+					{%- when '@app' -%}
+						{% render block %}
+					{%- when 'title' -%}
+						{% render 'product-main-block__title', product: product %}	
+					{%- when 'price' -%}
+						{% render 'product-main-block__price', product: product %}
+						{% render 'product-main-block__description', product: product %}
+					{%- when 'variants' -%}
+						{%- unless product.has_only_default_variant -%}
+							{% render 'product-main-block__variants',
+								product: product,
+								product_form_id: product_form_id,
+								allow_size_chart: true,
+								size_chart_title: block.settings.size_chart_title,
+								size_chart_from_page: block.settings.size_chart_from_page
+							%}
+						{%- endunless -%}
+					{%- when 'add_to_cart' -%}
+						{% render 'product-main-block__add-to-cart',
+							product: product,
+							product_form_id: product_form_id,
+							product_form_class: product_form_class,
+							current_variant: current_variant,
+							show_quantity_selector: true,
+							enable_dynamic_checkout: block.settings.enable_dynamic_checkout,
+							show_gift_card_recipient: block.settings.show_gift_card_recipient,
+							show_pickup_availability: true
+						%}
+					{%- when 'meta' -%}
+						{% render 'product-main-block__meta',
+							product: product,
+							enable_vendor: block.settings.enable_vendor,
+							enable_type: block.settings.enable_type,
+							enable_collections: block.settings.enable_collections,
+							enable_availability: block.settings.enable_availability,
+							enable_sku: block.settings.enable_sku
+						%}
+					{%- when 'action' -%}
+						{% render 'product-main-block__action', product: product, block: block %}
+					{%- when 'short_description' -%}
+						{% render 'product-main-block__short-description', product: product %}
+					{%- when 'custom_liquid' -%}
+						{% render 'product-main-block__custom-liquid', block: block %}
+					{%- when 'text_block' -%}
+						{% render 'product-main-block__text-block', block: block %}
+					{%- when 'shipping_info' -%}
+						{% render 'product-main-block__shipping-info', block: block %}
+					{%- when 'collapsible_tab' -%}
+						{% render 'product-main-block__collapsible-tab', block: block %}
+					{%- when 'image' -%}
+						{% render 'product-main-block__image', block: block %}
+					{%- when 'complementary-products' -%}
+						{% render 'product-main-block__recommendations', block: block %}
+					{%- when 'custom_field' -%}
+						{% render 'product-main-block__custom-field',
+							block: block,
+							product_form_id: product_form_id,
+							index: forloop.index
+						%}
+					{%- when 'custom_field_image' -%}
+						{% render 'product-main-block__custom-field-image',
+							block: block,
+							product_form_id: product_form_id,
+							index: forloop.index
+						%}
+					{%- when 'payment-icons' -%}
+						{% render 'product-main-block__payment-icons', block: block %}
+				{%- endcase -%}
+			</div>
+			{% style %}
+				{%- if block.settings.block_spacing != blank and block.settings.block_spacing != -1 %}
+					.gsp-block__{{ block.id }}{
+					--gsp-spacing-product-block: {{ block.settings.block_spacing }}px !important;
+					}
+				{% endif -%}
+			{% endstyle %}
+			
+		</div>
+	{%- endfor -%}
+</div>

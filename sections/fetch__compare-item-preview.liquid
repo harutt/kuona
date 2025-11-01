@@ -1,0 +1,11 @@
+{% comment %}
+	Section Functional : Will not be found in the build page editor
+{% endcomment %}
+{% if product %}
+	<div class="gsp-compare-item-preview gsp-compare-item">
+		{% render 'product-skins__item',
+			product: product,
+			skin: 'skin-compare-preview'
+		%}
+	</div>
+{% endif %}

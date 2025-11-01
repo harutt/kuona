@@ -1,0 +1,29 @@
+{% comment %}
+	Render addons button login in header
+	Arguments:
+	- classes: extra class
+{% endcomment %}
+<div class="gsp-header-addons-item gsp-header-addons-item__btn-login text-center">
+	{%- if customer -%}
+		<div class="customer-info mb-2">
+			<a href="{{ routes.account_url }}" class="gap-2 d-flex align-items-center justify-content-center">
+				<span
+					class="customer-icon-user d-flex align-items-center justify-content-center square text-primary border-primary fs-28px">
+				{% render 'icons', icon: 'user' %}
+			</span>
+				<span class="text-heading fw-semibold customer-name">{{ customer.name }}</span>
+			</a>
+		</div>
+		<a href="{{ routes.account_logout_url }}"
+		   class="gsp-header-addons-item-link w-100 btn btn-dark" title="{{ 'header.addon.log_out' | t }}"
+		   aria-label="{{ 'header.addon.account' | t }}">
+			{{ 'header.addon.log_out' | t }}
+		</a>
+	{%- else -%}
+		<a href="{{ routes.account_login_url }}"
+		   class="gsp-header-addons-item-link w-100 btn btn-dark" title="{{ 'header.addon.sign_in_or_register' | t }}"
+		   aria-label="{{ 'header.addon.account' | t }}">
+			{{ 'header.addon.sign_in_or_register' | t }}
+		</a>
+	{%- endif -%}
+</div>

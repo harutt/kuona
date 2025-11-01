@@ -1,0 +1,18 @@
+{% comment %}
+  Accepts:
+  - block: {Object} block Liquid object (required)
+{% endcomment %}
+
+<div class="gsp-main-product-block-payment-icons-wrap d-flex flex-column w-100 align-items-{{ block.settings.block_content_alignment }}">
+	{% render 'el__payment-icons', args: block %}
+	{%- if block.settings.caption != blank %}
+		<p class="gsp-main-product-block-image-caption fs-14px mb-0 mt-2">{{ block.settings.caption | strip_html }}</p>
+	{% endif -%}
+</div>
+{% style %}
+	{%- if block.settings.img_max_width != blank and block.settings.img_max_width != 0 %}
+		.gsp-block__{{ block.id }} .gsp-image{
+		max-width: {{ block.settings.img_max_width }}px;
+		}
+	{% endif -%}
+{% endstyle %}

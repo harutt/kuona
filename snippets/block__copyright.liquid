@@ -1,0 +1,47 @@
+{% comment %}
+	Copyright block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+	assign pre_part = block.settings.pre_part
+	assign last_part = block.settings.last_part
+	assign content_color = block.settings.content_color
+	assign copyright_color = block.settings.copyright_color
+	assign copyright_color_hover = block.settings.copyright_color_hover
+	assign content_fs = block.settings.content_fs
+	assign show_powered = block.settings.show_powered
+	assign content_align = block.settings.content_align
+%}
+<div class="gsp-block__{{ block.id }} gsp-block gsp-block-copyright {%- if content_align != "default" %} text-{{ content_align }} {% endif %}" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		{%- if pre_part != blank and pre_part != "" %}
+			<span class="pre-part">{{ pre_part }}</span>
+		{% endif %}
+		{%- if show_powered %}
+		{{ powered_by_link }}
+		{% endif %}
+		{%- if last_part != blank and last_part != "" %}
+			<span class="last-part">{{ last_part }}</span>
+		{% endif %}
+	</div>
+</div>
+{% style %}
+	.gsp-block__{{ block.id }} {
+	{%- if content_color != blank and content_color != "rgba(0,0,0,0)" %}
+		--gsp-block-color: {{ content_color }};
+	{% endif -%}
+	{%- if copyright_color != blank and copyright_color != "rgba(0,0,0,0)" %}
+		--gsp-block-color-copyright: {{ copyright_color }};
+	{% endif -%}
+	{%- if copyright_color_hover != blank and copyright_color_hover != "rgba(0,0,0,0)" %}
+		--gsp-block-color-hover: {{ copyright_color_hover }};
+	{% endif -%}
+	{% if content_fs != blank and content_fs != 0 %}
+		--gsp-block-fs: {{ content_fs }}px;
+	{% endif -%}
+	}
+{% endstyle %}

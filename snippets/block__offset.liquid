@@ -1,0 +1,34 @@
+{% comment %}
+	Block Offset
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	assign height_xl = block.settings.height_xl
+	assign height_lg = block.settings.height_lg
+	assign height_md = block.settings.height_md
+	assign height_sm = block.settings.height_sm
+	assign height_xs = block.settings.height_xs
+%}
+<div class="gsp-block__{{ block.id }} gsp-block gsp-offset-block {{ class_css }}" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner"></div>
+</div>
+{% style %}
+	.gsp-block__{{ block.id }} {
+	{% if height_xl != blank and height_xl != -1 %}
+		--gsp-block-height-xl: {{ height_xl }}px;
+	{% endif -%}
+	{% if height_lg != blank and height_lg != -1 %}
+		--gsp-block-height-lg: {{ height_lg }}px;
+	{% endif -%}
+	{% if height_md != blank and height_md != -1 %}
+		--gsp-block-height-md: {{ height_md }}px;
+	{% endif -%}
+	{% if height_sm != blank and height_sm != -1 %}
+		--gsp-block-height-sm: {{ height_sm }}px;
+	{% endif -%}
+	{% if height_xs != blank and height_xs != -1 %}
+		--gsp-block-height-xs: {{ height_xs }}px;
+	{% endif -%}
+	}
+{% endstyle %}

@@ -1,0 +1,42 @@
+{% comment %}
+	- product: product object (required)
+	- placeholder: placeholder image
+	- aspect_ratio: Ratio of the image
+	- image_size: Image Size
+	- hover_style: style hover image
+{% endcomment %}
+{% liquid
+	assign show_second_image = settings.pc_show_second_img
+	assign hover_style = hover_style | default: settings.pc_hover_style
+	assign url = product.url | default: '#'
+	assign title_default = 'products.product.title_example' | t
+	assign total_media = product.media.size
+	assign image_featured_01 = settings.pc_default_image | default: nil
+	assign image_featured_02 = image_featured_01
+	if product.media[0].preview_image != blank
+		assign image_featured_01 = product.media[0].preview_image
+	endif
+	if total_media > 1 and product.media[1].preview_image != blank
+		assign image_featured_02 = product.media[1].preview_image
+	endif
+	if placeholder == nil
+		assign placeholder = 'product-1'
+	endif
+	if image_size == blank or image_size == "default"
+		assign image_size = settings.pc_image_size
+	endif
+	capture aspect_ratio
+		render 'convert-aspect-ratio', aspect_ratio: aspect_ratio, aspect_ratio_default: settings.pc_aspect_ratio
+	endcapture
+	assign aspect_ratio = aspect_ratio | strip_newlines
+	assign alt_default = 'products.product.title_example' | t
+	assign alt = product.title | default: title_default
+%}
+<a href="{{ url }}"
+   class="gsp-product-featured position-relative text-inherit d-block {%- if hover_style != 'none' %} img-hover-{{ hover_style }}{% endif %} {%- if show_second_image %} has_second_image{% endif %}"
+   title="{{ product.title | default: title_default }}">
+	{% render 'responsive-image', image: image_featured_01, alt: alt, placeholder: placeholder, aspect_ratio: aspect_ratio, image_size: image_size, wrapper_class: ' gsp-product-thumb-primary ' %}
+	{% if total_media > 1 and show_second_image %}
+		{% render 'responsive-image', image: image_featured_02, alt: alt, placeholder: placeholder, aspect_ratio: aspect_ratio, image_size: image_size, wrapper_class: ' gsp-product-thumb-secondary position-absolute ' %}
+	{% endif %}
+</a>

@@ -1,0 +1,32 @@
+{% comment %}
+	Heading block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_attr_title
+		render 'animation-attr', type: block.settings.title_animation
+	endcapture
+	capture animation_attr_sub_title
+		render 'animation-attr', type: block.settings.sub_title_animation
+	endcapture
+	capture animation_attr_desc
+		render 'animation-attr', type: block.settings.desc_animation
+	endcapture
+	capture animation_attr_button
+		render 'animation-attr', type: block.settings.button_animation
+	endcapture
+	capture animation_attr_sub_image
+		render 'animation-attr', type: block.settings.image_animation
+	endcapture
+%}
+<div class="gsp-hero-item-wap gsp-hero-item-heading">
+	{% render 'el__heading',
+		args: block,
+		animation_attr_title: animation_attr_title,
+		animation_attr_sub_title: animation_attr_sub_title,
+		animation_attr_desc: animation_attr_desc,
+		animation_attr_button: animation_attr_button,
+		animation_attr_sub_image: animation_attr_sub_image
+	%}
+</div>

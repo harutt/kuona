@@ -1,0 +1,16 @@
+{% comment %}
+  Renders button next content
+  Accepts:
+  - target : {string} link button
+  - label : {string} label button
+
+{% endcomment %}
+{%- liquid
+	if label == nil
+		assign label = 'accessibility.skip_to_text' | t
+	endif
+	assign target = target | default: 'main'
+-%}
+<a class="gsp-skip-to-content-link btn btn-primary visually-hidden" href="#{{ target }}">
+	{{ label }}
+</a>

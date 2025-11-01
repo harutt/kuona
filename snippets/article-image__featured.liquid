@@ -1,0 +1,13 @@
+{% comment %}
+	- article: obj article
+	- custom_css: Custom css
+{% endcomment %}
+{% liquid
+	assign image = article.image
+	if image == blank and settings.bc_default_image != nil
+		assign image = settings.bc_default_image
+	endif
+%}
+<div class="gsp-article-featured {{ custom_css }}">
+	{% render 'responsive-image', image: image, aspect_ratio: 'original', placeholder: 'lifestyle-1', image_class: 'w-100' %}
+</div>

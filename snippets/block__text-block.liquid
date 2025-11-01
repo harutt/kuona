@@ -1,0 +1,70 @@
+{% comment %}
+	Text Block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	assign title_block = block.settings.title
+	assign text_block = block.settings.text_block
+	assign custom_liquid = block.settings.custom_liquid
+	assign color_title = block.settings.color_title
+	assign color_block = block.settings.color_block
+	assign fs_title = block.settings.fs_title
+	assign fs_block = block.settings.fs_block
+	assign spacing = block.settings.spacing
+	assign spacing_btn = block.settings.spacing_btn
+	assign tag_title = block.settings.title_tag
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-text-block gsp-block-has-title" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div
+		class="gsp-block__inner {%- if block.settings.content_alignment != "default" %} text-{{ block.settings.content_alignment }} {% endif %}">
+		{%- if title_block != blank and title_block != "" %}
+			<{{ tag_title }} class="gsp-block-title">{{ title_block }}</{{ tag_title }}>
+		{% endif %}
+		{%- if text_block != blank or custom_liquid != blank %}
+			<div class="gsp-block-body gsp-text-block-body">
+				{%- if text_block != blank %}
+					<div class="gsp-text-block-inner">
+						{{ text_block }}
+					</div>
+				{% endif %}
+				{%- if custom_liquid != blank %}
+					<div class="gsp-liquid-block-inner">
+						{{ custom_liquid }}
+					</div>
+				{% endif %}
+			</div>
+		{% endif %}
+		{% if block.settings.el_button_text != blank or block.settings.el_button_icon != 'none' %}
+			<div class="gsp-block-footer">
+				{% render 'el__button', args: block, classes: 'gsp-block-button fw-heading' %}
+			</div>
+		{% endif %}
+	</div>
+</div>
+{% style %}
+	.gsp-block__{{ block.id }} {
+	{%- if color_title != blank and color_title != "rgba(0,0,0,0)" %}
+		--gsp-block-color-title: {{ color_title }};
+	{% endif -%}
+	{%- if color_block != blank and color_block != "rgba(0,0,0,0)" %}
+		--gsp-block-color: {{ color_block }};
+	{% endif -%}
+	{% if fs_title != blank and fs_title != 0 %}
+		--gsp-block-fs-title: {{ fs_title }}px;
+	{% endif -%}
+	{% if fs_block != blank and fs_block != 0 %}
+		--gsp-block-fs: {{ fs_block }}px;
+	{% endif -%}
+	{% if spacing != blank and spacing != 0 %}
+		--gsp-block-spacing: {{ spacing }}px;
+	{% endif -%}
+	{% if spacing_btn != blank and spacing_btn != 0 %}
+		--gsp-block-button-spacing: {{ spacing_btn }}px;
+	{% endif -%}
+	}
+{% endstyle %}

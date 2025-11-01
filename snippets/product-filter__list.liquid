@@ -1,0 +1,235 @@
+{% comment %}
+	- filter: Filter [Obj]
+	- design: Design filter
+	- tag_html: Tag Html | Default gsp-filter-list
+	- show_count: Show Cout Product [bol]
+	- show_label: Show Lable Filter [bol] | Only apply design color
+	- limit_value: Limit value filter
+	- ids: Id widget
+	- class_additional: Additional class css wrap.
+{% endcomment %}
+{% liquid
+	assign except = "badge__"
+	if tag_html == nil
+		assign tag_html = 'gsp-filter-list'
+	endif
+	if design == nil
+		assign design = 'list'
+	endif
+	if show_count == nil
+		assign show_count = true
+	endif
+	if show_label == nil
+		assign show_label = true
+	endif
+	if ids == nil
+		assign ids = 'gsp-filter-list'
+	endif
+
+	assign count = 0
+	assign has_limit = false
+	if limit_value != nil and limit_value != "" and limit_value > 0
+		assign has_limit = true
+		assign limit = limit_value
+	endif
+
+%}
+<{{ tag_html }} class="d-flex flex-column text-capitalize gsp-product-filter-list gsp-product-option-type-{{ design }} {{ class_additional }}">
+{%- case design -%}
+	{% when 'color' %}
+		{% liquid
+			assign color_base = ',' | append: settings.pvd_display_type_color | strip_newlines | downcase | append: ',' | replace: ': ', ':' | replace: ' :', ':'
+		%}
+		<ul class="gsp-product-option-content list-unstyled p-0 {% if show_label != true -%} list-inline {%- endif %}"
+			data-param="{{ filter.param_name }}">
+			{%- for filter_value in filter.values -%}
+				{%- liquid
+					if filter_value.value contains except
+						continue
+					endif
+				-%}
+				{% if count < limit or has_limit == false %}
+					{% if filter_value.count > 0 or filter_value.active != false -%}
+						{% liquid
+							assign color_display = filter_value.value | downcase | strip
+							assign filter_color = filter_value.value | downcase | strip
+							assign filter_color = ',' | append: filter_color | append: ':'
+							if color_base contains filter_color
+								assign color_display = color_base | split: filter_color | last | split: ',' | first | strip
+							endif
+						%}
+						<li class="{% if show_label -%}d-flex {%- else %}d-inline-flex list-inline-item m-0 {%- endif %} gsp-product-option-item align-items-center fs-15px">
+							<input type="checkbox"
+								   name="{{ filter_value.param_name }}"
+								   value="{{ filter_value.value }}"
+								   id="{{ ids }}-{{ filter.param_name }}-{{ forloop.index }}"
+								   {% if filter_value.active -%}checked{%- endif %}
+								{% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+							>
+							<label
+								class="d-flex align-items-center"
+								for="{{ ids }}-{{ filter.param_name }}-{{ forloop.index }}"
+								style="--gsp-variant-type-color: {{ color_display }}">
+										<span
+											class="gsp-product-option-label d-block fs-0"
+											{% if show_label != true -%}
+												data-bs-toggle="tooltip"
+												data-bs-placement="top"
+												data-bs-title="{{ filter_value.label }}"
+											{%- endif %}>
+										</span>
+								{% if show_label -%}
+									<span class="ms-2">{{ filter_value.label }}</span>
+								{%- endif %}
+							</label>
+							{% if show_count -%}
+								<span class="count ms-2">({{ filter_value.count }})</span>
+							{%- endif %}
+						</li>
+					{%- endif %}
+					{% assign count = count | plus: 1 %}
+				{% else %}
+					{% break %}
+				{%- endif %}
+			{%- endfor -%}
+		</ul>
+	{% when 'button' %}
+		<ul class="gsp-product-option-content list-unstyled p-0 d-flex flex-wrap align-items-center"
+			data-param="{{ filter.param_name }}">
+			{%- for filter_value in filter.values -%}
+				{%- liquid
+					if filter_value.value contains except
+						continue
+					endif
+				-%}
+				{% if count < limit or has_limit == false %}
+					{% if filter_value.count > 0 or filter_value.active != false -%}
+						<li class="d-inline-flex gsp-product-option-item align-items-center fs-15px">
+							<input type="checkbox"
+								   name="{{ filter_value.param_name }}"
+								   value="{{ filter_value.value }}"
+								   id="{{ ids }}-{{ filter.param_name }}-{{ forloop.index }}"
+								   {% if filter_value.active -%}checked{%- endif %}
+								{% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+							>
+							<label
+								class="gsp-product-option-label text-capitalize text-center fs-14px p-2 d-block rounded border align-items-center"
+								for="{{ ids }}-{{ filter.param_name }}-{{ forloop.index }}">
+								<span>{{ filter_value.label }}</span>
+								{% if show_count -%}
+									<span class="count">({{ filter_value.count }})</span>
+								{%- endif %}
+							</label>
+						</li>
+					{%- endif %}
+					{% assign count = count | plus: 1 %}
+				{% else %}
+					{% break %}
+				{%- endif %}
+			{%- endfor -%}
+		</ul>
+	{% when 'list' %}
+		<ul class="gsp-product-option-content list-unstyled p-0 d-flex flex-column"
+			data-param="{{ filter.param_name }}">
+			{%- for filter_value in filter.values -%}
+				{%- liquid
+					if filter_value.value contains except
+						continue
+					endif
+				-%}
+				{% if count < limit or has_limit == false %}
+					{% if filter_value.count > 0 or filter_value.active != false -%}
+						<li class="d-inline-flex gsp-product-option-item align-items-center fs-14px fw-heading text-uppercase">
+							<input hidden="hidden" type="checkbox"
+								   name="{{ filter_value.param_name }}"
+								   value="{{ filter_value.value }}"
+								   id="{{ ids }}-{{ filter.param_name }}-{{ forloop.index }}"
+								   {% if filter_value.active -%}checked{%- endif %}
+								{% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+							>
+							<label
+								class="gsp-product-option-label"
+								for="{{ ids }}-{{ filter.param_name }}-{{ forloop.index }}">
+								<span>{{ filter_value.label }}</span>
+								{% if show_count -%}
+									<span class="count">({{ filter_value.count }})</span>
+								{%- endif %}
+							</label>
+						</li>
+					{%- endif %}
+					{% assign count = count | plus: 1 %}
+				{% else %}
+					{% break %}
+				{%- endif %}
+			{%- endfor -%}
+		</ul>
+	{% when 'list-inline' %}
+		<ul class="gsp-product-option-content list-unstyled p-0 d-flex flex-wrap"
+			data-param="{{ filter.param_name }}">
+			{%- for filter_value in filter.values -%}
+				{%- liquid
+					if filter_value.value contains except
+						continue
+					endif
+				-%}
+				{% if count < limit or has_limit == false %}
+					{% if filter_value.count > 0 or filter_value.active != false -%}
+						<li class="d-inline-flex gsp-product-option-item align-items-center fs-14px fw-heading text-uppercase">
+							<input hidden="hidden" type="checkbox"
+								   name="{{ filter_value.param_name }}"
+								   value="{{ filter_value.value }}"
+								   id="{{ ids }}-{{ filter.param_name }}-{{ forloop.index }}"
+								   {% if filter_value.active -%}checked{%- endif %}
+								{% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+							>
+							<label
+								class="gsp-product-option-label"
+								for="{{ ids }}-{{ filter.param_name }}-{{ forloop.index }}">
+								<span>{{ filter_value.label }}</span>
+								{% if show_count -%}
+									<span class="count">({{ filter_value.count }})</span>
+								{%- endif %}
+							</label>
+						</li>
+					{%- endif %}
+					{% assign count = count | plus: 1 %}
+				{% else %}
+					{% break %}
+				{%- endif %}
+			{%- endfor -%}
+		</ul>
+	{% when 'check-box' %}
+		<ul class="gsp-product-option-content list-unstyled m-0 p-0 d-flex flex-column"
+			data-param="{{ filter.param_name }}">
+			{%- for filter_value in filter.values -%}
+				{%- liquid
+					if filter_value.value contains except
+						continue
+					endif
+				-%}
+				{% if count < limit or has_limit == false %}
+					{% if filter_value.count > 0 or filter_value.active != false -%}
+						<li class="gsp-filter-availability-item form-check">
+							<input class="form-check-input" type="checkbox"
+								   name="{{ filter_value.param_name }}"
+								   value="{{ filter_value.value }}"
+								   {% if filter_value.active -%}checked{%- endif %}
+								{% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+								   id="{{ ids }}-{{ filter.param_name }}-{{ forloop.index }}">
+							<label class="form-check-label"
+								   for="{{ ids }}-{{ filter.param_name }}-{{ forloop.index }}">
+								<span>{{ filter_value.label }}</span>
+								{% if show_count -%}
+									<span class="count">({{ filter_value.count }})</span>
+								{%- endif %}
+							</label>
+						</li>
+					{%- endif %}
+					{% assign count = count | plus: 1 %}
+				{% else %}
+					{% break %}
+				{%- endif %}
+			{%- endfor -%}
+		</ul>
+{%- endcase -%}
+</{{ tag_html }}>

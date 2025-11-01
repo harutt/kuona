@@ -1,0 +1,25 @@
+{% comment %}
+	Newsletter block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+	assign spacing_heading = block.settings.spacing_heading
+%}
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-has-title gsp-block-newsletter" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		{% render 'el__heading', args: block %}
+		{% render 'el__newsletter', args: block %}
+	</div>
+</div>
+{% style %}
+	.gsp-block__{{ block.id }} {
+	{%- if spacing_heading != blank and spacing_heading != -1 %}
+		--gsp-block-newsletter-sp-heading: {{ spacing_heading }}px !important;
+	{% endif -%}
+	}
+{% endstyle %}

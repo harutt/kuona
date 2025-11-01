@@ -1,0 +1,31 @@
+{% comment %}
+	- args: Widget settings | Obj
+	- ids: Id widget
+{% endcomment %}
+{%- liquid
+	if ids == nil
+		assign ids = ""
+	endif
+	assign source = collection.filters
+	if template contains 'search'
+		assign source = search.filters
+	endif
+-%}
+
+<gsp-filter-availability class="gsp-filter-availability">
+	{%- for filter in source -%}
+		{%- liquid
+			assign scope = filter.param_name | replace: 'filter.v.', '' | split: '.' | first
+		-%}
+		{%- if scope == "availability" and filter.type == "list" -%}
+			{% render 'product-filter__list',
+				filter: filter,
+				design: 'check-box',
+				limit_value: limit,
+				show_count: show_count,
+				ids: ids,
+				tag_html: 'gsp-widget-filter-list' %}
+			{% break %}
+		{%- endif -%}
+	{%- endfor -%}
+</gsp-filter-availability>

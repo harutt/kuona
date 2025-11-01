@@ -1,0 +1,149 @@
+{% comment %}
+	- filter: Filter [Obj]
+	- design: Design filter
+	- tag_html: Tag Html | Default gsp-filter-list
+{% endcomment %}
+{%- liquid
+	if tag_html == nil
+		assign tag_html = 'gsp-filter-price'
+	endif
+	if design == nil
+		assign design = 'slider'
+	endif
+	if step == nil or step == "" or step == 0
+		assign step = 1
+	endif
+-%}
+<{{tag_html}} data-design="{{ design }}" class="gsp-filter-price-type-{{ design }}">
+		{%- liquid
+			assign scope = filter.param_name | replace: 'filter.v.', '' | split: '.' | first
+		-%}
+		{%- if scope == "price" and filter.type == "price_range" -%}
+			{%- liquid
+				assign range_min = 0
+				assign currencies_using_comma_decimals = 'ANG,ARS,BRL,BYN,BYR,CLF,CLP,COP,CRC,CZK,DKK,EUR,HRK,HUF,IDR,ISK,MZN,NOK,PLN,RON,RUB,SEK,TRY,UYU,VES,VND' | split: ','
+				assign uses_comma_decimals = false
+				if currencies_using_comma_decimals contains cart.currency.iso_code
+					assign uses_comma_decimals = true
+				endif
+				if uses_comma_decimals
+					assign range_max = filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.'
+				else
+					assign range_max = filter.range_max | money_without_currency | replace: ',', ''
+				endif
+			-%}
+			{%- if design == "slider" -%}
+				{%- liquid
+					assign progress_left = "0"
+					assign progress_right = "0"
+					assign progress_width = "100%"
+					assign value_max = range_max
+					assign value_min = range_min
+
+					if uses_comma_decimals
+						if filter.min_value.value
+							assign value_min = filter.min_value.value | money_without_currency | replace: '.', '' | replace: ',', '.'
+						endif
+						if filter.max_value.value
+							assign value_max = filter.max_value.value | money_without_currency | replace: '.', '' | replace: ',', '.'
+						endif
+					else
+						if filter.min_value.value
+							assign value_min = filter.min_value.value | money_without_currency | replace: ',', ''
+						endif
+						if filter.max_value.value
+							assign value_max = filter.max_value.value | money_without_currency | replace: ',', ''
+						endif
+					endif
+					if filter.min_value.value
+						assign value_min_float = value_min | append: ".0"
+						assign progress_left = value_min_float | divided_by: range_max | times: 100 | append: "%"
+					endif
+					if filter.max_value.value
+						assign value_max_float = value_max | append: ".0"
+						assign progress_right = range_max | minus: value_max_float | divided_by: range_max | times: 100 | append: "%"
+					endif
+					if filter.min_value.value or filter.max_value.value
+						assign total_range_min = range_max | minus: value_min
+						assign total_range_max = range_max | minus: value_max
+						assign total_range = total_range_min | minus: total_range_max
+						if total_range >= 0
+							assign total_range_float = total_range | append: ".0"
+							assign progress_width = total_range_float | divided_by: range_max | times: 100 | append: "%"
+						else
+							assign progress_left = "0"
+							assign progress_right = "0"
+							assign progress_width = "100%"
+							assign value_max = range_max
+							assign value_min = range_min
+						endif
+					endif
+
+					assign z_index = ""
+					if value_max == value_min
+						assign z_index = "z-index-10"
+					endif
+
+					assign var_progress_left = "--gsp-ranger-progress-left:" | append: progress_left | append: ";"
+					assign var_progress_right = "--gsp-ranger-progress-right:" | append: progress_right | append: ";"
+					assign var_progress_width = "--gsp-ranger-progress-width:" | append: progress_width | append: ";"
+					assign css_inline = var_progress_left | append: var_progress_right | append: var_progress_width
+				-%}
+				<div class="gsp-filter-price-inner w-100 position-relative" style="{{ css_inline }}"
+					 data-min-param="{{ filter.min_value.param_name }}"
+					 data-max-param="{{ filter.max_value.param_name }}">
+
+					<div class="progress range-progress top-0 position-absolute z-index-1" role="progressbar">
+						<div class="progress-bar range-progress-bar" style="width: 100%"></div>
+					</div>
+					<input name="range-min" data-param="{{ filter.min_value.param_name }}" type="range"
+						   class="form-range range-min position-absolute w-100 {{ z_index }}" min="{{ range_min }}"
+						   max="{{ range_max }}" step="{{ step }}" value="{{ value_min }}">
+					<input name="range-max" data-param="{{ filter.max_value.param_name }}" type="range"
+						   class="form-range range-max position-absolute w-100" min="{{ range_min }}"
+						   max="{{ range_max }}" step="{{ step }}" value="{{ value_max }}">
+				</div>
+				<div class="gsp-filter-price-action mt-3">
+					<div class="gsp-filter-price-live">
+						{{ 'widgets.price_from_html' | t: min: value_min, max: value_max, symbol: cart.currency.symbol }}
+					</div>
+				</div>
+			{%- else -%}
+				{%- liquid
+					if filter.min_value.value
+						assign value_min = filter.min_value.value | money_without_currency | replace: '.', '' | replace: ',', '.'
+					endif
+					if filter.max_value.value
+						assign value_max = filter.max_value.value | money_without_currency | replace: '.', '' | replace: ',', '.'
+					endif
+				-%}
+				<div class="gsp-filter-price-inner row align-items-center">
+					<div class="col">
+						<input type="number" class="form-control" min="{{ range_min }}" max="{{ range_max }}"
+							   placeholder="{{ 'widgets.price_to' | t: symbol: cart.currency.symbol }}" name="range-min"
+							   data-param="{{ filter.min_value.param_name }}"
+							   {% if value_min != nil -%}value="{{ value_min }}"{%- endif %}>
+					</div>
+					<div class="col-auto p-0">
+						-
+					</div>
+					<div class="col">
+						<input type="number" class="form-control" min="{{ range_min }}" max="{{ range_max }}"
+							   placeholder="{{ 'widgets.price_go' | t: symbol: cart.currency.symbol }}" name="range-max"
+							   data-param="{{ filter.max_value.param_name }}" {% if value_max != nil -%}value="{{ value_max }}"{%- endif %}>
+					</div>
+					<div class="col-12 mt-3">
+						<button type="button"
+								class="btn btn-filter btn-primary btn-primary gsp-spin-wrapper w-100 fw-semibold">
+							<span class="gsp-button__content lh-0 active">
+								{{ 'widgets.filter' | t }}
+							</span>
+							<span class="gsp-button__spin">
+								{% render 'spin', custom_class: 'fs-18px' %}
+							</span>
+						</button>
+					</div>
+				</div>
+			{%- endif -%}
+		{%- endif -%}
+</{{tag_html}}>

@@ -1,0 +1,39 @@
+{% comment %}
+	Content inner modal select variant
+	Section Functional : Will not be found in the build page editor
+{% endcomment %}
+{%- liquid
+	assign current_variant = product.selected_or_first_available_variant
+	assign product_form_id = 'product-form-' | append: section.id
+	assign product_form_class = 'product-form-' | append: section.id
+-%}
+
+<div class="gsp-product-quickview gsp-main-product-wrapper row" data-view="quick-view"
+	 data-section-id="{{ section.id }}" style="--column-gap: 30px;">
+	<div class="gsp-product-quickview--media col-md-6 pe-xl-4">
+		{% render 'product-image__media', layout: 'layout-04' %}
+	</div>
+	<div class="gsp-product-quickview-info col-md-6 mt-md-0 mt-5">
+		<div class="gsp-product-info-wrapper">
+			<div class="gsp-main-product-block gsp-main-product-block-price fs-18px">
+				{% render 'product-card__prices', product: product, use_variant: true %}
+			</div>
+			<div class="gsp-main-product-block gsp-main-product-block-title">
+				<h1 class="gsp-product-title fs-24px mb-0"><a class="text-decoration-none"
+														 href="{{ product.url }}">{{ product.title }}</a></h1>
+			</div>
+			{%- unless product.has_only_default_variant -%}
+				<div class="gsp-main-product-block gsp-main-product-block-variant-picker">
+					{% render 'product-main-block__variants', product: product, product_form_id: product_form_id %}
+				</div>
+			{%- endunless -%}
+			{% render 'product-main-block__add-to-cart',
+				product: product,
+				product_form_id: product_form_id,
+				product_form_class: product_form_class,
+				current_variant: current_variant,
+				show_quantity_selector: true
+			%}
+		</div>
+	</div>
+</div>

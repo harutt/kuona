@@ -1,0 +1,195 @@
+{% comment %}
+  Accepts:
+	- product: product object (required)
+	- alignment: alignment
+{% endcomment %}
+
+{%- liquid
+	assign pc_option_name = settings.pc_option_name
+	assign pc_option_name_downcase = pc_option_name | downcase
+	assign pc_option_design = settings.pc_option_design
+	assign pc_enable_swatch = settings.pc_enable_swatch_option
+	assign values_limit = settings.pc_limit_values_number | default: 4
+	assign has_option = false
+	assign content_align = content_align | default: "start"
+	for option in product.options_with_values
+		assign option_name = option.name | downcase
+		if option_name == pc_option_name_downcase
+			assign has_option = true
+		endif
+	endfor
+-%}
+
+{% if has_option and pc_enable_swatch %}
+	<div class="gsp-product-swatch gsp-product-card-swatch gsp-product-card-item" data-limit="{{ values_limit }}" data-pc-variant-picker
+		 data-product-handle="{{ product.handle }}">
+		<pc-swatch class="gsp-product-card__option gsp-product-option-type-{{ settings.pc_option_design }}">
+			{%- for option in product.options_with_values -%}
+				{%- liquid
+					assign option_name = option.name | downcase
+
+					assign rest_values = 0
+					if values_limit == 0
+						assign values_limit = 99
+					elsif option.values.size > values_limit
+						assign rest_values = option.values.size | minus: values_limit
+					endif
+				-%}
+
+				{%- if option_name == pc_option_name_downcase -%}
+					{%- case pc_option_design -%}
+						{%- when 'image' -%}
+							<swatch-image
+								class="gsp-product-option-content d-flex flex-wrap fw-heading align-items-center justify-content-{{ content_align }} fw-heading">
+								{%- for value in option.values -%}
+									{%- if forloop.index0 < values_limit -%}
+										{% liquid
+											assign img = 'null'
+											for i in (1..50)
+												assign variable_option_name = "pvd_option_name_type_image_" | append: i
+												assign variable_custom_image = "pvd_custom_image_" | append: i
+												assign custom_image = settings[variable_custom_image]
+												assign option_name = settings[variable_option_name]
+												if option_name != blank and custom_image != blank and option_name == value
+													assign img = settings[variable_custom_image] | image_url: width: 100, height: 100
+												endif
+											endfor
+										%}
+										<div class="gsp-product-option-item">
+											<label data-bs-toggle="tooltip" data-bs-placement="top"
+												   data-bs-title="{{ value }}" data-option-type="{{ variant_type }}"
+												   class="gsp-product-option-label d-block fs-0" ,
+												   data-option-position="{{ option.position }}"
+												   data-option-type="{{ variant_type }}"
+												   data-value="{{- value | escape -}}"
+												   {% if img != 'null' %}style="background-image: url({{ img }})"{% endif %}
+											>
+												{{- value -}}
+											</label>
+										</div>
+									{%- endif -%}
+								{%- endfor -%}
+								{% if rest_values > 0 %}
+									<div class="gsp-product-option-item gsp-product-option-more"
+									>
+										<a class="gsp-product-option-label-load-more gsp-spin-wrapper text-decoration-none"
+										   href="#"
+										   data-product-handle="{{ product.handle }}">
+											<span class="gsp-button__content lh-0 active">
+												+{{ rest_values }}
+											</span>
+											<span class="gsp-button__spin">
+												{% render 'spin', custom_class: 'fs-18px' %}
+											</span>
+										</a>
+									</div>
+								{% endif %}
+							</swatch-image>
+						{%- when 'dropdown' -%}
+							<swatch-dropdown>
+								<select class="form-select">
+									{%- for value in option.values -%}
+										<option value="{{ value | escape }}" class="gsp-product-option-label"
+												data-value="{{- value | escape -}}"
+												data-option-position="{{ option.position }}"
+												{% if option.selected_value == value %}selected="selected"{% endif %}>
+											{{- value -}}
+										</option>
+									{%- endfor -%}
+								</select>
+							</swatch-dropdown>
+						{%- when 'button' -%}
+							<swatch-button
+								class="gsp-product-option-content d-flex flex-wrap fw-heading align-items-center justify-content-{{ content_align }}">
+								{%- for value in option.values -%}
+									{%- if forloop.index0 < values_limit -%}
+										<div class="gsp-product-option-item">
+											<label
+												{% if option.selected_value == value %}
+													data-selected="true"
+												{% endif %}
+												data-option-position="{{ option.position }}"
+												data-option-type="{{ variant_type }}"
+												data-value="{{- value | escape -}}"
+												class="gsp-product-option-label text-capitalize text-center fs-12px p-2 d-block rounded border">
+												{{- value -}}
+											</label>
+										</div>
+									{%- endif -%}
+								{%- endfor -%}
+								{% if rest_values > 0 %}
+									<div class="gsp-product-option-item gsp-product-option-more"
+									>
+										<a class="gsp-product-option-label-load-more gsp-spin-wrapper text-decoration-none"
+										   href="#"
+										   data-product-handle="{{ product.handle }}">
+											<span class="gsp-button__content lh-0 active">
+												+{{ rest_values }}
+											</span>
+											<span class="gsp-button__spin">
+												{% render 'spin', custom_class: 'fs-18px' %}
+											</span>
+										</a>
+									</div>
+								{% endif %}
+							</swatch-button>
+						{%- when 'color' -%}
+							{% liquid
+								assign color_base = ',' | append: settings.pvd_display_type_color | strip_newlines | downcase | append: ',' | replace: ': ', ':' | replace: ' :', ':'
+
+							%}
+							<swatch-color
+								class="gsp-product-option-content d-flex flex-wrap align-items-center justify-content-{{ content_align }}">
+								{% for value in option.values %}
+									{%- if forloop.index0 < values_limit -%}
+										{% liquid
+											assign color_display = value | downcase | strip
+											assign value_downcase = value | downcase | strip
+											assign value_downcase = ',' | append: value_downcase | append: ':'
+											if color_base contains value_downcase and value_downcase != ""
+												assign color_display = color_base | split: value_downcase | last | split: ',' | first | strip
+											endif
+										%}
+										<div class="gsp-product-option-item">
+											<label
+												{% if option.selected_value == value %}
+													data-selected="true"
+												{% endif %}
+												data-option-position="{{ option.position }}"
+												data-option-type="color"
+												data-value="{{- value | escape -}}"
+												data-bs-toggle="tooltip"
+												data-bs-title="{{ value }}"
+												class="gsp-product-option-label d-block fs-0"
+												style="--gsp-variant-type-color: {{ color_display }}">
+												{{- value -}}
+											</label>
+										</div>
+									{%- endif -%}
+								{% endfor %}
+								{% if rest_values > 0 %}
+									<div class="gsp-product-option-item gsp-product-option-more"
+									>
+										<a class="gsp-product-option-label-load-more gsp-spin-wrapper text-decoration-none"
+										   href="#"
+										   data-product-handle="{{ product.handle }}">
+											<span class="gsp-button__content lh-0 active">
+												+{{ rest_values }}
+											</span>
+											<span class="gsp-button__spin">
+												{% render 'spin', custom_class: 'fs-18px' %}
+											</span>
+										</a>
+									</div>
+								{% endif %}
+							</swatch-color>
+					{%- endcase -%}
+				{%- endif -%}
+			{%- endfor -%}
+		</pc-swatch>
+		<script type="application/json">
+      		{{ product.variants | json }}
+
+		</script>
+	</div>
+{% endif %}

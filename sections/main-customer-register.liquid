@@ -1,0 +1,169 @@
+{%- liquid
+	assign show_terms = false
+	if settings.gdpr_agree_text != blank and settings.gdpr_show_agree_on_register
+		assign show_terms = true
+	endif
+	capture animation_attr
+		render 'animation-attr', type: section.settings.animation_type
+	endcapture
+-%}
+{% render 'section-start', name: 'main-register', has_header: false %}
+<div class="gsp-register-form" {{- animation_attr -}}>
+	<div class="container">
+		<div class="gsp-register-form__wrapper">
+			<div class="col-lg-5 col-md-8 mx-auto">
+				<h2 class="fs-34px mb-5 text-center">{{ 'customer.register.title' | t }}</h2>
+				<div data-register-form>
+					{% form 'create_customer', data-show-terms: show_terms %}
+						{% render 'form__error', form: form %}
+						<div class="mb-3">
+							<input type="text" name="customer[first_name]"
+								   placeholder="{{ 'customer.register.first_name' | t }}" class="form-control"/>
+						</div>
+						<div class="mb-3">
+							<input type="text" name="customer[last_name]"
+								   placeholder="{{ 'customer.register.last_name' | t }}" class="form-control"/>
+						</div>
+						<div class="mb-3">
+							<input type="email" name="customer[email]" placeholder="{{ 'customer.login.email' | t }}"
+								   class="form-control"/>
+						</div>
+						<div class="mb-3">
+							<input type="password" name="customer[password]"
+								   placeholder="{{ 'customer.login.password' | t }}" class="form-control"/>
+						</div>
+						<div class="form-text mb-3">
+							{{ 'customer.register.description' | t }}
+						</div>
+						{% if show_terms %}
+							<div class="form-check">
+								<input name="agree_terms" class="form-check-input" type="checkbox" value=""
+									   id="gsp-agree-gdpr">
+								<label class="form-check-label text-heading" for="gsp-agree-gdpr">
+									{{ settings.gdpr_agree_text }}
+								</label>
+							</div>
+						{% endif %}
+						<div class="d-grid gap-3">
+							<button type="submit"
+									class="btn btn-primary" {% if show_terms %} data-terms-action disabled{% endif %}>{{ 'customer.register.title' | t }}</button>
+							<a class="btn-outline-dark btn" href="{{ routes.account_login_url }}">
+								{{ 'customer.login.title' | t }}
+							</a>
+						</div>
+					{% endform %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% render 'section-end', has_header: false %}
+{% schema %}
+{
+    "name": "t:sections.main_customer_register.name",
+    "settings": [
+        {
+            "type": "header",
+            "content": "t:general.sections.spacing.header__section_spacing"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:general.sections.spacing.paragraph__5"
+        },
+        {
+            "type": "number",
+            "id": "padding_top",
+            "label": "t:general.sections.spacing.padding_top.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_bottom",
+            "label": "t:general.sections.spacing.padding_bottom.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_top_mobile",
+            "label": "t:general.sections.spacing.padding_top_mobile.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_bottom_mobile",
+            "label": "t:general.sections.spacing.padding_bottom_mobile.label",
+            "default": -1
+        },
+        {
+            "type": "header",
+            "content": "t:general.sections.animations_header_label"
+        },
+        {
+            "type": "select",
+            "id": "animation_type",
+            "label": "t:general.animation_type.label",
+            "default": "inherit",
+            "options": [
+                {
+                    "value": "inherit",
+                    "label": "t:general.animation_type.options__inherit"
+                },
+                {
+                    "value": "none",
+                    "label": "t:general.animation_type.options__none"
+                },
+                {
+                    "value": "fadeIn",
+                    "label": "t:general.animation_type.options__fadeIn"
+                },
+                {
+                    "value": "fadeInUp",
+                    "label": "t:general.animation_type.options__fadeInUp"
+                },
+                {
+                    "value": "fadeInDown",
+                    "label": "t:general.animation_type.options__fadeInDown"
+                },
+                {
+                    "value": "fadeInLeft",
+                    "label": "t:general.animation_type.options__fadeInLeft"
+                },
+                {
+                    "value": "fadeInRight",
+                    "label": "t:general.animation_type.options__fadeInRight"
+                },
+                {
+                    "value": "flipInX",
+                    "label": "t:general.animation_type.options__flipInX"
+                },
+                {
+                    "value": "flip",
+                    "label": "t:general.animation_type.options__flip"
+                },
+                {
+                    "value": "zoomOut",
+                    "label": "t:general.animation_type.options__zoomOut"
+                },
+                {
+                    "value": "zoomIn",
+                    "label": "t:general.animation_type.options__zoomIn"
+                }
+            ]
+        },
+        {
+            "type": "header",
+            "content": "t:general.sections.custom_attrs.header__section_attributes"
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "t:general.sections.custom_attrs.custom_class.label"
+        }
+    ],
+    "enabled_on": {
+        "templates": [
+            "customers/register"
+        ]
+    }
+}
+{% endschema %}

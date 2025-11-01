@@ -1,0 +1,223 @@
+{% comment %}
+  Accepts:
+	- section_settings: Settings sections
+	- results: Collection product
+	- current_layout_card: Current layout card
+{% endcomment %}
+{% liquid
+	if current_layout_card == blank
+		assign current_layout_card = 'grid'
+	endif
+%}
+{% if section_settings.enable_toolbar or section_settings.enable_toolbar_mobile %}
+	{% if section_settings.enable_applied_filters or section_settings.enable_applied_filters_mobile %}
+		{%- capture applied_filters_html -%}
+			{%- liquid
+				assign source = collection.filters
+				assign clear_all_url = collection.url | append: '?sort_by=' | append: collection.sort_by
+				if template contains 'search'
+					assign type = ""
+					assign prefix = ""
+					if settings.search_product
+						if type != ""
+							assign prefix = ","
+						endif
+						assign type = type | append: prefix | append: "product"
+					endif
+					if settings.search_articles
+						if type != ""
+							assign prefix = ","
+						endif
+						assign type = type | append: prefix | append: "article"
+					endif
+					if settings.search_page
+						if type != ""
+							assign prefix = ","
+						endif
+						assign type = type | append: prefix | append: "page"
+					endif
+					assign source = search.filters
+					assign clear_all_url = routes.search_url | append: '?sort_by=' | append: search.sort_by | append: '&q=' | append: search.terms | append: '&type=' | append: type
+				endif
+				assign has_filters = false
+			-%}
+			<gsp-applied-filters class="gsp-applied-filters">
+				<ul class="list-unstyled list-inline mb-0 gap-2 d-flex flex-wrap gap-2">
+					{%- for filter in source -%}
+						{%- if filter.type == "price_range" -%}
+							{%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+								{%- liquid
+									assign has_filters = true
+								-%}
+								<li>
+									<a href="{{ filter.url_to_remove }}"
+									   class="clear-filter btn btn-sm d-flex align-items-center btn-gray btn-hover-danger text-capitalize">
+										{%- assign min_value = filter.min_value.value | default: 0 -%}
+										{%- assign max_value = filter.max_value.value | default: filter.range_max -%}
+										{{ min_value | money }} - {{ max_value | money }} <span
+											class="d-inline-block ms-2">{% render 'icons', icon: 'xmark' %}</span>
+									</a>
+								</li>
+							{%- endif -%}
+						{%- else -%}
+							{%- for filter_value in filter.active_values -%}
+								{%- liquid
+									assign has_filters = true
+								-%}
+								<li>
+									<a href="{{ filter_value.url_to_remove }}"
+									   class="clear-filter btn btn-sm d-flex align-items-center btn-gray btn-hover-danger text-capitalize">
+										{{ filter_value.label }}
+										<span
+											class="d-inline-block ms-2">{% render 'icons', icon: 'xmark' %}</span>
+									</a>
+								</li>
+							{%- endfor -%}
+						{%- endif -%}
+					{%- endfor -%}
+					{%- if has_filters -%}
+						<li>
+							<a href="{{ clear_all_url }}"
+							   class="clear-filter btn btn-sm d-flex align-items-center btn-gray btn-hover-danger text-capitalize">
+								{{ 'general.clear_all' | t }}
+							</a>
+						</li>
+					{%- endif -%}
+				</ul>
+			</gsp-applied-filters>
+		{%- endcapture -%}
+	{%- endif -%}
+	{% if section_settings.enable_ordering or section_settings.enable_ordering_mobile %}
+		{%- capture ordering_html -%}
+			{%- assign sort_by = results.sort_by | default: results.default_sort_by -%}
+			<gsp-ordering>
+				<select name="sort_by" class="gsp-select-ordering form-select">
+					{%- for option in results.sort_options -%}
+						<option
+							value="{{ option.value | escape }}"
+							{% if option.value == sort_by %} selected="selected"{% endif %}
+							data-index="{{ forloop.index0 }}"
+						>
+							{{ option.name | escape }}
+						</option>
+					{%- endfor -%}
+				</select>
+			</gsp-ordering>
+		{%- endcapture -%}
+	{%- endif -%}
+	{% if section_settings.enable_result_count or section_settings.enable_result_count_mobile %}
+		{%- capture result_count_html -%}
+			{%- liquid
+				assign count = collection.products_count
+				if template contains 'search'
+					assign count = search.results_count
+				endif
+			-%}
+			<p class="mb-0 gsp-result-count">{{ 'products.toolbar.count_html' | t: count: count }}</p>
+		{%- endcapture -%}
+	{%- endif -%}
+	{% if section_settings.enable_filter or section_settings.enable_filter_mobile %}
+		{%- capture filter_html -%}
+			<button class="btn btn-link d-flex align-items-center" type="button"
+					data-bs-toggle="offcanvas" data-bs-target="#gsp-offcanvas-filter-product"
+					aria-controls="gsp-offcanvas-filter-product">
+				{% render 'icons', icon: 'align-left' %}<span
+					class="d-block ms-2">{{ 'general.filter' | t }}</span>
+			</button>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{% if section_settings.enable_switch_layout %}
+		{%- capture switch_layout_html -%}
+			<ul data-gsl-current-layout="{{ current_layout_card }}"
+				data-gsl-switch-class-item="{{ symmetry_class_item }}"
+				class="gsp-switch-layout-control list-unstyled d-flex align-items-center list-inline mb-0">
+				<li data-gsl-target="grid" class="gsp-switch-layout-item me-2">
+					<a class="fs-32px text-heading" href="#">
+						{% render 'icons', icon: 'squares-four' %}
+					</a>
+				</li>
+				<li data-gsl-target="list" class="gsp-switch-layout-item">
+					<a class="fs-32px text-heading" href="#">
+						{% render 'icons', icon: 'list' %}
+					</a>
+				</li>
+			</ul>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	<div class="gsp-toolbar gsp-product-toolbar" data-toolbar>
+		{% if section_settings.enable_toolbar %}
+			<div class="gsp-toolbar-desktop gsp-product-toolbar-desktop mb-4 pb-1 d-lg-block d-none">
+				<div class="row align-items-center">
+					<div class="col d-flex align-items-center flex-wrap column-gap-4 row-gap-2">
+						{% if section_settings.enable_filter %}
+							<div class="gsp-toolbar-item gsp-toolbar-item-filter">
+								{{ filter_html }}
+							</div>
+						{%- endif -%}
+						{% if section_settings.enable_result_count %}
+							<div class="gsp-toolbar-item gsp-toolbar-item-result-count">
+								{{ result_count_html }}
+							</div>
+						{%- endif -%}
+						{% if section_settings.enable_applied_filters %}
+							<div class="gsp-toolbar-item gsp-toolbar-item-applied-filters">
+								{{ applied_filters_html }}
+							</div>
+						{%- endif -%}
+					</div>
+					<div
+						class="col-4 d-flex align-items-center flex-wrap column-gap-4 row-gap-2 justify-content-end">
+						{% if section_settings.enable_switch_layout %}
+							<div class="gsp-toolbar-item gsp-toolbar-item-switch-layout">
+								{{ switch_layout_html }}
+							</div>
+						{%- endif -%}
+						{% if section_settings.enable_ordering %}
+							<div class="gsp-toolbar-item gsp-toolbar-item-ordering">
+								{{ ordering_html }}
+							</div>
+						{%- endif -%}
+					</div>
+				</div>
+			</div>
+		{%- endif -%}
+		{% if section_settings.enable_toolbar_mobile %}
+			<div class="gsp-toolbar-mobile gsp-product-toolbar-mobile mb-4 pb-1 d-block d-lg-none">
+				<div class="row align-items-center">
+					<div class="col d-flex align-items-center flex-wrap column-gap-4 row-gap-2">
+						{% if section_settings.enable_filter_mobile %}
+							<div class="gsp-toolbar-item gsp-toolbar-item-filter">
+								{{ filter_html }}
+							</div>
+						{%- endif -%}
+						{% if section_settings.enable_result_count_mobile %}
+							<div class="gsp-toolbar-item gsp-toolbar-item-result-count">
+								{{ result_count_html }}
+							</div>
+						{%- endif -%}
+					</div>
+					{% if section_settings.enable_ordering_mobile %}
+						<div
+							class="col-6 d-flex align-items-center flex-wrap column-gap-4 row-gap-2 justify-content-end">
+							<div class="gsp-toolbar-item gsp-toolbar-item-ordering">
+								{{ ordering_html }}
+							</div>
+						</div>
+					{%- endif -%}
+					{% if section_settings.enable_applied_filters_mobile %}
+						<div class="col-12 mt-3">
+							<div class="gsp-toolbar-item gsp-toolbar-item-applied-filters">
+								{{ applied_filters_html }}
+							</div>
+						</div>
+					{%- endif -%}
+				</div>
+			</div>
+		{%- endif -%}
+		{% if section_settings.enable_filter or section_settings.enable_filter_mobile %}
+			{% render 'product-filter__offcanvas' %}
+		{%- endif -%}
+	</div>
+{%- endif -%}

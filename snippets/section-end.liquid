@@ -1,0 +1,14 @@
+{% liquid
+	assign btn_view_all_position = section.settings.btn_view_all_position
+	assign header_inline = section.settings.header_inline | default: false
+%}
+		{%- if btn_view_all_position == 'bottom' -%}
+			{% render 'section-view-all', custom_css: "w-100 text-center mt-5" %}
+		{%- endif -%}
+			{% if header_inline %}
+				</div> {% comment %}.gsp-section-has-header-inline-inner{% endcomment %}
+			{% endif %}
+		</div>{% comment %}.container{% endcomment %}
+	</div>{% comment %}.gsp-section-content__wrap{% endcomment %}
+	{% render 'section-style', css: css, extended_css : extended_css %}
+</div>

@@ -1,0 +1,156 @@
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: section.settings.animation_type
+	endcapture
+%}
+{% render 'section-start', name: 'main-account', has_header: false %}
+<div class="gsp-account" {{- animation_attr -}}>
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col-lg-2 pb-lg-0 pb-3">
+				{% render 'customer__navs' %}
+			</div>
+			<div class="col-lg-10 pt-4 pt-lg-0 ps-lg-7 border-top border-lg-top-0 border-lg-start">
+				<div class="gsp-account__content">
+					<div class="gsp-account__greeting mb-5">
+						<span>{{ 'customer.account.greeting' | t }}</span>
+						<span class="text-heading fw-semibold">{{ customer.name }}</span>
+						(<span>{{ 'customer.account.not' | t }}</span> <span
+							class="text-heading fw-semibold">{{ customer.name }}</span>?
+						<a href="{{ routes.account_logout_url }}"
+						   class="gsp-text-link">{{ 'customer.account.log_out' | t }}</a>)
+					</div>
+					<div class="gsp-customer-order mb-5">
+						<h3 class="gsp-account__title fs-24px mb-4">{{ 'customer.orders.title' | t }}</h3>
+						{% render 'customer__orders' %}
+					</div>
+
+					<div class="gsp-account__detail gsp-customer-info">
+						<h3 class="gsp-account__title fs-24px mb-4">{{ 'customer.account.details' | t }} </h3>
+						<div class="gsp-customer-info__field d-flex mb-3">
+							<div class="pe-4 mw-">{{ 'customer.account.name' | t }} :</div>
+							<div class="text-heading fw-semibold">{{ customer.name }}</div>
+						</div>
+						<div class="gsp-customer-info__field d-flex mb-4">
+							<div class="pe-4 mw-100">{{ 'customer.account.email' | t }} :</div>
+							<div class="text-heading fw-semibold">{{ customer.email }}</div>
+						</div>
+						<a href="/account/addresses" class="btn btn-primary">
+							{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% render 'section-end', has_header: false %}
+{% schema %}
+{
+    "name": "t:sections.main_customer_account.name",
+    "settings": [
+        {
+            "type": "header",
+            "content": "t:general.sections.spacing.header__section_spacing"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:general.sections.spacing.paragraph__5"
+        },
+        {
+            "type": "number",
+            "id": "padding_top",
+            "label": "t:general.sections.spacing.padding_top.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_bottom",
+            "label": "t:general.sections.spacing.padding_bottom.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_top_mobile",
+            "label": "t:general.sections.spacing.padding_top_mobile.label",
+            "default": -1
+        },
+        {
+            "type": "number",
+            "id": "padding_bottom_mobile",
+            "label": "t:general.sections.spacing.padding_bottom_mobile.label",
+            "default": -1
+        },
+        {
+            "type": "header",
+            "content": "t:general.sections.animations_header_label"
+        },
+        {
+            "type": "select",
+            "id": "animation_type",
+            "label": "t:general.animation_type.label",
+            "default": "inherit",
+            "options": [
+                {
+                    "value": "inherit",
+                    "label": "t:general.animation_type.options__inherit"
+                },
+                {
+                    "value": "none",
+                    "label": "t:general.animation_type.options__none"
+                },
+                {
+                    "value": "fadeIn",
+                    "label": "t:general.animation_type.options__fadeIn"
+                },
+                {
+                    "value": "fadeInUp",
+                    "label": "t:general.animation_type.options__fadeInUp"
+                },
+                {
+                    "value": "fadeInDown",
+                    "label": "t:general.animation_type.options__fadeInDown"
+                },
+                {
+                    "value": "fadeInLeft",
+                    "label": "t:general.animation_type.options__fadeInLeft"
+                },
+                {
+                    "value": "fadeInRight",
+                    "label": "t:general.animation_type.options__fadeInRight"
+                },
+                {
+                    "value": "flipInX",
+                    "label": "t:general.animation_type.options__flipInX"
+                },
+                {
+                    "value": "flip",
+                    "label": "t:general.animation_type.options__flip"
+                },
+                {
+                    "value": "zoomOut",
+                    "label": "t:general.animation_type.options__zoomOut"
+                },
+                {
+                    "value": "zoomIn",
+                    "label": "t:general.animation_type.options__zoomIn"
+                }
+            ]
+        },
+        {
+            "type": "header",
+            "content": "t:general.sections.custom_attrs.header__section_attributes"
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "t:general.sections.custom_attrs.custom_class.label"
+        }
+    ],
+    "enabled_on": {
+        "templates": [
+            "customers/account"
+        ]
+    }
+}
+{% endschema %}

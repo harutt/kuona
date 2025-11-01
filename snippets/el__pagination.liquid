@@ -1,0 +1,65 @@
+{% comment %}
+  Accepts:
+	- paginate: paginate
+	- type: type paginate
+	- customClass: Additional Classes
+  Note: Except for type paginate_shopify, The remaining types must follow the Main Collection structure html.
+{% endcomment %}
+
+{% liquid
+	if type == nil
+		assign type = 'pagination'
+	endif
+	if listing_id == nil
+		assign listing_id = section.id
+	endif
+	assign total_pages = paginate.pages
+	assign current_page = paginate.current_page
+
+%}
+
+{%- capture icon_next -%}
+	{% render 'icons', icon: 'angles-right' %}
+{%- endcapture -%}
+{%- capture icon_previous -%}
+	{% render 'icons', icon: 'angles-left' %}
+{%- endcapture -%}
+<gsp-pagination
+	data-pagination-type="{{ type }}"
+	class="gsp-pagination gsp-pagination-type-{{ type }} d-flex justify-content-center align-items-center {{ customClass }}"
+	data-total-pages="{{ total_pages }}"
+	data-current-page="{{ current_page }}"
+	data-listing-target="{{ listing_id }}"
+>
+	<div class="gsp-pagination-inner">
+		{% case type %}
+			{% when 'paginate_shopify' %}
+				{{ paginate | default_pagination: next: icon_next, previous: icon_previous }}
+			{% when 'pagination' %}
+				{{ paginate | default_pagination: next: icon_next, previous: icon_previous }}
+			{% when 'nextpre' %}
+				{% liquid
+					assign next_page = current_page | plus: 1
+					assign pre_page = current_page | minus: 1
+				%}
+				<button class="btn btn-dark gsp-pagination-pre p-2"
+						data-page="{{ pre_page }}" {% if pre_page < 1 or pre_page > total_pages %} disabled {%- endif -%}>
+					{{ icon_previous }}
+				</button>
+				<button class="btn btn-dark gsp-pagination-next p-2"
+						data-page="{{ next_page }}" {% if next_page < 1 or next_page > total_pages %} disabled {%- endif -%}>
+					{{ icon_next }}
+				</button>
+			{% when 'infinite' %}
+			{% when 'loadmore' %}
+				<button class="btn btn-dark gsp-spin-wrapper">
+						<span class="gsp-button__content lh-0 active">
+								{{ 'general.load_more' | t }}
+						</span>
+					<span class="gsp-button__spin">
+							{% render 'spin', custom_class: 'fs-18px' %}
+						</span>
+				</button>
+		{% endcase %}
+	</div>
+</gsp-pagination>

@@ -1,0 +1,16 @@
+{% comment %}
+  Accepts:
+  - product: {Object} Product Liquid object (required)
+{% endcomment %}
+{% if product.collections.size > 0 %}
+	<ul class="gsp-product-card-collection gsp-product-card-item list-inline mb-0 line-clamp-1">
+		{% for collection in product.collections %}
+			<li class="d-inline">
+				<a href="{{ collection.url }}" class="text-decoration-none">
+					{{ collection.title }}
+					{%- if forloop.last != true -%},{%- endif -%}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+{% endif %}

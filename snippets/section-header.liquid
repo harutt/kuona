@@ -1,0 +1,59 @@
+{% comment %}
+	Header Block
+	Accepts:
+	- custom_header_addon: Custom header addon
+	- custom_css: Custom css
+{% endcomment %}
+
+{% liquid
+	assign has_header_addon = false
+	assign header_inline = section.settings.header_inline
+	if section.settings.slider_navigation_after_heading and section.settings.slider_show_navigation and section.settings.slider_enable
+		assign slider_navigation_after_heading = true
+	endif
+	assign btn_view_all_position = section.settings.btn_view_all_position | default: "hide"
+	if custom_header_addon != nil or slider_navigation_after_heading or btn_view_all_position == 'after-heading'
+		assign has_header_addon = true
+		if header_inline
+			assign class_responsive = "col-lg-6 col-xl-12"
+		else
+			assign class_responsive = "col-lg-6"
+		endif
+	else
+		assign class_responsive = "col-12"
+	endif
+	assign class_heading = "gsp-section-header-item gsp-section-hading " | append: class_responsive
+	assign container = section.settings.container
+	if section.settings.header_container != 'inherit'
+		assign container = section.settings.header_container
+	endif
+
+	if header_inline != true
+		capture class_container
+			render 'classes-container', container: container
+		endcapture
+		assign class_container = class_container | strip_newlines
+	endif
+	capture animation_attr
+		render 'animation-attr', type: section.settings.animation_type
+	endcapture
+%}
+{% if section.settings.el_heading_sub_title != blank or section.settings.el_heading_title != blank or section.settings.el_heading_desc != blank or section.settings.el_button_text or section.settings.el_heading_image != blank %}
+	<div
+		class="gsp-section-header__wrap position-relative z-index-5 {%- if has_header_addon %} gsp-section-header-has-addon {%- endif -%}{{ custom_css }} {{ class_container }}">
+		<div
+			class="gsp-section-header row {%- if header_inline != true %} align-items-end {%- endif -%}">
+			{% render 'el__heading',
+				args: section,
+				custom_css: class_heading,
+				animation_attr: animation_attr
+			%}
+			{%- if has_header_addon -%}
+				{% render 'section-header-addon',
+					class_responsive: class_responsive,
+					custom_header_addon: custom_header_addon
+				%}
+			{% endif %}
+		</div>
+	</div>
+{% endif %}

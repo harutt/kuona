@@ -1,0 +1,82 @@
+{% comment %}
+	Counter block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+
+	assign title_color = block.settings.title_color
+	assign desc_color = block.settings.desc_color
+	assign timer_color = block.settings.timer_color
+	assign discount_color = block.settings.discount_color
+
+	assign counter_title_color = block.settings.counter_title_color
+	assign counter_value_color = block.settings.counter_value_color
+
+	capture aspect_ratio
+		render 'convert-aspect-ratio', aspect_ratio: block.settings.aspect_ratio
+	endcapture
+	assign aspect_ratio = aspect_ratio | strip_newlines
+%}
+<div class="gsp-block__{{ block.id }} gsp-block gsp-block-card" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		<div class="gsp-block-card__content-wrap h-100 flex-fill d-flex flex-column align-items-{{ block.settings.content_alignment }} justify-content-{{ block.settings.vertical_align }}">
+			<div class="gsp-block-card__image w-100 {%- if block.settings.hover_style != 'none' %} img-hover-{{ block.settings.hover_style }}{% endif %} {%- if block.settings.hover_effect != 'none' %} img-effect img-effect-{{ block.settings.hover_effect }}{% endif %}">
+			{% if block.settings.enable_image_link and block.settings.el_button_link != blank %}
+				<a href="{{ block.settings.el_button_link }}" title="{{ block.settings.title }}">
+			{% endif %}
+					{% render 'responsive-image', image: block.settings.image, aspect_ratio: aspect_ratio, placeholder: 'image' %}
+			{% if block.settings.enable_image_link and block.settings.el_button_link != blank %}
+				</a>
+			{% endif %}
+			</div>
+			{% if block.settings.title != blank %}
+				<h4 class="gsp-block-card__title d-flex align-items-center">
+					{{ block.settings.title }}
+				</h4>
+			{% endif %}
+			{% if block.settings.desc != blank %}
+				<p class="gsp-block-card__desc">{{ block.settings.desc }}</p>
+			{% endif %}
+			{% if block.settings.el_button_text != blank or block.settings.el_button_icon != 'none' %}
+				<div class="gsp-block-card__button">
+					{% render 'el__button', args: block, classes: 'pe-auto' %}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% style %}
+	.gsp-block__{{ block.id }} {
+	{%- if title_color != blank and title_color != "rgba(0,0,0,0)" %}
+		--gsp-block-card__title-color: {{ title_color }};
+	{% endif -%}
+	{%- if desc_color != blank and desc_color != "rgba(0,0,0,0)" %}
+		--gsp-block-card__desc-color: {{ desc_color }};
+	{% endif -%}
+	{%- if timer_color != blank and timer_color != "rgba(0,0,0,0)" %}
+		--gsp-block-card__countdown-color: {{ timer_color }};
+	{% endif -%}
+	{%- if discount_color != blank and discount_color != "rgba(0,0,0,0)" %}
+		--gsp-block-card__discount-color: {{ discount_color }};
+	{% endif -%}
+	{%- if counter_title_color != blank and counter_title_color != "rgba(0,0,0,0)" %}
+		--gsp-block-card__counter-title-color: {{ counter_title_color }};
+	{% endif -%}
+	{%- if counter_value_color != blank and counter_value_color != "rgba(0,0,0,0)" %}
+		--gsp-block-card__counter-value-color: {{ counter_value_color }};
+	{% endif -%}
+	{%- if block.settings.image_margin_bottom != blank and block.settings.image_margin_bottom != 0 %}
+		--gsp-block-card__image-margin-bottom: {{ block.settings.image_margin_bottom }}px;
+	{% endif -%}
+	{%- if block.settings.title_margin_bottom != blank and block.settings.title_margin_bottom != 0 %}
+		--gsp-block-card__title-margin-bottom: {{ block.settings.title_margin_bottom }}px;
+	{% endif -%}
+	{% if block.settings.desc_margin_bottom != blank and block.settings.desc_margin_bottom != 0 %}
+		--gsp-block-card__desc-margin-bottom: {{ block.settings.desc_margin_bottom }}px;
+	{% endif -%}
+	}
+{% endstyle %}

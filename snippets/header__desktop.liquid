@@ -1,0 +1,20 @@
+{% assign header_layout = section.settings.header_layout %}
+<div class="gsp-header__desktop w-100 d-xl-block d-none position-relative">
+	{% case header_layout %}
+		{% when 'logo-center-1menu-1line' %}
+			{% render 'header-layout__logo-center-1menu-1line', container: container %}
+		{% when 'logo-center-2menu-1line' %}
+			{% render 'header-layout__logo-center-2menu-1line', container: container %}
+		{% when 'logo-left-1menu-1line' %}
+			{% render 'header-layout__logo-left-1menu-1line', container: container %}
+		{% when 'logo-center-2-lines' %}
+			{% render 'header-layout__logo-center-2lines', container: container %}
+		{% when 'offcanvas-menu-1line' %}
+			<div class="d-xl-flex d-none align-items-center justify-content-between">
+				{% render 'header-layout__offcanvas-menu-1line', container: container %}
+			</div>
+		{% when 'logo-center-search-left-2-lines' %}
+			{% render 'header-layout__logo-center-search-left-2-lines', container: container %}
+	{% endcase %}
+	<div class="gsp-header__overlay card-img-overlay z-index-2 top-100"></div>
+</div>

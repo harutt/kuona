@@ -1,0 +1,40 @@
+{% comment %}
+	- aspect_ratio: [string] aspect ratio | default: "original"
+	- aspect_ratio_default: [string] aspect ratio | default: "original"
+	- masonry: [bool] convert aspect ratio for layout masonry
+	- rate_to_masonry: [number] Conversion rate from original scale to masonry scale. EX: 0.75
+{% endcomment %}
+
+{% liquid
+	assign ratio = "original"
+	if masonry == nil
+		assign masonry = false
+	endif
+	if aspect_ratio_default == nil
+		assign aspect_ratio_default = "original"
+	endif
+	if aspect_ratio == nil or aspect_ratio == 'default'
+		assign aspect_ratio = aspect_ratio_default
+	endif
+	assign aspect_ratio = aspect_ratio | downcase | strip_newlines | strip | replace: ':', '/' | replace: ' ', ''
+	if aspect_ratio contains "/" and aspect_ratio != ''
+		assign aspect_ratio_base = aspect_ratio | split: '/'
+		assign aspect_ratio_width = aspect_ratio_base[0]
+		assign aspect_ratio_height = aspect_ratio_base[1]
+		assign aspect_ratio_width_is_number = aspect_ratio_width | times: 1
+		assign aspect_ratio_height_is_number = aspect_ratio_height | times: 1
+		if aspect_ratio_width_is_number != 0 and aspect_ratio_height_is_number != 0
+			if masonry
+				if rate_to_masonry == nil
+					assign rate_to_masonry = 0.75
+				endif
+				assign aspect_ratio_width_masonry = aspect_ratio_width_is_number | times: 100
+				assign aspect_ratio_height_masonry = aspect_ratio_height_is_number | times: rate_to_masonry | times: 100
+				assign ratio = aspect_ratio_width_masonry | append: "/" | append: aspect_ratio_height_masonry
+			else
+				assign ratio = aspect_ratio_width_is_number | append: "/" | append: aspect_ratio_height_is_number
+			endif
+		endif
+	endif
+%}
+{{ ratio }}

@@ -1,0 +1,130 @@
+{% comment %}
+	Element Featured Box
+	Accepts:
+	- args: heading settings | Obj
+	- args_style: args style | Obj
+{% endcomment %}
+{% liquid
+	if args_style == blank
+		assign args_style = args
+	endif
+	assign image_position = args_style.settings.fb_image_position
+	assign content_alignment = args_style.settings.fb_alignment
+	assign class_wrap = "gsp-element gsp-featured-box gsp-featured-box-" | append: args.id | append: " gsp-image-position-" | append: image_position
+	assign class_body = "gsp-featured-box-content card-body p-0"
+
+	assign class_wrap = class_wrap | append: " text-" | append: content_alignment
+	if image_position != "top"
+		assign class_wrap = class_wrap | append: " d-md-flex"
+		assign class_body = class_body | append: " text-" | append: content_alignment
+	endif
+	if image_position == "right"
+		assign class_wrap = class_wrap | append: " flex-md-row-reverse"
+	endif
+	if image_position == "left"
+		assign class_wrap = class_wrap | append: " flex-md-row"
+	endif
+
+	assign title_tag = args.settings.title_tag | default: "h3"
+	assign image_mw = args.settings.fb_image_mw
+	assign image_radius = args.settings.fb_image_radius
+	assign title_color = args_style.settings.fb_title_color
+	assign desc_color = args_style.settings.fb_desc_color
+	assign fs_title = args_style.settings.fb_fs_title
+	assign fs_desc = args_style.settings.fb_fs_desc
+	assign spacing_title = args_style.settings.fb_sp_title
+	assign spacing_image = args_style.settings.fb_sp_image
+	assign spacing_desc = args_style.settings.fb_sp_desc
+	assign spacing_button = args_style.settings.fb_sp_button
+
+	if args.settings.fb_image == blank
+		assign aspect_ratio = '1/1'
+	else
+		assign aspect_ratio = 'original'
+	endif
+%}
+<div class="{{ class_wrap }}">
+	<div class="gsp-featured-box-image card-img">
+	{% if args.settings.el_button_link != blank %}
+		<a href="{{ args.settings.el_button_link }}" class="d-block text-inherit" title="{{ args.settings.fb_title }}">
+			{% endif %}
+			{% if args.settings.fb_image_by_url != blank %}
+				<img
+					src="{{ args.settings.fb_image_by_url }}"
+					alt="{{ args.settings.fb_title | strip_html }}"
+					class="custom-featured-box-image w-100"
+					width="100" height="100"
+				>
+			{% else %}
+				{% render 'responsive-image',
+					image: args.settings.fb_image,
+					aspect_ratio: aspect_ratio,
+					placeholder: "image",
+					alt: args.settings.fb_title
+				%}
+			{% endif %}
+			{% if args.settings.el_button_link != blank %}
+		</a>
+		{% endif %}
+	</div>
+	<div class="{{ class_body }}">
+		{% if args.settings.fb_title != nil and args.settings.fb_title != '' %}
+			<{{ title_tag }} class="gsp-featured-box-title gsp-element-item mb-0">
+			{% if args.settings.el_button_link != blank %}
+				<a href="{{ args.settings.el_button_link }}" class="d-block text-inherit">
+					{% endif %}
+					{{ args.settings.fb_title | newline_to_br }}
+					{% if args.settings.el_button_link != blank %}
+				</a>
+				{% endif %}
+			</{{ title_tag }}>
+		{% endif %}
+		{% if args.settings.fb_desc != nil and args.settings.fb_desc != '' %}
+			<p class="gsp-featured-box-desc gsp-element-item mb-0">
+				{{ args.settings.fb_desc | newline_to_br }}
+			</p>
+		{% endif %}
+		{% if args.settings.el_button_text != blank or args.settings.el_button_icon != 'none' %}
+			<div class="gsp-featured-box-button gsp-element-item" {{ animation_attr_button }}>
+				{% render 'el__button', args: args %}
+			</div>
+		{% endif %}
+	</div>
+</div>
+{% style %}
+	.gsp-featured-box-{{ args.id }} {
+	{%- if title_color != blank and title_color != "rgba(0,0,0,0)" %}
+		--gsp-featured-box-color-title: {{ title_color }} !important;
+	{% endif -%}
+	{%- if desc_color != blank and desc_color != "rgba(0,0,0,0)" %}
+		--gsp-featured-box-color-desc: {{ desc_color }} !important;
+	{% endif -%}
+	{%- if image_mw != blank and image_mw != -1 %}
+		--gsp-featured-box-mw-image: {{ image_mw }}px !important;
+	{% endif -%}
+	{%- if fs_title != blank and fs_title != -1 %}
+		--gsp-featured-box-fs-title: {{ fs_title }}px !important;
+	{% endif -%}
+	{%- if fs_desc != blank and fs_desc != -1 %}
+		--gsp-featured-box-fs-desc: {{ fs_desc }}px !important;
+	{% endif -%}
+	{%- if spacing_title != blank and spacing_title != -1 %}
+		--gsp-featured-box-sp-title: {{ spacing_title }}px !important;
+	{% endif -%}
+	{%- if spacing_desc != blank and spacing_desc != -1 %}
+		--gsp-featured-box-sp-desc: {{ spacing_desc }}px !important;
+	{% endif -%}
+	{%- if spacing_image != blank and spacing_image != -1 %}
+		--gsp-featured-box-sp-image: {{ spacing_image }}px !important;
+	{% endif -%}
+	{%- if spacing_button != blank and spacing_button != -1 %}
+		--gsp-featured-box-sp-btn: {{ spacing_button }}px !important;
+	{% endif -%}
+	}
+	{%- if image_radius != blank and image_radius != -1 %}
+		.gsp-featured-box-{{ args.id }} .gsp-image{
+		border-radius: {{ image_radius }}% !important;
+		overflow: hidden;
+		}
+	{% endif -%}
+{% endstyle %}

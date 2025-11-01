@@ -1,0 +1,30 @@
+{% comment %}
+	- classes: extra class
+	- layout: layout search
+{% endcomment %}
+{% liquid
+	assign placeholder = 'search.placeholder_search_on_header' | t
+	if layout == blank
+		assign layout = 'icon'
+	endif
+	if id == blank
+		assign id = 'gsp-search-form-header'
+	endif
+%}
+<div class="gsp-header-addons-item d-flex gsp-header-addons-item__search {{ classes }}">
+	{% if layout == 'label' or layout == 'icon' %}
+		<a href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSearch" class="text-decoration-none" title="{{ 'header.search' | t }}">
+			<span class="fs-25px fs-lg-28px">
+				{% render 'icons', icon: 'magnifying-glass' %}
+			</span>
+			{% if layout == 'label' %}
+				<span class="gsp-header-addons-item__search-label fs-15px ms-2 text-capitalize">
+					{{ 'header.search' | t }}
+				</span>
+			{% endif %}
+		</a>
+	{% endif %}
+	{% if layout == 'form' %}
+		{% render 'el__search', id: id, placeholder: placeholder %}
+	{% endif %}
+</div>

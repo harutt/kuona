@@ -1,0 +1,40 @@
+{% comment %}
+	- args: Widget settings | Obj
+{% endcomment %}
+{% liquid
+	assign gutter = args.item_gap
+
+	capture aspect_ratio
+		render 'convert-aspect-ratio', aspect_ratio: args.aspect_ratio
+	endcapture
+	assign aspect_ratio = aspect_ratio | strip_newlines
+%}
+{% render 'el__instagram',
+	hover_style: args.hover_style,
+	aspect_ratio: aspect_ratio,
+	limit_item: args.item_limit,
+	slider_enable: args.slider_enable,
+	col_xl: args.item_show_xl,
+	col_lg: args.item_show_lg,
+	col_md: args.item_show_md,
+	col_sm: args.item_show_sm,
+	col_xs: args.item_show_xs,
+	animation_type: args.animation_type,
+	arrows: args.slider_show_navigation,
+	dots: args.slider_show_pagination,
+	auto_height: args.slider_auto_height,
+	autoplay: args.slider_autoplay,
+	autoplay_speed: args.slider_autoplay_timeout,
+	fade: args.slider_fade,
+	loop: args.slider_loop,
+	center_mode: args.slider_center_mode,
+	center_padding: args.slider_center_padding
+%}
+{% style %}
+	{% if gutter != blank and gutter != -1 %}
+		.gsp-widget-{{ ids }} .gsp-gutter-wrap{
+		--bs-gutter-x: {{ gutter }}px !important;
+		--bs-gutter-y: {{ gutter }}px !important;
+		}
+	{% endif -%}
+{% endstyle %}

@@ -1,0 +1,88 @@
+{% liquid
+	assign color = block.settings.breadcrumb_color
+	assign color_active = block.settings.breadcrumb_color_active
+	assign font_size = block.settings.breadcrumb_font_size
+
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-card" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		<nav aria-label="breadcrumb">
+			<ol class="gsp-breadcrumb breadcrumb mb-0 text-capitalize justify-content-{{ block.settings.content_alignment }}">
+				<li class="breadcrumb-item">
+					<a href="{{ routes.root_url }}" title="{{ 'page_title.home_link_title' | t }}">
+						{{ 'page_title.home' | t }}
+					</a>
+				</li>
+				{% if template.name == 'product' %}
+					{% liquid
+						assign current_collection = null
+						if collection
+							assign current_collection = collection
+						elsif product and product.collections.size > 0
+							assign current_collection = product.collections.first
+						endif
+					%}
+					{% if current_collection %}
+						{% if current_collection.handle %}
+							{% capture url %}/collections/{{ current_collection.handle }}{% endcapture %}
+							<li class="breadcrumb-item active"><a href="{{ url }}">{{ current_collection.title }}</a>
+							</li>
+						{% endif %}
+					{% endif %}
+					<li class="breadcrumb-item active"><span>{{ product.title }}</span></li>
+				{% elsif template.name == 'collection' and collection.handle %}
+
+					{% if current_tags %}
+						{% capture url %}/collections/{{ collection.handle }}{% endcapture %}
+						<li class="breadcrumb-item"><a href="{{ url }}">{{ collection.title }}</a></li>
+						<li class="breadcrumb-item active"><span>{{ current_tags | join: ' + ' }}</span></li>
+					{% else %}
+						<li class="breadcrumb-item active"><span>{{ collection.title }}</span></li>
+					{% endif %}
+
+				{% elsif template.name == 'blog' %}
+					{% if current_tags %}
+						<li class="breadcrumb-item"><a href="{{ blog.url }}">{{ blog.title }}</a></li>
+						<li class="breadcrumb-item active"><span>{{ current_tags | join: ' + ' }}</span></li>
+					{% else %}
+						<li class="breadcrumb-item active"><span>{{ blog.title }}</span></li>
+					{% endif %}
+
+				{% elsif template == 'article' %}
+					<li class="breadcrumb-item"><a href="{{ blog.url }}">{{ blog.title }}</a></li>
+					<li class="breadcrumb-item active"><span>{{ article.title }}</span></li>
+				{% elsif template == 'customers/addresses' %}
+					<li class="breadcrumb-item">
+						<a href="{{ routes.account_url }}">{{ 'customer.account.page_title' | t }}</a>
+					</li>
+					<li class="breadcrumb-item active"><span>{{ page_title }}</span></li>
+				{% elsif template contains 'page' %}
+					<li class="breadcrumb-item active"><span>{{ page.title }}</span></li>
+				{% elsif template contains 'search' %}
+					<li class="breadcrumb-item active">
+						<span>{{- 'search.results_with_count' | t: count: search.results_count, terms: search.terms -}}</span>
+					</li>
+				{% else %}
+					<li class="breadcrumb-item active"><span>{{ page_title }}</span></li>
+				{% endif %}
+			</ol>
+		</nav>
+	</div>
+</div>
+{% style %}
+	.gsp-block__{{ block.id }} .breadcrumb{
+	{%- if color != blank and color != "rgba(0,0,0,0)" %}
+		color: {{ color }};
+	{% endif -%}
+	{%- if color_active != blank and color_active != "rgba(0,0,0,0)" %}
+		--bs-breadcrumb-item-active-color: {{ color_active }};
+	{% endif -%}
+	{%- if font_size != blank %}
+		--bs-breadcrumb-font-size: {{ font_size }}px;
+	{% endif -%}
+	}
+{% endstyle %}

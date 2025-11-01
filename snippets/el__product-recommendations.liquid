@@ -1,0 +1,131 @@
+{% comment %}
+	Product recommendations
+	Accepts:
+	- args: Product recommendations settings | Obj
+	- section_id: Current section Id
+	- product_id: Current product Id
+	- show_action_product: show action product
+{% endcomment %}
+{% liquid
+	assign skin_product = args.settings.pc_skin
+	assign col_xl = args.settings.item_show_xl
+	assign col_lg = args.settings.item_show_lg
+	assign col_md = args.settings.item_show_md
+	assign col_sm = args.settings.item_show_sm
+	assign col = args.settings.item_show_xs
+	if show_action_product == nil
+		assign show_action_product = true
+	endif
+	assign recommendation_type = args.settings.recommendation_type | default: "related"
+	if skin_product == nil or skin_product == 'default' or skin_product == 'inherit'
+		assign skin_product = settings.pc_skin
+	endif
+	assign layout = skin_product | remove_first: 'skin-' | split: '-'
+	assign layout = layout[0]
+	if layout == 'list'
+		assign is_list = true
+	endif
+	assign hover_style = nil
+	if args.settings.pc_hover_style != 'default'
+		assign hover_style = args.settings.pc_hover_style
+	endif
+	assign aspect_ratio = nil
+	if args.settings.pc_aspect_ratio != 'default'
+		assign aspect_ratio = args.settings.pc_aspect_ratio
+	endif
+	capture animation_attr
+		render 'animation-attr', type: args.settings.animation_type
+	endcapture
+	assign class_item = 'gsp-listing-item'
+	if args.settings.extended_css_item != nil and args.settings.extended_css_item != ''
+		assign class_item = class_item | append: " " | append: args.settings.extended_css_item
+	endif
+	assign class_id = '.gsp-element-' | append: section_id
+%}
+<div class="gsp-element gsp-product-recommendations gsp-element-{{ section_id }}">
+	<gsp-product-recommendations
+		class="gsp-listing gsp-product-listing gsp-listing-layout-{{ layout }} gsp-product-listing-layout-{{ layout }}"
+		{% if args.settings.slider_enable %} data-gsp-slider {% endif %}
+		{% if args.settings.animation_type != 'none' %} data-gsp-animation {% endif %}
+		data-url="{{ routes.product_recommendations_url }}?section_id={{ section_id }}&product_id={{ product_id }}&limit={{ args.settings.product_limit | default: 4 }}&intent={{ recommendation_type }}">
+		{% if recommendations.performed and recommendations.products_count > 0 %}
+			{% if args.settings.slider_enable %}
+				<div {% render 'slider-attr',
+					is_list: is_list,
+					classes: 'gsp-slider slick-slider gsp-gutter-wrap gsp-listing-inner',
+					item_to_show: col_xl,
+					arrows: args.settings.slider_show_navigation,
+					dots: args.settings.slider_show_pagination,
+					auto_height: args.settings.slider_auto_height,
+					autoplay: args.settings.slider_autoplay,
+					autoplay_speed: args.settings.slider_autoplay_timeout,
+					fade: args.settings.slider_fade,
+					loop: args.settings.slider_loop,
+					center_mode: args.settings.slider_center_mode,
+					center_padding: args.settings.slider_center_padding,
+					lg_settings: true,
+					item_to_show_on_lg: col_lg,
+					item_to_scroll_on_lg: col_lg,
+					md_settings: true,
+					item_to_show_on_md: col_md,
+					item_to_scroll_on_md: col_md,
+					sm_settings: true,
+					item_to_show_on_sm: col_sm,
+					item_to_scroll_on_sm: col_sm,
+					xs_settings: true,
+					item_to_show_on_xs: col,
+					item_to_scroll_on_xs: col
+				%}
+					{%- if args.settings.slider_navigation_after_heading and args.settings.slider_show_navigation -%}
+						data-slick-append-arrows=".gsp-arrows-{{ section_id }}"
+					{%- endif -%}
+				>
+					{% for product in recommendations.products %}
+						<div class="{{ class_item }}" {{- animation_attr -}}>
+							{% render 'product-skins__item',
+								product: product,
+								skin: skin_product,
+								hover_style: hover_style,
+								aspect_ratio: aspect_ratio,
+								image_size: args.settings.pc_image_size,
+								show_description: args.settings.pc_show_description,
+								show_rating: args.settings.pc_show_rating,
+								show_action: show_action_product
+							%}
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<div class="row gsp-gutter-wrap gsp-listing-inner">
+					{% for product in recommendations.products %}
+						<div {% render 'classes-col-bootstrap', additional: class_item, col_xl: col_xl, col_lg: col_lg, col_md: col_md, col_sm: col_sm, col: col %} {{- animation_attr -}}>
+							{% render 'product-skins__item',
+								product: product,
+								skin: skin_product,
+								hover_style: hover_style,
+								aspect_ratio: aspect_ratio,
+								image_size: args.settings.pc_image_size,
+								show_description: args.settings.pc_show_description,
+								show_rating: args.settings.pc_show_rating,
+								show_action: show_action_product
+							%}
+						</div>
+					{% endfor %}
+				</div>
+			{% endif %}
+		{% endif %}
+	</gsp-product-recommendations>
+	{% render 'product-card__style',
+		class_id: class_id,
+		title_color: args.settings.pc_title_color,
+		title_mt: args.settings.pc_title_mt,
+		desc_color: args.settings.pc_desc_color,
+		desc_mt: args.settings.pc_desc_mt,
+		price_mt: args.settings.pc_price_mt,
+		img_spacing: args.settings.pc_image_spacing,
+		rating_mt: args.settings.pc_rating_mt,
+		swatch_mt: args.settings.pc_swatch_mt,
+		title_fs: args.settings.pc_title_fs,
+		price_fs: args.settings.pc_price_fs
+	%}
+</div>

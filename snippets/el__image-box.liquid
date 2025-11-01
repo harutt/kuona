@@ -1,0 +1,120 @@
+{% comment %}
+	Element Image Box
+	Accepts:
+	- args: heading settings | Obj
+	- args_style: args style | Obj
+	- image_plackholder_index: image plackholder index
+{% endcomment %}
+{% liquid
+	if args_style == blank
+		assign args_style = args
+	endif
+	assign content_alignment = args_style.settings.ib_alignment
+	assign class_wrap = "gsp-element gsp-image-box gsp-image-box-" | append: args.id
+	assign class_body = "gsp-image-box-content card-body p-0"
+	assign class_wrap = class_wrap | append: " text-" | append: content_alignment
+	assign title_tag = args.settings.title_tag | default: "h3"
+	assign title_color = args_style.settings.ib_title_color
+	assign desc_color = args_style.settings.ib_desc_color
+	assign fs_title = args_style.settings.ib_fs_title
+	assign fs_desc = args_style.settings.ib_fs_desc
+	assign spacing_title = args_style.settings.ib_sp_title
+	assign spacing_image = args_style.settings.ib_sp_image
+	assign spacing_desc = args_style.settings.ib_sp_desc
+	assign spacing_button = args_style.settings.ib_sp_button
+	assign image_radius = args_style.settings.ib_image_radius
+	assign image_mw = args_style.settings.image_mw
+
+	capture aspect_ratio
+		render 'convert-aspect-ratio', aspect_ratio: args_style.settings.aspect_ratio
+	endcapture
+	assign aspect_ratio = aspect_ratio | strip_newlines
+	assign hover_style = args_style.settings.hover_style
+	assign hover_effect = args_style.settings.hover_effect
+	if image_plackholder_index == blank
+		assign image_plackholder_index = 1
+	endif
+	assign placeholder = 'lifestyle-' | append: image_plackholder_index
+%}
+<div class="{{ class_wrap }}">
+	<div
+		class="gsp-image-box-image card-img {%- if hover_style != 'none' and hover_style != nil %} img-hover-{{ hover_style }}{% endif %} {%- if hover_effect != 'none' and hover_effect != nil %} img-effect img-effect-{{ hover_effect }}{% endif %}">
+	{% if args.settings.el_button_link != blank %}
+		<a href="{{ args.settings.el_button_link }}" class="d-block text-inherit" title="{{ args.settings.ib_title | strip_html }}">
+			{% endif %}
+			{% render 'responsive-image',
+				image: args.settings.ib_image,
+				aspect_ratio: aspect_ratio,
+				image_size: args_style.settings.image_size,
+				placeholder: placeholder,
+				alt: args.settings.ib_title,
+				wrapper_class: "d-inline-block"
+			%}
+			{% if args.settings.el_button_link != blank %}
+		</a>
+		{% endif %}
+	</div>
+	<div class="{{ class_body }}">
+		{% if args.settings.ib_title != nil and args.settings.ib_title != '' %}
+			<{{ title_tag }} class="gsp-image-box-title gsp-element-item mb-0">
+			{% if args.settings.el_button_link != blank %}
+				<a href="{{ args.settings.el_button_link }}" class="d-block text-inherit">
+					{% endif %}
+					{{ args.settings.ib_title | newline_to_br }}
+					{% if args.settings.el_button_link != blank %}
+				</a>
+				{% endif %}
+			</{{ title_tag }}>
+		{% endif %}
+		{% if args.settings.ib_desc != nil and args.settings.ib_desc != '' %}
+			<p class="gsp-image-box-desc gsp-element-item mb-0">
+				{{ args.settings.ib_desc | newline_to_br }}
+			</p>
+		{% endif %}
+		{% if args.settings.el_button_text != blank or args.settings.el_button_icon != 'none' %}
+			<div class="gsp-image-box-button gsp-element-item" {{ animation_attr_button }}>
+				{% render 'el__button', args: args %}
+			</div>
+		{% endif %}
+	</div>
+</div>
+{% style %}
+	.gsp-image-box-{{ args.id }} {
+	{%- if title_color != blank and title_color != "rgba(0,0,0,0)" %}
+		--gsp-image-box-color-title: {{ title_color }} !important;
+	{% endif -%}
+	{%- if desc_color != blank and desc_color != "rgba(0,0,0,0)" %}
+		--gsp-image-box-color-desc: {{ desc_color }} !important;
+	{% endif -%}
+	{%- if fs_title != blank and fs_title != -1 %}
+		--gsp-image-box-fs-title: {{ fs_title }}px !important;
+	{% endif -%}
+	{%- if fs_desc != blank and fs_desc != -1 %}
+		--gsp-image-box-fs-desc: {{ fs_desc }}px !important;
+	{% endif -%}
+	{%- if spacing_title != blank and spacing_title != -1 %}
+		--gsp-image-box-sp-title: {{ spacing_title }}px !important;
+	{% endif -%}
+	{%- if spacing_desc != blank and spacing_desc != -1 %}
+		--gsp-image-box-sp-desc: {{ spacing_desc }}px !important;
+	{% endif -%}
+	{%- if spacing_image != blank and spacing_image != -1 %}
+		--gsp-image-box-sp-image: {{ spacing_image }}px !important;
+	{% endif -%}
+	{%- if spacing_button != blank and spacing_button != -1 %}
+		--gsp-image-box-sp-btn: {{ spacing_button }}px !important;
+	{% endif -%}
+	}
+	{%- if image_radius != blank and image_radius != -1 %}
+		.gsp-image-box-{{ args.id }} .gsp-image-box-image{
+		border-radius: {{ image_radius }}% !important;
+		overflow: hidden;
+		}
+	{% endif -%}
+	{%- if image_mw != blank and image_mw != -1 %}
+		.gsp-image-box-{{ args.id }} .gsp-image-box-image {
+		--image-width: 100%;
+		max-width: {{ image_mw }}px !important;
+		}
+	{% endif -%}
+{% endstyle %}

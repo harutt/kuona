@@ -1,0 +1,136 @@
+{% comment %}
+	- id: id form
+	- predictive_search: Ajax result
+	- reset: reset search
+	- recommend: recommend result
+	- size: Form Size
+	- value_keyword: Set value for input as keywork on search page [Bool]
+	- placeholder: placeholder input
+	- custom_css: Additional css classes
+{% endcomment %}
+{% liquid
+	assign size = size | default: 'default'
+	assign value_keyword = value_keyword | default: false
+	if reset == nil
+		assign reset = true
+	endif
+	if recommend == nil
+		assign recommend = false
+	endif
+	if placeholder == nil
+		assign placeholder = 'search.placeholder' | t
+	endif
+	assign id = id | default: 'gsp-search-form'
+	assign unavailable_products = settings.search_unavailable_products
+	assign type = "query"
+	assign prefix = ""
+	if settings.search_product
+		if type != ""
+			assign prefix = ","
+		endif
+		assign type = type | append: prefix | append: "product"
+	endif
+	if settings.search_articles
+		if type != ""
+			assign prefix = ","
+		endif
+		assign type = type | append: prefix | append: "article"
+	endif
+	if settings.search_page
+		if type != ""
+			assign prefix = ","
+		endif
+		assign type = type | append: prefix | append: "page"
+	endif
+%}
+<gsp-search-form class="gsp-element gsp-search-form-wrap {{ custom_css }}"
+				 data-predictive-search="{{ predictive_search }}"
+	{% if predictive_search %}
+		data-search-type="{{ type }}" data-unavailable-products-option="{{ settings.search_unavailable_products | downcase }}"
+	{%- endif -%}
+>
+	<form
+		id="{{ id }}"
+		action="{{ routes.search_url }}"
+		method="GET"
+		novalidate
+		class="gsp-search-form position-relative"
+	>
+		<input type="hidden" name="type" value="{{ type }}"/>
+		<input type="hidden" name="options[unavailable_products]" value="{{ unavailable_products }}">
+		<input type="hidden" name="options[prefix]" value="last">
+		<input type="hidden" name="options[fields]" value="title">
+		<input type="text"
+			   name="q"
+			   required
+			{% if value_keyword %}
+				value="{{ search.terms | escape }}"
+			{% endif %}
+			   autocomplete="off"
+			   placeholder="{{ placeholder }}"
+			   class="form-control search-input w-100 {% if size != 'default' %} form-control-{{ size }} {% endif %}"
+		>
+		<div class="gsp-search-action position-absolute d-flex align-items-center">
+			{%- if predictive_search and reset -%}
+				<button type="reset" class="btn btn-clear bg-transparent px-0 border-transparent d-none">
+					{% render 'icons', icon: 'xmark' %}
+				</button>
+			{%- endif -%}
+			<button type="submit"
+					class="btn btn-submit bg-transparent px-3 border-transparent gsp-spin-wrapper {% if size != 'default' %} btn-{{ size }} {% endif %}" aria-label="{{ 'search.search' | t }}">
+				<span class="gsp-button__content lh-0 active">
+					{% render 'icons', icon: 'search' %}
+				</span>
+				<span class="gsp-button__spin">
+					{% render 'spin', custom_class: 'fs-18px' %}
+				</span>
+			</button>
+		</div>
+	</form>
+	{%- if predictive_search -%}
+		<div class="has-loading-section" data-predictive-search-result></div>
+	{%- endif -%}
+	{%- if settings.search_recommend != blank or settings.search_collection_recommend != blank -%}
+		{%- assign has_recommend = true -%}
+	{%- endif -%}
+	{%- if recommend and has_recommend -%}
+		<div class="gsp-search-recommend">
+			{%- if settings.search_recommend != blank -%}
+				{%- liquid
+					assign keywords = settings.search_recommend | split: ','
+				-%}
+				<div class="gsp-search-recommend-item gsp-search-recommend-keywords">
+					<h4 class="gsp-search-recommend-heading fs-18px mb-4 pb-2 border-bottom">{{ 'search.popular_searches' | t }}</h4>
+					<ul class="gsp-predictive-search-queries-list list-unstyled d-flex flex-wrap gap-3">
+						{%- for keyword in keywords -%}
+							<li class="lh-1">
+								<a href="{{ routes.search_url }}?type=product&options%5Bprefix%5D=last&q={{- keyword | strip -}}"
+								   class="text-capitalize text-main text-heading-hover border-bottom"
+								   title="{{ keyword | strip }}"
+								>
+									{{ keyword | strip }}
+								</a>
+							</li>
+						{%- endfor -%}
+					</ul>
+				</div>
+			{%- endif -%}
+			{%- if settings.search_collection_recommend != blank -%}
+				<div class="gsp-search-recommend-item gsp-search-recommend-collection">
+					<h4 class="gsp-search-recommend-heading fs-18px mb-4 pb-2 border-bottom">{{ 'search.most_searched_products' | t }}</h4>
+					<div class="gsp-predictive-search-list">
+						{%- assign collection_handle = settings.search_collection_recommend -%}
+						{%- for product in collections[collection_handle].products limit: settings.search_limit -%}
+							<div class="gsp-search-recommend-collection-item">
+								{% render 'product-skins__item',
+									product: product,
+									skin: 'skins__predictive-search'
+								%}
+							</div>
+						{%- endfor -%}
+					</div>
+				</div>
+			{%- endif -%}
+		</div>
+	{%- endif -%}
+</gsp-search-form>

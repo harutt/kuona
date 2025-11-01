@@ -1,0 +1,39 @@
+{% comment %}
+	- collection: Collection object (required)
+	- placeholder: placeholder image
+	- aspect_ratio: Ratio of the image
+	- hover_style: style hover image
+	- hover_effect: hover effect
+	- overlay: overlay of image
+	- custom_css: Add class css
+{% endcomment %}
+{% liquid
+	assign hover_style = hover_style | default: nil
+	assign url = collection.url | default: '#'
+
+	if collection != nil and image == nil and collection.image != nil
+		assign image = collection.featured_image
+	endif
+
+	if placeholder == nil
+		assign placeholder = 'collection-1'
+	endif
+	capture aspect_ratio
+		render 'convert-aspect-ratio', aspect_ratio: aspect_ratio
+	endcapture
+	assign aspect_ratio = aspect_ratio | strip_newlines
+	assign title_default = 'collection.title_example' | t
+
+%}
+<a href="{{ url }}"
+   class="gsp-collection-featured position-relative text-inherit d-block {%- if hover_style != 'none' and hover_style != nil %} img-hover-{{ hover_style }}{% endif %} {%- if hover_effect != 'none' and hover_effect != nil %} img-effect img-effect-{{ hover_effect }}{% endif %} {{ custom_css }}"
+   title="{{ collection.title | default: title_default }}">
+	{% render 'responsive-image',
+		image: image,
+		placeholder: placeholder,
+		aspect_ratio: aspect_ratio,
+		image_size: image_size,
+		overlay: overlay,
+		wrapper_class: ' gsp-collection-thumb-primary '
+	%}
+</a>

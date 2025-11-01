@@ -1,0 +1,91 @@
+{% comment %}
+	Counter block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+
+	assign title_color = block.settings.title_color
+	assign subtitle_color = block.settings.subtitle_color
+	assign desc_color = block.settings.desc_color
+	assign discount_color = block.settings.discount_color
+	assign counter_title_color = block.settings.counter_title_color
+	assign counter_value_color = block.settings.counter_value_color
+%}
+<div class="gsp-block__{{ block.id }} gsp-block gsp-block-countdown" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		<div class="gsp-block-countdown__content-wrap h-100 flex-fill d-flex flex-column align-items-{{ block.settings.content_alignment }} justify-content-{{ block.settings.vertical_align }}">
+			{% if block.settings.subtitle != blank %}
+				<p class="gsp-block-countdown__subtitle d-flex align-items-center">
+					{{ block.settings.subtitle }}
+					{% if block.settings.discount != blank %}
+						<span class="gsp-block-countdown__discount badge">{{ block.settings.discount }}</span>
+					{% endif %}
+				</p>
+			{% endif %}
+			{% if block.settings.title != blank %}
+				<h3 class="gsp-block-countdown__title d-flex align-items-center">
+					{{ block.settings.title }}
+					{% if block.settings.subtitle == blank and block.settings.discount != blank %}
+						<span class="gsp-block-countdown__discount badge">{{ block.settings.discount }}</span>
+					{% endif %}
+				</h3>
+			{% endif %}
+			{% if block.settings.desc != blank %}
+				<p class="gsp-block-countdown__desc">{{ block.settings.desc }}</p>
+			{% endif %}
+			{% render 'el__simple-countdown', args: block %}
+			{% if block.settings.el_button_text != blank or block.settings.el_button_icon != 'none' %}
+				<div class="gsp-block-countdown__button">
+					{% render 'el__button', args: block, classes: 'pe-auto' %}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% style %}
+	.gsp-block__{{ block.id }} {
+	{%- if title_color != blank and title_color != "rgba(0,0,0,0)" %}
+		--gsp-block-countdown__title-color: {{ title_color }};
+	{% endif -%}
+	{%- if subtitle_color != blank and subtitle_color != "rgba(0,0,0,0)" %}
+		--gsp-block-countdown__subtitle-color: {{ subtitle_color }};
+	{% endif -%}
+	{%- if desc_color != blank and desc_color != "rgba(0,0,0,0)" %}
+		--gsp-block-countdown__desc-color: {{ desc_color }};
+	{% endif -%}
+	{%- if discount_color != blank and discount_color != "rgba(0,0,0,0)" %}
+		--gsp-block-countdown__discount-color: {{ discount_color }};
+	{% endif -%}
+	{%- if counter_title_color != blank and counter_title_color != "rgba(0,0,0,0)" %}
+		--gsp-block-countdown__counter-title-color: {{ counter_title_color }};
+	{% endif -%}
+	{%- if counter_value_color != blank and counter_value_color != "rgba(0,0,0,0)" %}
+		--gsp-block-countdown__counter-value-color: {{ counter_value_color }};
+	{% endif -%}
+	{%- if block.settings.title_margin_bottom != blank and block.settings.title_margin_bottom != -1 %}
+		--gsp-block-countdown__title-margin-bottom: {{ block.settings.title_margin_bottom }}px;
+	{% endif -%}
+	{% if block.settings.subtitle_margin_bottom != blank and block.settings.subtitle_margin_bottom != -1 %}
+		--gsp-block-countdown__subtitle-margin-bottom: {{ block.settings.subtitle_margin_bottom }}px;
+	{%- endif %}
+	{% if block.settings.desc_margin_bottom != blank and block.settings.desc_margin_bottom != -1 %}
+		--gsp-block-countdown__desc-margin-bottom: {{ block.settings.desc_margin_bottom }}px;
+	{% endif -%}
+	{% if block.settings.timer_margin_bottom != blank and block.settings.timer_margin_bottom != -1 %}
+		--gsp-block-countdown__timer-margin-bottom: {{ block.settings.timer_margin_bottom }}px;
+	{% endif -%}
+	{% if block.settings.title_fs != blank and block.settings.title_fs != -1 %}
+		--gsp-block-countdown__title-font-size: {{ block.settings.title_fs }}px;
+	{% endif -%}
+	{% if block.settings.subtitle_fs != blank and block.settings.subtitle_fs != -1 %}
+		--gsp-block-countdown__subtitle-font-size: {{ block.settings.subtitle_fs }}px;
+	{% endif -%}
+	{% if block.settings.description_fs != blank and block.settings.description_fs != -1 %}
+		--gsp-block-countdown__desc-font-size: {{ block.settings.description_fs }}px;
+	{% endif -%}
+	}
+{% endstyle %}

@@ -1,0 +1,12 @@
+{% comment %}
+	Render addons cart icon in header
+	Arguments:
+	- classes: extra class
+{% endcomment %}
+<div class="gsp-header-addons-item gsp-header-addons-item__cart">
+	<a href="{{ routes.cart_url }}" {%- if settings.cs_enable_add_to_cart_drawer and template.name != 'cart' %} data-bs-toggle="offcanvas" data-bs-target="#gsp-cart-drawer" {% endif %}
+	   class="gsp-header-addons-item-link position-relative {%- if classes != '' %} {{ classes }}{% endif -%}" title="{{ 'header.addon.cart' | t }}" aria-label="{{ 'header.addon.cart' | t }}">
+		<span class="fs-25px fs-lg-28px">{% render 'icons', icon: 'add-cart' %}</span>
+		<span class="gsp-header-badge badge gsp-header-badge-cart-count position-absolute top-0 start-100 translate-middle rounded-circle p-0 square">{{ cart.item_count }}</span>
+	</a>
+</div>

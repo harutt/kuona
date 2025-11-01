@@ -1,0 +1,47 @@
+{% liquid
+	assign collection = collections[block.settings.collection]
+	assign aspect_ratio = nil
+	if block.settings.cc_aspect_ratio != 'default'
+		assign aspect_ratio = block.settings.cc_aspect_ratio
+	endif
+	assign hover_style = nil
+	if block.settings.cc_hover_style != 'default'
+		assign hover_style = block.settings.cc_hover_style
+	endif
+	assign class_id = '.gsp-megamenu-block-' | append: block.id
+	assign heading_fs = block.settings.fs_heading_menu
+%}
+
+<div class="gsp-megamenu-block gsp-megamenu-block-{{ block.id }} gsp-megamenu-block__collection col-{{ block.settings.block_width }} {{ block.settings.custom_css }}" {{ block.shopify_attributes }}>
+	{% if block.settings.heading != blank %}
+		<h3 class="gsp-megamenu-block__heading">{{ block.settings.heading | escape_once }}</h3>
+	{% endif %}
+	<div class="gsp-megamenu-block__content">
+		{% render 'collection-skins__item',
+			collection: collection,
+			aspect_ratio: aspect_ratio,
+			image_size: block.settings.cc_image_size,
+			hover_style: hover_style,
+			hover_effect: block.settings.cc_hover_effect,
+			skin: block.settings.cc_skin,
+			title: block.settings.custom_title,
+			featured_image: block.settings.custom_image
+		%}
+	</div>
+	{% render 'collection-card__style',
+		class_id: class_id,
+		title_color: block.settings.cc_title_color,
+		count_color: block.settings.cc_count_color,
+		btn_color: block.settings.cc_btn_color,
+		count_mt: block.settings.cc_count_mt,
+		btn_mt: block.settings.cc_btn_mt,
+		img_spacing: block.settings.cc_image_spacing
+	%}
+	{% style %}
+		{%- if heading_fs != blank and heading_fs != -1 %}
+			.gsp-megamenu-block-{{ block.id }}{
+			--gsp-megamenu-fs-heading: {{ heading_fs }}px;
+			}
+		{% endif -%}
+	{% endstyle %}
+</div>

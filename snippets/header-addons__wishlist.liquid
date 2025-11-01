@@ -1,0 +1,15 @@
+{% comment %}
+	Render addons wishlist icon in header
+	Arguments:
+	- classes: extra class
+{% endcomment %}
+<div class="gsp-header-addons-item gsp-header-addons-item__wishlist">
+	<a href="{{ pages[settings.wishlist_page].url | default: '#' }}"
+	   class="gsp-header-addons-item-link position-relative {%- if classes != '' %} {{ classes }}{% endif -%}" title="{{ 'header.addon.wishlist' | t }}" aria-label="{{ 'header.addon.wishlist' | t }}">
+		<span class="fs-25px fs-lg-28px">
+			{% render 'icons', icon: 'star' %}
+		</span>
+		<span
+			class="gsp-header-badge badge gsp-header-badge-wishlist-count position-absolute top-0 start-100 translate-middle rounded-circle p-0 square">0</span>
+	</a>
+</div>

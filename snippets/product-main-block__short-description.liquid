@@ -1,0 +1,7 @@
+{% comment %}
+  Accepts:
+  - product: {Object} Product Liquid object (required)
+{% endcomment %}
+{% if product.metafields.descriptor.short_description != blank %}
+	{{ product.metafields.descriptor.short_description }}
+{% endif %}

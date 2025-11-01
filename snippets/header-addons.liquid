@@ -1,0 +1,63 @@
+{% comment %}
+	- classes: Classes css
+	- search: Enable header addons search [Bool] | default false.
+	- idSearch: Id search form.
+	- account: Enable header addons account [Bool] | default false.
+	- wishlist: Enable header addons wishlist [Bool] | default false.
+	- cart: Enable header addons cart [Bool] | default false.
+	- currency: Enable header addons currency [Bool] | default false.
+	- country: Enable header addons country [Bool] | default false.
+	- language: Enable header addons language [Bool] | default false.
+	- button: Enable header addon button [Bool] | default false.
+	- button_text: text for button addon.
+	- button_link: link for button addon.
+	- button_icon: icon for button addon.
+	- classes_dropdown: Classes css for dropdown menu
+	- classes_btn_dropdown: Classes css for dropdown button
+{% endcomment %}
+{% liquid
+	assign search = search | default: false
+	assign account = account | default: false
+	assign wishlist = wishlist | default: false
+	assign compare = compare | default: false
+	assign cart = cart | default: false
+	assign currency = currency | default: false
+	assign country = country | default: false
+	assign language = language | default: false
+	assign button = button | default: false
+	if classes_btn_dropdown == blank
+		assign classes_btn_dropdown = 'fs-15px fw-heading text-uppercase'
+	endif
+	if search_layout == blank
+		assign search_layout = 'icon'
+	endif
+%}
+<div class="{{ classes }}">
+	{% if search %}
+		{% render 'header-addons__search', layout: search_layout, id: idSearch %}
+	{% endif %}
+	{% if account %}
+		{% render 'header-addons__account' %}
+	{% endif %}
+	{% if wishlist %}
+		{% render 'header-addons__wishlist' %}
+	{% endif %}
+	{% if compare %}
+		{% render 'header-addons__compare' %}
+	{% endif %}
+	{% if cart %}
+		{% render 'header-addons__cart' %}
+	{% endif %}
+	{% if currency %}
+		{% render 'header-addons__currency', classes_btn: classes_btn_dropdown, classes_dropdown: classes_dropdown %}
+	{% endif %}
+	{% if country %}
+		{% render 'header-addons__country', classes_btn: classes_btn_dropdown, classes_dropdown: classes_dropdown %}
+	{% endif %}
+	{% if language %}
+		{% render 'header-addons__language', classes_btn: classes_btn_dropdown, classes_dropdown: classes_dropdown %}
+	{% endif %}
+	{% if button %}
+		{% render 'header-addons__button', button_text: button_text, button_link: button_link, button_icon: button_icon %}
+	{% endif %}
+</div>

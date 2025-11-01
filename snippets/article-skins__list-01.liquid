@@ -1,0 +1,43 @@
+{% comment %}
+  Accepts:
+	- article: article object (required)
+	- placeholder: placeholder image
+	- image_ratio: Ratio of the image
+	- image_size: Image Size
+	- hover_style: style hover image
+{% endcomment %}
+
+{% liquid
+	assign image_ratio = image_ratio | default: nil
+	assign image_size = image_size | default: nil
+	assign hover_style = hover_style | default: nil
+	assign placeholder = placeholder | default: nil
+	assign animation_type = animation_type | default: 'none'
+	capture animation_attr
+		render 'animation-attr', type: animation_type
+	endcapture
+%}
+<div
+	class="card bg-transparent border-0 gsp-blogs-card gsp-blogs-card-skin-list gsp-blogs-card-skin-list-01 d-flex flex-column align-items-center flex-md-row" {{- animation_attr -}}>
+	<figure class="card-img-top gsp-blogs-card-image position-relative">
+		{% render 'article-image__thumb',
+			article: article,
+			image_ratio: image_ratio,
+			image_size: image_size,
+			placeholder: placeholder,
+			hover_style: hover_style
+		%}
+	</figure>
+	<div class="card-body p-0">
+		{% render 'article-card__meta',
+			article: article,
+			show_author: false,
+			show_first_tag: true,
+			show_date: true,
+			custom_css: "text-uppercase fw-heading ls-1px",
+		%}
+		{% render 'article-card__title', article: article %}
+		{% render 'article-card__excerpt', article: article, custom_css: "line-clamp-2" %}
+		{% render 'article-card__read-more', article: article, show_arrow: true, custom_css: "btn-link fw-heading border-bottom" %}
+	</div>
+</div>

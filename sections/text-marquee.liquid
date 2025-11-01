@@ -1,0 +1,204 @@
+{%- liquid
+	assign loop = 1
+	assign number_item = 30
+	if section.blocks.size < number_item
+		assign modulo = number_item | modulo: section.blocks.size
+		assign loop = number_item | divided_by: section.blocks.size
+		if modulo > 0
+			assign loop = loop | plus: 1
+		endif
+	endif
+
+	assign text_color = section.settings.text_color
+	assign bg_color = section.settings.bg_color
+	assign pd_top = section.settings.pd_top
+	assign pd_bottom = section.settings.pd_bottom
+	assign text_uppercase = section.settings.text_uppercase
+	assign font_size = section.settings.font_size
+	assign gap = section.settings.gap
+	assign gap_mobile = section.settings.gap_mobile
+	assign speed = section.settings.speed
+	assign custom_class = section.settings.custom_class
+-%}
+{% if section.blocks.size > 0 %}
+	<div class="gsp-text-marquee overflow-hidden gsp-text-marquee-{{ section.id }} {%- if custom_class != blank %} {{ custom_class }} {% endif -%}" data-section-id="{{ section.id }}">
+		<div class="gsp-text-marquee-track">
+			<div class="gsp-text-marquee-content d-flex">
+				{% for i in (1..loop) -%}
+					<div class="gsp-text-marquee-group d-inline-block d-flex">
+						{% for block in section.blocks %}
+							<span class="d-inline-block" {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
+						{% endfor %}
+					</div>
+				{%- endfor %}
+			</div>
+		</div>
+		{% style %}
+			.gsp-text-marquee-{{ section.id }} {
+			{%- if text_color != blank and text_color != "rgba(0,0,0,0)" %}
+				--gsp-text-marquee-color: {{ text_color }};
+			{% endif -%}
+			{%- if bg_color != blank and bg_color != "rgba(0,0,0,0)" %}
+				--gsp-text-marquee-bg: {{ bg_color }};
+			{% endif -%}
+			{%- if pd_top != blank %}
+				--gsp-text-marquee-pd-top: {{ pd_top }}px !important;
+			{% endif -%}
+			{%- if pd_bottom != blank %}
+				--gsp-text-marquee-pd-bottom: {{ pd_bottom }}px !important;
+			{% endif -%}
+			{%- if font_size != blank %}
+				--gsp-text-marquee-fs: {{ font_size }}px !important;
+			{% endif -%}
+			{%- if gap != blank %}
+				--gsp-text-marquee-gap: {{ gap }}px !important;
+			{% endif -%}
+			{%- if gap_mobile != blank %}
+				--gsp-text-marquee-gap-mobile: {{ gap_mobile }}px !important;
+			{% endif -%}
+			{%- if speed != blank %}
+				--gsp-text-marquee-speed: {{ speed }}s !important;
+			{% endif -%}
+			{%- if text_uppercase %}
+				text-transform: uppercase;
+			{% endif -%}
+			}
+		{% endstyle %}
+	</div>
+{% endif %}
+{% schema %}
+{
+    "name": "t:sections.text_marquee.name",
+    "settings": [
+        {
+            "type": "header",
+            "content": "t:sections.text_marquee.settings.header__settings"
+        },
+        {
+            "type": "range",
+            "id": "speed",
+            "label": "t:sections.text_marquee.settings.speed.label",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "default": 40
+        },
+        {
+            "type": "range",
+            "id": "gap",
+            "label": "t:sections.text_marquee.settings.gap.label",
+            "min": 0,
+            "max": 200,
+            "step": 5,
+            "default": 60
+        },
+        {
+            "type": "range",
+            "id": "gap_mobile",
+            "label": "t:sections.text_marquee.settings.gap_mobile.label",
+            "min": 0,
+            "max": 200,
+            "step": 5,
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "font_size",
+            "label": "t:sections.text_marquee.settings.font_size.label",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "default": 15
+        },
+        {
+            "type": "checkbox",
+            "id": "text_uppercase",
+            "label": "t:sections.text_marquee.settings.text_uppercase.label",
+            "default": true
+        },
+        {
+            "type": "header",
+            "content": "t:sections.text_marquee.settings.header__color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "t:sections.text_marquee.settings.text_color.label"
+        },
+        {
+            "type": "color",
+            "id": "bg_color",
+            "label": "t:sections.text_marquee.settings.bg_color.label"
+        },
+        {
+            "type": "header",
+            "content": "t:sections.text_marquee.settings.header__padding_section"
+        },
+        {
+            "type": "range",
+            "id": "pd_top",
+            "label": "t:sections.text_marquee.settings.pd_top.label",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "default": 10
+        },
+        {
+            "type": "range",
+            "id": "pd_bottom",
+            "label": "t:sections.text_marquee.settings.pd_bottom.label",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "default": 10
+        },
+        {
+            "type": "header",
+            "content": "t:sections.text_marquee.settings.header__extended_css_class"
+        },
+        {
+            "type": "text",
+            "id": "custom_class",
+            "label": "t:sections.text_marquee.settings.custom_class.label"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "text_block",
+            "name": "t:sections.text_marquee.block.text_block.name",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "text",
+                    "label": "t:sections.text_marquee.block.text_block.settings.text.label"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "t:sections.text_marquee.name",
+            "blocks": [
+                {
+                    "type": "text_block",
+                    "settings": {
+                        "text": "The complete Extra Sale 20% Off look"
+                    }
+                },
+                {
+                    "type": "text_block",
+                    "settings": {
+                        "text": "Free shipping on all U.S"
+                    }
+                },
+                {
+                    "type": "text_block",
+                    "settings": {
+                        "text": "We also make emails."
+                    }
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

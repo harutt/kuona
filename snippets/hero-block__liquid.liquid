@@ -1,0 +1,19 @@
+{% comment %}
+	Image hero
+	Accepts:
+	- block: block object
+	- custom_css: Custom css
+{% endcomment %}
+{% liquid
+	capture animation_content
+		render 'animation-attr', type: block.settings.content_animation
+	endcapture
+%}
+<div class="gsp-hero-item-wap gsp-hero-item-liquid" {{ animation_content }}>
+	{% if block.settings.liquid != blank %}
+		{{ block.settings.liquid }}
+	{% endif %}
+	{% if block.settings.html != blank %}
+		{{ block.settings.html }}
+	{% endif %}
+</div>

@@ -1,0 +1,46 @@
+{% comment %}
+	- article: obj article
+	- show_author: [bool] Show author article | default : true
+	- show_date: [bool] Show date public article | default : true
+	- layout: Layout header
+{% endcomment %}
+{% liquid
+	if show_author == nil
+		assign show_author = true
+	endif
+	if show_date == nil
+		assign show_date = true
+	endif
+%}
+{%- if layout == 'layout-01' %}
+	<div class="gsp-article-header text-center mb-5">
+		{% render 'article-card__first-tag',
+			custom_css: "btn btn-gray btn-hover-dark border-0 px-3 py-1 fw-heading mb-4"
+		%}
+		{% if article.title != blank %}
+			<h1 class="gsp-article-title mb-3 mt-1">{{ article.title }}</h1>
+		{% endif %}
+		{% render 'article-card__meta',
+			show_author: show_author,
+			show_date: show_date
+		%}
+	</div>
+	{% render 'article-image__featured', custom_css: "mb-5" %}
+{% endif -%}
+{%- if layout == 'layout-02' %}
+	<div class="position-relative gsp-blogs-card-image">
+		{% render 'article-image__featured', custom_css: "mb-5" %}
+		{% render 'article-card__first-tag',
+			custom_css: "gsp-article-blog-first-tag-inside-card-img position-absolute z-index-10 btn btn-light btn-hover-dark border-0 px-3 py-1 lh-1 fw-heading"
+		%}
+	</div>
+	<div class="gsp-article-header text-center mb-5">
+		{% if article.title != blank %}
+			<h1 class="gsp-article-title mb-3 mt-1">{{ article.title }}</h1>
+		{% endif %}
+		{% render 'article-card__meta',
+			show_author: show_author,
+			show_date: show_date
+		%}
+	</div>
+{% endif -%}

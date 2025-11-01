@@ -1,0 +1,81 @@
+{% comment %}
+	- container: container header
+{% endcomment %}
+{% liquid
+	assign enable_account = section.settings.show_account_icon
+	assign enable_search = section.settings.show_search
+	assign search_layout = section.settings.search_layout
+	assign enable_cart = section.settings.show_cart_icon
+	assign enable_currency = section.settings.show_currency_switcher
+	assign enable_language = section.settings.show_language_switcher
+	assign enable_country = section.settings.show_country_selector
+	assign enable_wishlist = false
+	assign enable_compare = false
+	if section.settings.show_wishlist_icon and settings.enable_wishlist
+		assign enable_wishlist = true
+	endif
+	if section.settings.show_compare_icon and settings.enable_compare
+		assign enable_compare = true
+	endif
+
+	assign enable_button = section.settings.show_button
+	assign button_text = section.settings.header_addon_el_button_text
+	assign button_link = section.settings.header_addon_el_button_link
+	assign button_icon = section.settings.header_addon_el_button_icon
+%}
+<div
+	class="main-header">
+	<div class="gsp-header__wrap">
+		<div class="{{ container }}">
+			<div class="d-flex align-items-center flex-nowrap mb-2 mt-4">
+				{% render 'header-addons',
+					account: false,
+					wishlist: false,
+					cart: false,
+					search: false,
+					currency: enable_currency,
+					language: enable_language,
+					country: enable_country,
+					classes: "gsp-header-addons d-flex align-items-center pe-2 w-50"
+				%}
+				<div class="px-5 mx-auto flex-shrink">
+					{% render 'header__logo' %}
+				</div>
+				<div class="gsp-header-addons gsp-header-addons-main w-50 d-flex justify-content-end">
+					{% if enable_search %}
+						{% render 'header-addons__search', layout: search_layout %}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div
+			class="py-0 gsp-header-menu {% if section.settings.header_sticky %} header-sticky header-sticky-smart disable-transition-all {% endif %}">
+			<div class="{% if section.settings.header_sticky %} sticky-area w-100 {% endif %}">
+				<div class="{{ container }}">
+					<div class="d-flex justify-content-center mx-auto">
+						<div class="w-25">
+						</div>
+						<div class="px-5 mx-auto flex-shrink">
+							{% render 'header__menu' %}
+						</div>
+						{% render 'header-addons',
+							account: enable_account,
+							wishlist: enable_wishlist,
+							compare: enable_compare,
+							cart: enable_cart,
+							search: false,
+							currency: false,
+							language: false,
+							country: false,
+							button: enable_button,
+							button_text: button_text,
+							button_link: button_link,
+							button_icon: button_icon,
+							classes: "gsp-header-addons gsp-header-addons-main d-flex justify-content-end align-items-center w-25"
+						%}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

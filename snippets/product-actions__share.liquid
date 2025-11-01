@@ -1,0 +1,24 @@
+{% comment %}
+	- label: lable for button
+	- url: Current url
+	- classes_item: Class css item action
+{% endcomment %}
+
+{% liquid
+	if classes_item == nil
+		assign classes_item = 'gsp-product-actions-item gsp-product-actions-share rounded-circle text-decoration-none'
+	endif
+	if label != nil
+		assign classes_item = classes_item | append: ' has-label'
+	endif
+%}
+<a class="{{ classes_item }}"
+   href="#" {% if label == nil %} data-bs-toggle="tooltip"
+	data-bs-placement="top" data-bs-title="{{ 'products.actions.compare_title' | t }}"  {% endif %}
+   data-bs-toggle="modal" data-bs-target="#gsp-modal__social-share">
+	{% render 'icons', icon: 'share-nodes' %}
+	{%- if label != nil -%}
+		<span>{{ label }}</span>
+	{% endif %}
+</a>
+{% render 'social-share', url: url %}

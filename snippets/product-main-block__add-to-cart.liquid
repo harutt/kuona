@@ -1,0 +1,149 @@
+{% comment %}
+  Renders a product form
+
+  Accepts:
+  - product: {Object} Product Liquid object (required)
+  - product_form_id: id form (required)
+  - product_form_class: class css form (required)
+  - current_variant: {String} Current (required)
+  - show_quantity_selector: {Boolean} Show the quantity selector (optional)
+  - show_instant_quantity: {Boolean} Show instant quantity buttons after submitting the form (optional)
+  - enable_dynamic_checkout: {Boolean}
+  - show_gift_card_recipient: {Boolean}
+  - show_pickup_availability: {Boolean}
+{% endcomment %}
+
+{% liquid
+	assign show_pickup_availability = show_pickup_availability | default: false
+	assign enable_add_to_cart = settings.enable_add_to_cart
+	assign style_button_atc = "btn btn-dark btn-lg"
+	assign gift_card_recipient_feature_active = false
+	if show_gift_card_recipient and product.gift_card?
+		assign gift_card_recipient_feature_active = true
+	endif
+
+	if enable_dynamic_checkout == nil or gift_card_recipient_feature_active == true
+		assign enable_dynamic_checkout = false
+	endif
+	if enable_dynamic_checkout
+		assign style_button_atc = "btn btn-outline-light btn-lg"
+	endif
+	assign variant_id = product.selected_or_first_available_variant.id
+
+	assign selected_variant_id = ''
+	unless section.settings.show_featured_media
+		assign selected_variant_id = product.selected_variant.id
+	endunless
+
+%}
+
+{% if enable_add_to_cart %}
+	<div class="gsp-main-product-block gsp-main-product-block-buy-buttons">
+		<product-form class="gsp-product-form" data-product-id="{{ product.id }}">
+			{%- form 'product',
+				product,
+				id: product_form_id,
+				data-product-id: product.id,
+				class: product_form_class,
+				novalidate: 'novalidate',
+				data-type: 'add-to-cart-form',
+				data-product-id: product.id,
+				data-product-handle: product.handle,
+				data-dynamic-checkout: enable_dynamic_checkout
+			-%}
+				<input hidden name="id" required value="{{ variant_id }}"
+					   data-selected-variant="{{ selected_variant_id }}">
+
+				{%- if gift_card_recipient_feature_active -%}
+					{%- render 'product__gift-card-recipient-form', product: product, form: form, section: section -%}
+				{%- endif -%}
+
+				<div class="gps-product-form-wrapper d-flex align-items-end flex-wrap">
+					{% if show_quantity_selector == true %}
+						<div class="gps-product-form--input">
+							<label class="text-heading fw-heading fs-15px pb-3">
+								{{ 'products.product.quantity' | t }}
+							</label>
+							<gps-quantity-input
+								class="gps-quantity input-group input-group-lg quantity position-relative">
+								<a href="#"
+								   class="gps-quantity-btn quantity-down text-black position-absolute translate-middle-y top-50 start-0 ps-2 z-index-5 fs-6">
+									{% render 'icons', icon: 'minus' %}
+								</a>
+								<input
+									class="gps-quantity-input form-control text-center z-index-1 border-transparent text-heading fw-semibold"
+									type="number"
+									data-product-id="{{ product.id }}"
+									name="quantity"
+									value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+									min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+									{% if product.selected_or_first_available_variant.quantity_rule.max != null %}
+										max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+									{% endif %}
+									step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
+									form="{{ product_form_id }}"
+								>
+								<a href="#"
+								   class="gps-quantity-btn quantity-up text-black position-absolute translate-middle-y top-50 end-0 pe-2 z-index-5 fs-6">
+									{% render 'icons', icon: 'plus' %}
+								</a>
+							</gps-quantity-input>
+
+						</div>
+					{% endif %}
+					<button type="submit" name="add"
+							class="{{ style_button_atc }} gsp-product-actions-button d-flex align-items-center justify-content-center gsp-spin-wrapper ms-3 px-3 flex-1"
+						{% unless product.selected_or_first_available_variant.available %} disabled {% endunless %}
+					>
+				<span class="gsp-button__content active">
+					{% if product.selected_or_first_available_variant.available %}
+						{{ 'products.product.add_to_cart' | t }}
+					{% else %}
+						{{ 'products.product.sold_out' | t }}
+					{% endif %}
+				</span>
+						<span class="gsp-button__spin">
+					{% render 'spin', custom_class: 'fs-18px' %}
+				</span>
+					</button>
+					{% if enable_dynamic_checkout %}
+						<div class="gsp-product-dynamic-checkout buy-one-click show-add-to-cart">
+							{{ form | payment_button }}
+						</div>
+					{% endif %}
+				</div>
+			{% endform %}
+			<div class="gsp-product-form-message"></div>
+		</product-form>
+		{% if show_pickup_availability %}
+			{%- assign pick_up_availabilities = product.selected_or_first_available_variant.store_availabilities
+				| where: 'pick_up_enabled', true
+			-%}
+			<pickup-availability
+				{% if product.selected_or_first_available_variant.available and pick_up_availabilities.size > 0 %} available{% endif %}
+				class="product__pickup-availabilities"
+				data-base-url="{{ routes.root_url }}"
+				data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+				data-has-only-default-variant="{{ product.has_only_default_variant }}"
+			>
+				<template>
+					<pickup-availability-preview class="gsp-pickup-availability-preview mt-3 mb-4 d-block">
+						<div class="gsp-pickup-availability-preview-inner d-flex flex-row gap-2">
+						<span class="text-danger">
+							{% render 'icons', icon: 'xmark' %}
+						</span>
+							<div class="gsp-pickup-availability-info">
+								<p class="mb-1">
+									{{ 'products.pickup_availability.unavailable' | t }}
+								</p>
+								<button class="btn btn-link btn-border-bottom">
+									{{ 'products.pickup_availability.refresh' | t }}
+								</button>
+							</div>
+						</div>
+					</pickup-availability-preview>
+				</template>
+			</pickup-availability>
+		{% endif %}
+	</div>
+{% endif %}

@@ -1,0 +1,102 @@
+{% comment %}
+	Element Featured Box
+	Accepts:
+	- args: heading settings | Obj
+	- args_style: args style | Obj
+{% endcomment %}
+{% liquid
+	if args_style == blank
+		assign args_style = args
+	endif
+
+	assign title_tag = args.settings.title_tag | default: "h3"
+	assign title_color = args_style.settings.tm_name_color
+	assign position_color = args_style.settings.tm_position_color
+	assign fs_name = args_style.settings.tm_fs_name
+	assign fs_position = args_style.settings.tm_fs_position
+	assign spacing_name = args_style.settings.tm_sp_name
+	assign spacing_position = args_style.settings.tm_sp_position
+	capture aspect_ratio
+		render 'convert-aspect-ratio', aspect_ratio: args_style.settings.tm_aspect_ratio
+	endcapture
+	assign aspect_ratio = aspect_ratio | strip_newlines
+%}
+<div class="gsp-element gsp-team-member img-hover-wrap img-effect-wrap gsp-team-member-{{ args.id }}">
+	<div
+		class="card-img overflow-hidden position-relative">
+		<div
+			class="gsp-team-member-image {%- if args_style.settings.tm_hover_style != 'none' %} img-hover-{{ args_style.settings.tm_hover_style }}{% endif %}">
+		{% if args.settings.tm_link != blank %}
+			<a href="{{ args.settings.tm_link }}" class="d-block" title="{{ args.settings.tm_name }}">
+				{% endif %}
+				{% render 'responsive-image',
+					image: args.settings.tm_avatar,
+					placeholder: "image",
+					aspect_ratio: aspect_ratio,
+					image_size: args_style.settings.tm_image_size,
+					alt: args.settings.tm_name
+				%}
+				{% if args.settings.tm_link != blank %}
+			</a>
+			{% endif %}
+		</div>
+		{% render 'el__social-links',
+			show_label: false,
+			extended_class: 'gsp-team-member-social-links position-absolute w-100 justify-content-center bottom-0',
+			instagram_link: args.settings.social_link_instagram,
+			twitter_link: args.settings.social_link_twitter,
+			facebook_link: args.settings.social_link_facebook,
+			pinterest_link: args.settings.social_link_pinterest,
+			snapchat_link: args.settings.social_link_snapchat,
+			tumblr_link: args.settings.social_link_tumblr,
+			youtube_link: args.settings.social_link_youtube,
+			vimeo_link: args.settings.social_link_vimeo,
+			tiktok_link: args.settings.social_link_tiktok,
+			discord_link: args.settings.social_link_discord,
+			whatsapp_link: args.settings.social_link_whatsapp,
+			spotify_link: args.settings.social_link_spotify,
+			linkedin_link: args.settings.social_link_linkedin,
+			line_link: args.settings.social_link_line
+		%}
+	</div>
+	<div class="gsp-team-member-content card-body p-0 text-{{ args_style.settings.tm_alignment }}">
+		{% if args.settings.tm_name != nil and args.settings.tm_name != '' %}
+			<{{ title_tag }} class="gsp-team-member-name gsp-element-item mb-0">
+			{% if args.settings.tm_link != blank %}
+				<a href="{{ args.settings.tm_link }}" class="text-inherit">
+					{% endif %}
+					{{ args.settings.tm_name }}
+					{% if args.settings.tm_link != blank %}
+				</a>
+				{% endif %}
+			</{{ title_tag }}>
+		{% endif %}
+		{% if args.settings.tm_position != nil and args.settings.tm_position != '' %}
+			<p class="gsp-team-member-position gsp-element-item mb-0">
+				{{ args.settings.tm_position | newline_to_br }}
+			</p>
+		{% endif %}
+	</div>
+</div>
+{% style %}
+	.gsp-team-member-{{ args.id }} {
+	{%- if title_color != blank and title_color != "rgba(0,0,0,0)" %}
+		--gsp-team-member-color-name: {{ title_color }} !important;
+	{% endif -%}
+	{%- if position_color != blank and position_color != "rgba(0,0,0,0)" %}
+		--gsp-team-member-color-position: {{ position_color }} !important;
+	{% endif -%}
+	{%- if fs_name != blank and fs_name != -1 %}
+		--gsp-team-member-fs-name: {{ fs_name }}px !important;
+	{% endif -%}
+	{%- if fs_position != blank and fs_position != -1 %}
+		--gsp-team-member-fs-position: {{ fs_position }}px !important;
+	{% endif -%}
+	{%- if spacing_name != blank and spacing_name != -1 %}
+		--gsp-team-member-sp-name: {{ spacing_name }}px !important;
+	{% endif -%}
+	{%- if spacing_position != blank and spacing_position != -1 %}
+		--gsp-team-member-sp-position: {{ spacing_position }}px !important;
+	{% endif -%}
+	}
+{% endstyle %}

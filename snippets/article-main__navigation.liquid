@@ -1,0 +1,47 @@
+{% comment %}
+	- article: obj article
+	- enable_navigation: [bool] enable navigation | default : true
+	- custom_css: Custom css
+{% endcomment %}
+{% liquid
+	if enable_navigation == nil
+		assign enable_navigation = true
+	endif
+%}
+{%- if enable_navigation %}
+	{% liquid
+		assign article_navigation_class = 'gsp-article-navigation border-top d-flex'
+		if blog.previous_article != nil and blog.next_article != nil
+			assign article_navigation_class = article_navigation_class | append: ' justify-content-between'
+		elsif blog.previous_article != nil
+			assign article_navigation_class = article_navigation_class | append: ' justify-content-start'
+		else
+			assign article_navigation_class = article_navigation_class | append: ' justify-content-end'
+		endif
+	%}
+	<div class="{{ article_navigation_class }}">
+		{% if blog.previous_article != nil %}
+			<div class="gsp-article-navigation-prev pe-3">
+				<a href="{{ blog.previous_article.url }}" class="gsp-article-navigation-link d-flex align-items-end">
+					<span class="icon text-main pe-3">{% render 'icons', icon: 'angle-left' %}</span>
+					<div class="gsp-article-navigation-inner">
+						<div
+							class="gsp-article-navigation-label">{{ 'blogs.post_navigation.previous' | t }}</div>
+						<div class="gsp-article-navigation-article-title d-none d-md-block">{{ blog.previous_article.title }}</div>
+					</div>
+				</a>
+			</div>
+		{% endif %}
+		{% if blog.next_article != nil %}
+		<div class="gsp-article-navigation-next ps-3">
+			<a href="{{ blog.next_article.url }}" class="gsp-article-navigation-link d-flex align-items-end">
+				<div class="gsp-article-navigation-inner text-end">
+					<div class="gsp-article-navigation-label">{{ 'blogs.post_navigation.next' | t }}</div>
+					<div class="gsp-article-navigation-article-title d-none d-md-block">{{ blog.next_article.title }}</div>
+				</div>
+				<span class="icon text-main ps-3">{% render 'icons', icon: 'angle-right' %}</span>
+			</a>
+		</div>
+		{% endif %}
+	</div>
+{% endif -%}

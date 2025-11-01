@@ -1,0 +1,20 @@
+{% comment %}
+	Accepts:
+	- container : Option class container
+	- classes : Classes css
+{% endcomment %}
+{%- liquid
+	assign class_container = settings.container
+	if container != 'inherit'
+		assign class_container = container
+	endif
+	if class_container != 'container' and class_container != 'container-fluid' and class_container != 'container-fluid-no-pd'
+		assign class_container = "container " | append : class_container
+	endif
+	if container == 'container-fluid-no-pd'
+		assign class_container = "container-fluid g-0"
+	endif
+	if classes != blank
+		assign class_container = class_container | append : " " | append : classes
+	endif
+-%}{{ class_container }}

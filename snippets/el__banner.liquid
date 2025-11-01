@@ -1,0 +1,149 @@
+{% comment %}
+	Banner block
+	Accepts:
+	- args: args object
+	- image_plackholder_index: image plackholder index
+{% endcomment %}
+{% liquid
+	if aspect_ratio == blank
+		assign aspect_ratio = args.settings.aspect_ratio | default: 'original'
+	endif
+	if image_size == blank
+		assign image_size = args.settings.image_size | default: 'full'
+	endif
+	if image_plackholder_index == blank
+		assign image_plackholder_index = 1
+	endif
+	assign placeholder = 'hero-apparel-' | append: image_plackholder_index
+	assign card_style = 'center'
+	case args.settings.card_style
+		when 'top'
+			assign card_style = 'start'
+		when 'middle'
+			assign card_style = 'center'
+		when 'bottom'
+			assign card_style = 'end'
+		when 'top-bottom'
+			assign card_style = 'center'
+	endcase
+
+	assign title_color = args.settings.title_color
+	assign title_tag = args.settings.title_tag | default: "h3"
+	assign subtitle_color = args.settings.subtitle_color
+	assign desc_color = args.settings.desc_color
+	assign title_fs = args.settings.title_fs
+	assign subtitle_fs = args.settings.subtitle_fs
+	assign desc_fs = args.settings.desc_fs
+	assign title_spacing = args.settings.title_spacing
+	assign subtitle_spacing = args.settings.subtitle_spacing
+	assign desc_spacing = args.settings.desc_spacing
+	assign button_spacing = args.settings.button_spacing
+	assign content_padding = args.settings.content_padding
+	assign content_padding_mobile = args.settings.content_padding_mobile
+	assign image_height = args.settings.image_height
+	assign image_height_mobile = args.settings.image_height_mobile
+	assign image_overlay = args.settings.image_overlay
+%}
+<div class="gsp-banner gsp-element gsp-banner-{{ args.id }}">
+	<div
+		class="gsp-banner-wrap img-hover-wrap img-effect-wrap position-relative {%- if image_overlay != 'none' %} banner-overlay-{{ image_overlay }}{% endif %} ">
+		<div
+			class="gsp-banner-image-wrap {%- if args.settings.hover_style != 'none' %} img-hover-{{ args.settings.hover_style }}{% endif %} {%- if args.settings.hover_effect != 'none' %} img-effect img-effect-{{ args.settings.hover_effect }}{% endif %}">
+		{% if args.settings.enable_image_link and args.settings.el_button_link != blank %}
+		{% liquid
+			if args.settings.title != blank
+				assign attr_title = args.settings.title | strip_html
+			else
+				assign attr_title = args.settings.el_button_link | strip_html
+			endif
+		%}
+			<a href="{{ args.settings.el_button_link }}" title="{{ attr_title }}"
+			   aria-label="{{ attr_title }}">
+				{% endif %}
+				{% render 'responsive-image',
+					image: args.settings.image,
+					aspect_ratio: aspect_ratio,
+					image_size: image_size,
+					placeholder: placeholder
+				%}
+				{% if args.settings.enable_image_link and args.settings.el_button_link != blank %}
+			</a>
+			{% endif %}
+		</div>
+		<div
+			class="gsp-banner-content card-img-overlay d-inline-flex flex-column justify-content-{{ card_style }} text-{{ args.settings.content_alignment }}">
+			{% if args.settings.subtitle != blank %}
+				<p class="gsp-element-item gsp-banner-subtitle h6">{{ args.settings.subtitle }}</p>
+			{% endif %}
+			{% if args.settings.title != blank %}
+			<{{ title_tag }} class="gsp-element-item gsp-banner-title">{{ args.settings.title | newline_to_br }}
+		</{{ title_tag }}>
+		{% endif %}
+		{% if args.settings.desc != blank %}
+			<p class="gsp-element-item gsp-banner-desc mb-0">{{ args.settings.desc | newline_to_br }}</p>
+		{% endif %}
+		{% if args.settings.el_button_text != blank or block.settings.el_button_icon != 'none' %}
+			<div
+				class="gsp-element-item gsp-banner-button {% if args.settings.card_style == 'top-bottom' %}mt-auto{% endif %}">
+				{% render 'el__button', args: args %}
+			</div>
+		{% else %}
+			{% if args.settings.card_style == 'top-bottom' %}
+				<div class="mt-auto"></div>
+			{% endif %}
+		{% endif %}
+	</div>
+</div>
+</div>
+{% style %}
+	{% if image_height != blank and image_height != -1 %}
+		.gsp-banner-{{ args.id }} [style*=--aspect-ratio]:before{
+		padding-top: {{ image_height }}px !important;
+		}
+	{%- endif %}
+	{% if image_height_mobile != blank and image_height_mobile != -1 %}
+		@media only screen and (max-width: 991px) {
+		.gsp-banner-{{ args.id }} [style*=--aspect-ratio]:before{
+		padding-top: {{ image_height_mobile }}px !important;
+		}
+		}
+	{%- endif %}
+	.gsp-banner-{{ args.id }} {
+	{%- if title_fs != blank and title_fs != -1 %}
+		--gsp-banner-fs-title: {{ title_fs }}px;
+	{% endif -%}
+	{%- if subtitle_fs != blank and subtitle_fs != -1 %}
+		--gsp-banner-fs-subtitle: {{ subtitle_fs }}px;
+	{% endif -%}
+	{%- if desc_fs != blank and desc_fs != -1 %}
+		--gsp-banner-fs-desc: {{ desc_fs }}px;
+	{% endif -%}
+	{%- if title_color != blank and title_color != "rgba(0,0,0,0)" %}
+		--gsp-banner-color-title: {{ title_color }};
+	{% endif -%}
+	{%- if subtitle_color != blank and subtitle_color != "rgba(0,0,0,0)" %}
+		--gsp-banner-color-subtitle: {{ subtitle_color }};
+	{% endif -%}
+	{%- if desc_color != blank and desc_color != "rgba(0,0,0,0)" %}
+		--gsp-banner-color-desc: {{ desc_color }};
+	{% endif -%}
+	{%- if subtitle_spacing != blank and subtitle_spacing != -1 %}
+		--gsp-banner-spacing-subtitle: {{ subtitle_spacing }}px;
+	{% endif -%}
+	{% if title_spacing != blank and title_spacing != -1 %}
+		--gsp-banner-spacing-title: {{ title_spacing }}px;
+	{%- endif %}
+	{% if desc_spacing != blank and desc_spacing != -1 %}
+		--gsp-banner-spacing-desc: {{ desc_spacing }}px;
+	{% endif -%}
+	{%- if button_spacing != blank and button_spacing != -1 %}
+		--gsp-banner-spacing-btn: {{ button_spacing }}px;
+	{% endif -%}
+	{%- if content_padding != blank and content_padding != -1 %}
+		--gsp-banner-content-padding: {{ content_padding }}px;
+	{% endif -%}
+	{%- if content_padding_mobile != blank and content_padding_mobile != -1 %}
+		--gsp-banner-content-padding-mobile: {{ content_padding_mobile }}px;
+	{% endif -%}
+	}
+{% endstyle %}

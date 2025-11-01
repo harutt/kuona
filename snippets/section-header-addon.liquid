@@ -1,0 +1,40 @@
+{% comment %}
+	Header Addon
+	Accepts:
+	- custom_header_addon: Custom header addon
+{% endcomment %}
+{% liquid
+	if section.settings.slider_navigation_after_heading and section.settings.slider_show_navigation and section.settings.slider_enable
+		assign slider_navigation_after_heading = true
+	endif
+	assign btn_view_all_position = section.settings.btn_view_all_position | default: "hide"
+
+	capture animation_attr
+		render 'animation-attr', type: section.settings.animation_type
+	endcapture
+
+	assign class_header = "gsp-section-header-item gsp-section-header-addon d-flex flex-row align-items-center gap-3 mt-lg-0 mt-3 justify-content-lg-end " | append: class_responsive
+	if section.settings.header_inline
+		assign class_header = class_header | append: " justify-content-xl-start"
+		if section.settings.header_inline_align == 'top-end'
+			assign class_header = class_header | append: "  mt-xl-auto mb-xl-3"
+		else
+			assign class_header = class_header | append: "  mt-xl-3"
+		endif
+	endif
+%}
+<div class="{{ class_header }}">
+	{%- if custom_header_addon != nil -%}
+		{{ custom_header_addon }}
+	{%- endif -%}
+	{%- if slider_navigation_after_heading -%}
+		<div class="gsp-slider gsp-arrows-after-heading" {{ animation_attr }}>
+			<div class="gsp-arrows-{{ section.id }} position-relative"></div>
+		</div>
+	{%- endif -%}
+	{%- if btn_view_all_position == 'after-heading' -%}
+		{% if section.settings.view_all_el_button_text != blank %}
+			{% render 'section-view-all' %}
+		{% endif %}
+	{%- endif -%}
+</div>

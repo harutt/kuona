@@ -1,0 +1,25 @@
+{% liquid
+	assign col_xl = section.settings.item_show_xl | default: 4
+	assign col_lg = section.settings.item_show_lg | default: 3
+	assign col_md = section.settings.item_show_md | default: 3
+	assign col_sm = section.settings.item_show_sm | default: 2
+	assign col = section.settings.item_show_xs | default: 1
+%}
+<div class="container">
+	<div class="gsp-page-content gsp-section-listing gsp-wishlist-page-content">
+		<div class="gsp-wishlist-page-content__wrapper row gsp-listing-inner py-6"
+			 data-gsp-product-list {% render 'classes-col-bootstrap', attr: 'data-classes-item-inner', col_xl: col_xl, col_lg: col_lg, col_md: col_md, col_sm: col_sm, col: col %}>
+			<div class="gsp-wishlist-loading has-loading-section py-10">
+				{% render 'loading__section' %}
+			</div>
+		</div>
+	</div>
+	<div class="gsp-page-content gsp-wishlist-no-products d-none py-6 py-xl-7">
+		<div class="text-center alert alert-info">
+			{{ 'page.wishlist.no_products' | t }}
+			<a class="gsp-text-link border-bottom border-currentColor" href="{{ routes.all_products_collection_url }}">
+				{{ 'page.back_to_shopping' | t }}
+			</a>
+		</div>
+	</div>
+</div>

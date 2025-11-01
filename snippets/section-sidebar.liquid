@@ -1,0 +1,45 @@
+{% comment %}
+	- status: Open or close or offcanvas
+	- sidebar: Contain html sidebar
+	- position: Position sidebar
+	- sticky: Sticky sidebar
+	- hide_mobile: Hide sidebar on mobile
+	- extended_css_sidebar: Extended class css
+	- extended_css_main: Extended class css
+{% endcomment %}
+{% liquid
+	if status == nil
+		assign status = 'open'
+	endif
+
+	if position == 'right'
+		assign extended_css_sidebar = extended_css_sidebar | append: " ps-xl-4 order-2"
+	endif
+
+	if position == 'left'
+		assign extended_css_sidebar = extended_css_sidebar | append: " pe-xl-4 order-2 order-lg-1"
+		assign extended_css_main = extended_css_main | append: " order-1"
+	endif
+
+	if hide_mobile
+		assign extended_css_sidebar = extended_css_sidebar | append: " d-none d-lg-block"
+	endif
+	if sticky
+		assign extended_css_sidebar = extended_css_sidebar | append: " sidebar-sticky"
+	endif
+%}
+{% if sidebar != nil or sidebar != '' %}
+	{% case status %}
+		{% when 'open' %}
+			<div class="row">
+			<div id="gsp-sidebar" class="gsp-sidebar gsp-sidebar-section col-lg-3 mt-5 mt-lg-0 {{ extended_css_sidebar }}">
+				<div class="gsp-sidebar-section-inner gsp-sidebar-inner">
+					{{ sidebar }}
+				</div>
+			</div>
+			<div class="gsp-main-section col-lg-9 {{ extended_css_main }}">
+		{% when 'close' %}
+			</div>
+			</div>
+	{% endcase %}
+{% endif %}

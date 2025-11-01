@@ -1,0 +1,40 @@
+{% liquid
+	assign article = articles[block.settings.post]
+	assign placeholder = 'lifestyle-' | append: image_plackholder_index
+	assign aspect_ratio = nil
+	if block.settings.bc_aspect_ratio != 'default'
+		assign aspect_ratio = block.settings.bc_aspect_ratio
+	endif
+	assign hover_style = nil
+	if block.settings.bc_hover_style != 'default'
+		assign hover_style = block.settings.bc_hover_style
+	endif
+	assign class_id = '.gsp-block__' | append: block.id
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-card" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		{% render 'article-skins__item',
+			article: article,
+			image_ratio: aspect_ratio,
+			image_size: block.settings.bc_image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			skin: block.settings.bc_skin
+		%}
+	</div>
+</div>
+{% render 'article-card__style',
+	class_id: class_id,
+	title_color: block.settings.bc_title_color,
+	title_mt: block.settings.bc_title_mt,
+	excerpt_color: block.settings.bc_excerpt_color,
+	excerpt_mt: block.settings.bc_excerpt_mt,
+	meta_color: block.settings.bc_meta_color,
+	meta_mt: block.settings.bc_meta_mt,
+	img_spacing: block.settings.bc_image_spacing,
+%}

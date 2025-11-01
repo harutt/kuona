@@ -1,0 +1,13 @@
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: section.settings.animation_type
+	endcapture
+%}
+{% render 'section-start', name: 'main-page', has_header: false, custom_class: "gsp-section-404-page" %}
+<div class="gsp-main-page text-center py-5" {{- animation_attr -}}>
+	<h1 class="fs-90px fs-lg-160px lh-1 mb-5 mb-lg-3">404</h1>
+	<h4 class="fs-36px mb-3">{{ '404.title' | t }}</h4>
+	<p class="mb-5">{{ '404.text' | t }}</p>
+	<a href="{{ routes.root_url }}" class="btn btn-dark">{{ '404.text_button' | t }}</a>
+</div>
+{% render 'section-end', has_header: false %}

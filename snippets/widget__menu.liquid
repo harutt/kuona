@@ -1,0 +1,54 @@
+{% comment %}
+	- args: Widget settings | Obj
+{% endcomment %}
+
+{%- liquid
+	assign class_link = 'text-main text-primary-hover fw-semibold fs-14px text-uppercase text-decoration-none'
+	assign class_sub_link = 'text-main text-primary-hover fw-semibold fs-13px text-uppercase text-decoration-none'
+	assign style = 'vertical'
+	if args.style != nil
+		assign style = args.style
+	endif
+-%}
+<ul class="gsp-menu-list ps-0 mb-0 list-unstyled {% if style == "horizontal" %}list-inline{% endif %}">
+	{% for link in args.menu.links %}
+		{%- liquid
+			if link.active == true
+				assign class_link = class_link | append: " gsp-menu-link-active"
+			endif
+		-%}
+		<li class="menu-item {% if style == "horizontal" %}list-inline-item{% endif %}">
+			{{- link.title | link_to: link.url, class: class_link }}
+			{% if link.levels >= 1 %}
+				<ul class="gsp-submenu menu-list pt-0 pb-1 mb-0 list-unstyled {% if style == "horizontal" %}list-inline{% endif %}">
+					{% for sub_link in link.links %}
+						{%- liquid
+							assign class_sub_link_1 = class_sub_link
+							if sub_link.active == true
+								assign class_sub_link_1 = class_sub_link_1 | append: " gsp-menu-link-active"
+							endif
+						-%}
+						<li class="gsp-submenu-item menu-item {% if style == "horizontal" %}list-inline-item{% endif %}">
+							{{- sub_link.title | link_to: sub_link.url, class: class_sub_link_1 }}
+							{% if sub_link.links.size > 0 %}
+								<ul class="gsp-submenu menu-list pt-0 pb-1 mb-0  list-unstyled {% if style == "horizontal" %}list-inline{% endif %}">
+									{% for child_link in sub_link.links %}
+										{%- liquid
+											assign class_sub_link_2 = class_sub_link
+											if child_link.active == true
+												assign class_sub_link_2 = class_sub_link_2 | append: " gsp-menu-link-active"
+											endif
+										-%}
+										<li class="gsp-submenu-item menu-item {% if style == "horizontal" %}list-inline-item{% endif %}">
+											{{- child_link.title | link_to: child_link.url, class: class_sub_link_2 }}
+										</li>
+									{% endfor %}
+								</ul>
+							{% endif %}
+						</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		</li>
+	{% endfor %}
+</ul>

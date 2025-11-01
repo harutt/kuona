@@ -1,0 +1,25 @@
+{% comment %}
+	Content hero
+	Accepts:
+	- block: block object
+	- custom_css: Custom css
+{% endcomment %}
+<div class="gsp-hero-content {{ custom_css }}">
+{% if container != nil %}
+	<div class="{{ container }}">
+		{% endif %}
+		{% case block.type %}
+			{%- when '@app' -%}
+				{% render 'hero-block__app', block: block %}
+			{% when 'heading' %}
+				{% render 'hero-block__heading', block: block %}
+			{% when 'liquid' %}
+				{% render 'hero-block__liquid', block: block %}
+			{% when 'info' %}
+				{% render 'hero-block__info-box', block: block %}
+		{% endcase %}
+		{% if container != nil %}
+	</div>
+	{% endif %}
+	{% render 'hero-block__style', height_base: height_base, block: block %}
+</div>

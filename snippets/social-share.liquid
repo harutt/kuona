@@ -1,0 +1,47 @@
+{% comment %}
+	- url: link share
+	- page_title: page title
+	- is_modal: [bool] Is Modal mode | default : true
+	- custom_css: Custom css
+{% endcomment %}
+{% liquid
+	if is_modal == nil
+		assign is_modal = true
+	endif
+%}
+{% if url != blank %}
+	{% if is_modal %}
+		<div class="modal gsp-modal__social-share fade {{ custom_css }}" id="gsp-modal__social-share" data-gsp-append="body">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header border-0 pt-3 pb-md-0">
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body pt-1 pb-4 mb-2">
+						{% if settings.ss_copy_link %}
+							<div
+								class="gsp-modal__social-share-item gsp-modal__social-share-copy-link mb-3 pb-4 border-bottom">
+								<label for="gsp-social-share-copy-link"
+									   class="form-label text-heading fw-heading mb-3 fs-18px">{{ 'socials.copy_url' | t }}
+									:</label>
+								<input type="url" class="form-control" id="gsp-social-share-copy-link"
+									   value="{{ url }}">
+							</div>
+						{% endif %}
+						<div class="gsp-modal__social-share-wrapper">
+							<label class="form-label text-heading fw-heading fs-18px">{{ 'socials.share_label' | t }}
+								:</label>
+							<div class="gsp-modal__social-share-inner fs-18px">
+								{% render 'el__social-share', url: url, page_title: page_title %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% else %}
+		<div class="gsp-social-share {{ custom_css }}">
+			{% render 'el__social-share', url: url, page_title: page_title %}
+		</div>
+	{% endif %}
+{% endif %}

@@ -1,0 +1,42 @@
+{% liquid
+	assign collection = collections[block.settings.collection]
+	assign placeholder = 'collection-' | append: image_plackholder_index
+	assign aspect_ratio = nil
+	if block.settings.cc_aspect_ratio != 'default'
+		assign aspect_ratio = block.settings.cc_aspect_ratio
+	endif
+	assign hover_style = nil
+	if block.settings.cc_hover_style != 'default'
+		assign hover_style = block.settings.cc_hover_style
+	endif
+	assign class_id = '.gsp-block__' | append: block.id
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-card" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		{% render 'collection-skins__item',
+			collection: collection,
+			aspect_ratio: aspect_ratio,
+			image_size: block.settings.cc_image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			hover_effect: block.settings.cc_hover_effect,
+			skin: block.settings.cc_skin,
+			title: block.settings.custom_title,
+			featured_image: block.settings.custom_image
+		%}
+	</div>
+</div>
+{% render 'collection-card__style',
+	class_id: class_id,
+	title_color: block.settings.cc_title_color,
+	count_color: block.settings.cc_count_color,
+	btn_color: block.settings.cc_btn_color,
+	count_mt: block.settings.cc_count_mt,
+	btn_mt: block.settings.cc_btn_mt,
+	img_spacing: block.settings.cc_image_spacing
+%}

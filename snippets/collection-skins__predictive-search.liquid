@@ -1,0 +1,23 @@
+{% comment %}
+  Accepts:
+	- collection: collection object (required)
+	- placeholder: placeholder image
+	- featured_image: Custom featured image
+	- title: Custom title collection
+{% endcomment %}
+<div
+	class="card bg-transparent border-0 gsp-collection-card gsp-collection-card-skin-list gsp-collection-card-skin-predictive-search d-flex align-items-center flex-row">
+	<figure class="card-img gsp-collection-card-image position-relative">
+		{% render 'collection__featured',
+			collection: collection,
+			image: featured_image,
+			placeholder: placeholder,
+			aspect_ratio: '1/1',
+			image_size: '300px'
+		%}
+	</figure>
+	<div class="card-body p-0">
+		{% render 'collection-card__title', collection: collection, title: title %}
+		{% render 'collection-card__count-product', collection: collection %}
+	</div>
+</div>

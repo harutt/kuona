@@ -1,0 +1,57 @@
+{% comment %}
+	Infobox block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_box
+		render 'animation-attr', type: 'fadeIn'
+	endcapture
+	capture animation_attr_title
+		render 'animation-attr', type: block.settings.title_animation
+	endcapture
+	capture animation_attr_sub_title
+		render 'animation-attr', type: block.settings.sub_title_animation
+	endcapture
+	capture animation_attr_desc
+		render 'animation-attr', type: block.settings.desc_animation
+	endcapture
+	capture animation_attr_button
+		render 'animation-attr', type: block.settings.button_animation
+	endcapture
+	capture animation_attr_sub_image
+		render 'animation-attr', type: block.settings.image_animation
+	endcapture
+
+	assign box_bg_color = block.settings.box_bg_color
+	assign box_padding = block.settings.box_padding
+	assign box_mw = block.settings.box_mw
+%}
+<div class="gsp-hero-item-wap gsp-hero-item-infobox w-100 d-flex justify-content-{{ block.settings.box_position }} gsp-hero-item-infobox-{{ block.id }}" >
+	<div class="gsp-hero-item-infobox-inner" {{ animation_box }}>
+		<div class="overflow-hidden">
+			{% render 'el__heading',
+				args: block,
+				animation_attr_title: animation_attr_title,
+				animation_attr_sub_title: animation_attr_sub_title,
+				animation_attr_desc: animation_attr_desc,
+				animation_attr_button: animation_attr_button,
+				animation_attr_sub_image: animation_attr_sub_image
+			%}
+		</div>
+	</div>
+</div>
+{% style %}
+	.gsp-hero-item-infobox-{{ block.id }} {
+	{%- if box_bg_color != blank and box_bg_color != "rgba(0,0,0,0)" %}
+		--gsp-hero-item-infobox-bg: {{ box_bg_color }} !important;
+	{% endif -%}
+	{%- if box_padding != blank and box_padding != -1 %}
+		--gsp-hero-item-infobox-padding: {{ box_padding }}px !important;
+	{% endif -%}
+	{%- if box_mw != blank and box_mw != -1 %}
+		--gsp-hero-item-infobox-mw: {{ box_mw }}px !important;
+	{% endif -%}
+	}
+{% endstyle %}
+

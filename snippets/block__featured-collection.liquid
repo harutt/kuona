@@ -1,0 +1,123 @@
+{% liquid
+	assign item_gap = block.settings.item_gap
+	if item_gap == blank or item_gap == -1
+		assign item_gap = section.settings.item_gap
+	endif
+	assign current_collection = collections[block.settings.collection]
+	assign skin_product = block.settings.pc_skin
+	assign col_xl = block.settings.item_show_xl
+	assign col_lg = block.settings.item_show_lg
+	assign col_md = block.settings.item_show_md
+	assign col_sm = block.settings.item_show_sm
+	assign col = block.settings.item_show_xs
+	assign class_id = '.gsp-block__' | append: block.id
+
+	if skin_product == nil or skin_product == 'default' or skin_product == 'inherit'
+		assign skin_product = settings.pc_skin
+	endif
+	assign layout = skin_product | remove_first: 'skin-' | split: '-'
+	assign layout = layout[0]
+
+	assign hover_style = nil
+	if block.settings.pc_hover_style != 'default'
+		assign hover_style = block.settings.pc_hover_style
+	endif
+
+	assign extended_css_item = 'gsp-listing-item'
+	if block.settings.extended_css_item != nil and block.settings.extended_css_item != ''
+		assign extended_css_item = extended_css_item | append: " " | append: block.settings.extended_css_item
+	endif
+
+	assign animation_type = block.settings.animation_type
+	if animation_type == 'inherit'
+		assign animation_type = section.settings.animation_type
+	endif
+	if animation_type == 'inherit'
+		assign animation_type = settings.animation_type
+	endif
+%}
+
+{%- capture product_empity -%}
+	{% for i in (1..block.settings.product_per_page) %}
+		{% liquid
+			capture current
+				cycle 1, 2, 3, 4, 5, 6
+			endcapture
+			assign placeholder = 'product-' | append: current
+		%}
+		<div {% render 'classes-col-bootstrap', additional: extended_css_item, col_xl: col_xl, col_lg: col_lg, col_md: col_md, col_sm: col_sm, col: col %}>
+			{% render 'product-skins__item',
+				skin: skin_product,
+				hover_style: hover_style,
+				aspect_ratio: block.settings.pc_aspect_ratio,
+				image_size: block.settings.pc_image_size,
+				show_description: block.settings.pc_show_description,
+				show_rating: block.settings.pc_show_rating,
+				animation_type: animation_type,
+				placeholder: placeholder
+			%}
+		</div>
+	{% endfor %}
+{%- endcapture -%}
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-card" {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		<div
+			class="gsp-listing gsp-product-listing gsp-listing-layout-{{ layout }} gsp-product-listing-layout-{{ layout }} {%- if animation_type != 'none' %}has-animation{% endif -%}"
+			data-section-id="{{ section.id }}"
+			data-listing-id="{{ section.id }}"
+			data-pagination-type="{{ block.settings.paginate_type }}"
+		>
+			{% if current_collection != blank %}
+				{%- paginate current_collection.products by block.settings.product_per_page -%}
+					<div class="gsp-listing-wrapper" data-gsp-listing-render>
+						<div class="row gsp-gutter-wrap gsp-listing-inner">
+							{%- for product in current_collection.products -%}
+								<div {% render 'classes-col-bootstrap', additional: extended_css_item, col_xl: col_xl, col_lg: col_lg, col_md: col_md, col_sm: col_sm, col: col %}>
+									{% render 'product-skins__item',
+										product: product,
+										skin: skin_product,
+										hover_style: hover_style,
+										aspect_ratio: block.settings.pc_aspect_ratio,
+										image_size: block.settings.pc_image_size,
+										show_rating: block.settings.pc_show_rating,
+										animation_type: animation_type
+									%}
+								</div>
+							{%- endfor -%}
+						</div>
+					</div>
+					{% if paginate.pages > 1 and block.settings.paginate_type != "none" %}
+						{% render 'el__pagination', paginate: paginate, type: block.settings.paginate_type, customClass: 'mt-5' %}
+					{%- endif -%}
+				{%- endpaginate -%}
+			{% else %}
+				<div class="gsp-listing-wrapper" data-gsp-listing-render>
+					<div class="row gsp-gutter-wrap gsp-listing-inner">
+						{{ product_empity }}
+					</div>
+				</div>
+			{%- endif -%}
+		</div>
+
+
+	</div>
+</div>
+{% if item_gap != blank and item_gap != -1 %}
+	{% style %}
+		.gsp-block__{{ block.id }} {
+		--gsp-section-item-gap: {{ item_gap }}px;
+		}
+	{% endstyle %}
+{% endif %}
+{% render 'product-card__style',
+	class_id: class_id,
+	title_color: block.settings.pc_title_color,
+	title_mt: block.settings.pc_title_mt,
+	desc_color: block.settings.pc_desc_color,
+	desc_mt: block.settings.pc_desc_mt,
+	price_mt: block.settings.pc_price_mt,
+	img_spacing: block.settings.pc_image_spacing,
+	rating_mt: block.settings.pc_rating_mt,
+	swatch_mt: block.settings.pc_swatch_mt
+%}

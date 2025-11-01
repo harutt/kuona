@@ -1,0 +1,39 @@
+{% comment %}
+  Accepts:
+  - block: {Object} block Liquid object (required)
+  - product_form_id: Form id
+  - index: index block
+{% endcomment %}
+
+{% liquid
+	assign field_name = block.settings.title
+	assign field_required = block.settings.field_required
+	assign show_at_checkout = block.settings.show_at_checkout
+
+	if field_name == blank
+		assign field_name = "custom image " | append: index
+	endif
+%}
+
+<div class="gsp-main-product-block-custom-field-image-wrap w-100" data-product-custom-field>
+	<label class="text-heading fw-heading fs-15px pb-3">
+		{{ field_name -}}
+		{%- if field_required -%}
+			<sup>*</sup>
+		{%- endif %}
+	</label>
+	{% unless show_at_checkout %}
+		{% assign field_name = field_name | prepend: '_' %}
+	{% endunless %}
+	<input
+		type="file"
+		accept="image/*"
+		id="{{ block.id }}"
+		name="properties[{{- field_name -}}]"
+		{% if field_required %}
+			required
+		{% endif %}
+		form="{{ product_form_id }}"
+		class="form-control"
+	>
+</div>

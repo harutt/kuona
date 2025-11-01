@@ -1,0 +1,49 @@
+<section class="pt-hero" role="region" aria-label="Hero">
+  {% if section.settings.hero_image != blank %}
+    {{ section.settings.hero_image | image_url: width: 2400 | image_tag:
+      class: 'pt-hero__bg', alt: section.settings.heading | escape }}
+  {% endif %}
+  <div class="pt-hero__overlay"></div>
+
+  <div class="pt-hero__content">
+    <h1 class="pt-hero__title">{{ section.settings.heading }}</h1>
+    {% if section.settings.subheading != blank %}
+      <p class="pt-hero__sub">{{ section.settings.subheading }}</p>
+    {% endif %}
+    {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+      <a href="{{ section.settings.button_link }}" class="pt-hero__btn">{{ section.settings.button_text }}</a>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .pt-hero{
+    position:relative;
+    min-height:calc(82vh); /* was 100vh; tighter */
+    overflow:hidden;
+  }
+  .pt-hero__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;}
+  .pt-hero__overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.10),rgba(0,0,0,.28))}
+  .pt-hero__content{position:relative;z-index:1;min-height:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:0 20px}
+  .pt-hero__title{color:#fff !important;font-weight:600;letter-spacing:.02em;line-height:1.08;font-size:clamp(26px,5vw,44px)}
+  .pt-hero__sub{margin-top:8px;color:#fff;opacity:.92;font-size:clamp(13px,2.2vw,18px);max-width:680px}
+  .pt-hero__btn{margin-top:16px;display:inline-block;background:#fff;color:#111;padding:8px 14px;font-size:12px;letter-spacing:.05em;text-decoration:none}
+  .pt-hero__btn:hover{background:#eaeaea}
+</style>
+
+
+
+{% schema %}
+{
+  "name": "Custom Hero (Port Tanger)",
+  "settings": [
+    { "type":"image_picker", "id":"hero_image", "label":"Hero Background Image" },
+    { "type":"text", "id":"heading", "label":"Heading", "default":"For the tastemakers. The creatives." },
+    { "type":"text", "id":"subheading", "label":"Subheading", "default":"The ones who define culture." },
+    { "type":"text", "id":"button_text", "label":"Button Text", "default":"Discover Now" },
+    { "type":"url",  "id":"button_link", "label":"Button Link" }
+  ],
+  "presets":[{"name":"Custom Hero (Port Tanger)"}]
+}
+{% endschema %}
+>

@@ -1,0 +1,15 @@
+{% comment %}
+  Accepts:
+	- product: product object (required)
+{% endcomment %}
+
+<div class="card bg-transparent border-0 gsp-product-card gsp-product-card-compare-preview">
+	<figure class="gsp-product-card-image position-relative overflow-hidden mb-0">
+		{% render 'product-image__featured', product: product, aspect_ratio: '1/1', image_size: '220px' %}
+		<a class="gsp-product-actions-remove-form-compare rounded-circle square btn-white btn p-0 btn-hover-danger"
+		   href="#"
+		   data-product-handle="{{ product.handle }}">
+			{% render 'icons', icon: 'xmark' %}
+		</a>
+	</figure>
+</div>

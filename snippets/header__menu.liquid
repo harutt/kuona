@@ -1,0 +1,144 @@
+{% comment %}
+	Header menu
+
+	Arguments:
+	- menu: menu id
+	- style: Menu custom style
+	- classes: class extra
+
+{% endcomment %}
+{% liquid
+	assign menu_id = menu | default: 'main_menu'
+%}
+<div class="nav navbar navbar-expand position-static p-0 {% if classes != blank %} {{ classes }}{% endif %}">
+	<ul class="navbar-nav gsp-main-menu w-100 w-xl-auto" {%- if style != blank %} style="{{ style | default: '' }}"{% endif %}>
+		{% for link in linklists[section.settings[menu_id]].links %}
+			{% liquid
+				assign title_handle = link.title | upcase | handle
+				assign has_mega_item = false
+				assign mega_content = blank
+			%}
+			{% for block in section.blocks %}
+				{% liquid
+					assign for_item = block.settings.for_item | upcase | handle
+					if for_item == blank or for_item != title_handle
+						continue
+					endif
+				%}
+				{% if for_item == title_handle %}
+					{% liquid
+						assign block_content = blank
+					%}
+
+					{% capture block_content %}
+						{% render 'header-megamenu__block', block: block %}
+					{% endcapture %}
+					{% liquid
+						assign mega_content = mega_content | append: block_content
+						if mega_content != blank
+							assign has_mega_item = true
+						endif
+					%}
+				{% endif %}
+			{% endfor %}
+			<li class="gsp-menu-item nav-item {%- if link.levels >= 1 or has_mega_item == true %} gsp-menu-has-children {% endif %} {%- if has_mega_item == true %} position-static gsp-menu-item__mega {% else %} position-relative {% endif %}">
+				<a href="{{ link.url }}"
+				   class="nav-link d-flex align-items-center position-relative gsp-menu-link p-0 {%- if link.active == true %} gsp-menu-link-active {% endif %} {%- if link.levels >= 1 or has_mega_item == true %} gsp-menu-has-children {% endif -%} {%- if section.settings.uppercase_parent_level %} text-uppercase{% endif %}">
+					{% if link.title contains 'gsp-menu-badge__' %}
+						{%- liquid
+							assign badge = link.title | split: '__' | last
+							assign content_menu = badge | split: '_' | last | replace: '-', ' '
+							assign content_badge = badge | split: '_' | first
+						-%}
+						<div class="gsp-menu-badge-wrap position-relative">
+							<span>{{ content_menu }}</span> <span
+								class="gsp-menu-badge badge {{ content_badge }}">{{ content_badge }}</span>
+						</div>
+					{% else %}
+						{{ link.title | escape }}
+					{% endif %}
+					{% if link.levels >= 1 or has_mega_item == true %}
+						{% render 'icons', icon: 'angle-down-sharp-regular' %}
+					{% endif %}
+				</a>
+				{% if link.levels >= 1 or has_mega_item == true %}
+					{%- if has_mega_item == true %}
+						{% liquid
+							assign container_mega = section.settings.container_mega_menu
+							if container_mega == 'inherit'
+								assign container_mega = section.settings.container
+							endif
+							if container_mega != 'container'
+								assign container_mega = 'container ' | append: container_mega
+							endif
+						%}
+						<div
+							class="gsp-submenu gsp-submenu-shadow start-0 border-0 rounded-0 gsp-mega-menu gsp-mega-menu-on-desktop">
+							<div class="{{ container_mega }}">
+								<div class="gsp-mega-menu-inner pb-4 {{ section.settings.custom_css_mega_menu }}">
+									<div class="row">
+										{{ mega_content }}
+									</div>
+								</div>
+							</div>
+						</div>
+					{% else %}
+						<ul class="gsp-submenu gsp-submenu-shadow start-0 border-0 rounded-0 px-0 py-2 list-unstyled">
+							{% for sub_link in link.links %}
+								<li class="gsp-submenu-item gsp-menu-has-children position-relative px-3 py-1 {%- if sub_link.levels >= 1 %} gsp-menu-has-children {% endif %}">
+									<a href="{{ sub_link.url }}"
+									   class="gsp-submenu-link gsp-submenu-link__hover text-decoration-none {%- if sub_link.active == true %} gsp-menu-link-active {% endif %}">
+										{% if sub_link.title contains 'gsp-menu-badge__' %}
+											{%- liquid
+												assign sub_badge = sub_link.title | split: '__' | last
+												assign sub_content_menu = sub_badge | split: '_' | last | replace: '-', ' '
+												assign sub_content_badge = sub_badge | split: '_' | first
+											-%}
+											<div class="gsp-menu-badge-wrap position-relative">
+												<span>{{ sub_content_menu }}</span>
+												<span class="gsp-menu-badge badge {{ sub_content_badge }}">
+													{{ sub_content_badge }}
+												</span>
+											</div>
+										{% else %}
+											<span>
+												{{ sub_link.title | escape }}
+											</span>
+										{% endif %}
+										{% if sub_link.levels >= 1 %}
+											{% render 'icons', icon: 'angle-down-sharp-regular' %}
+										{% endif %}
+									</a>
+									{% if sub_link.links.size > 0 %}
+										<ul class="gsp-submenu gsp-grandchild-menu gsp-submenu-shadow border-0 rounded-0 top-0 px-0 py-2 list-unstyled">
+											{% for child_link in sub_link.links %}
+												<li class="gsp-submenu-item gsp-grandchild-menu-item px-3 py-1 {%- if child_link.levels >= 1 %} gsp-menu-has-children {% endif %}">
+													<a href="{{ child_link.url }}"
+													   class="gsp-submenu-link gsp-submenu-link__hover text-decoration-none {%- if child_link.active == true %} gsp-menu-link-active {% endif %}">
+														{% if child_link.title contains 'gsp-menu-badge__' %}
+															{%- liquid
+																assign child_badge = child_link.title | split: '__' | last
+																assign child_content_menu = child_badge | split: '_' | last | replace: '-', ' '
+																assign child_content_badge = child_badge | split: '_' | first
+															-%}
+															<div class="gsp-menu-badge-wrap position-relative">
+																<span>{{ child_content_menu }}</span> <span
+																	class="gsp-menu-badge badge {{ child_content_badge }}">{{ child_content_badge }}</span>
+															</div>
+														{% else %}
+															<span>{{ child_link.title | escape }}</span>
+														{% endif %}
+													</a>
+												</li>
+											{% endfor %}
+										</ul>
+									{% endif %}
+								</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+				{% endif %}
+			</li>
+		{% endfor %}
+	</ul>
+</div>

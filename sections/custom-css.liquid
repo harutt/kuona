@@ -1,0 +1,32 @@
+{% if section.settings.custom_css != blank %}
+	<style type="text/css">
+		{{ section.settings.custom_css }}
+	</style>
+{% endif %}
+{% schema %}
+{
+    "name": "t:sections.custom_css.name",
+    "disabled_on": {
+        "groups": [
+            "header",
+            "footer"
+        ]
+    },
+    "settings": [
+        {
+            "type": "paragraph",
+            "content": "t:sections.custom_css.settings.paragraph__5"
+        },
+        {
+            "type": "textarea",
+            "id": "custom_css",
+            "label": "t:sections.custom_css.settings.custom_css.label"
+        }
+    ],
+    "presets": [
+        {
+            "name": "t:sections.custom_css.name"
+        }
+    ]
+}
+{% endschema %}

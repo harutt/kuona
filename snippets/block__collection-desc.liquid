@@ -1,0 +1,25 @@
+{% comment %}
+	Banner block
+	Only works in collection template
+	Accepts:
+	- block: block object
+	- collection: current collection
+{% endcomment %}
+
+{% liquid
+	assign collection_desc = collection.description
+	if collection.handle == 'all'
+		assign collection_desc = block.settings.collection_all_desc
+	endif
+
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+{% if collection_desc != nil %}
+	<div class="gsp-block__{{ block.id }} gsp-block gsp-block-collection-desc text-{{ block.settings.content_alignment }}" {{- animation_attr -}} {{ block.shopify_attributes }}>
+		<div class="gsp-block__inner rte">
+			{{ collection_desc }}
+		</div>
+	</div>
+{% endif %}

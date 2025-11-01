@@ -1,0 +1,54 @@
+<div class="gsp-toggle-compare-preview position-fixed z-index-10">
+	<div class="gsp-toggle-compare-preview-wrap">
+		<button
+			class="btn btn-primary position-relative gsp-toggle-compare-preview-button fs-20px d-flex align-items-center justify-content-center"
+			type="button"
+			data-bs-toggle="offcanvas"
+			data-bs-target="#gsp-offcanvas-compare-preview" aria-controls="gsp-offcanvas-compare-preview">
+			{% render 'icons', icon: 'compare' %}
+			<span class="fs-14px ls-3 ms-1 text-uppercase">Compare</span>
+		</button>
+	</div>
+</div>
+<div class="offcanvas offcanvas-bottom gsp-offcanvas-compare-preview" tabindex="-1" id="gsp-offcanvas-compare-preview"
+	 aria-labelledby="gsp-offcanvas-compare-previewLabel">
+	<div class="offcanvas-header justify-content-end pb-0">
+		<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body small pt-0">
+		<div class="container">
+			<h2 class="offcanvas-title h4"
+				id="gsp-offcanvas-compare-previewLabel">{{ 'products.actions.offcanvas_compare_heading' | t }}</h2>
+			<div class="gsp-compare-container-wrapper d-flex flex-wrap justify-content-between align-items-center mt-4 has-loading-section">
+				<div class="gsp-compare-preview">
+					<div {% render 'slider-attr',
+						classes: "gx-3 gsp-slider slick-slider gsp-compare-preview-slider slick-slider-arrow-inside slick-slider-arrow-active-when-hover",
+						item_to_show: "8",
+						arrows: "true",
+						dots: "false",
+						lg_settings: true,
+						item_to_show_on_lg: "5",
+						item_to_scroll_on_lg: "5",
+						sm_settings: true,
+						item_to_show_on_sm: "3",
+						item_to_scroll_on_sm: "3",
+						arrows_on_sm: "false",
+						dots_on_sm: "true"
+					%}>
+					</div>
+				</div>
+				<div class="gsp-compare-action text-center ps-3">
+					<a href="{{ pages[settings.product_compare_page].url | default: '#' }}"
+					   class="btn d-block btn-dark btn-hover-bg-primary btn-hover-border-primary px-2">
+						{{ 'products.actions.go_to_compare_page' | t }}
+					</a>
+					<a href="#"
+					   class="btn btn-link d-inline-block btn-border-bottom text-danger-hover mt-3 gsp-compare-action-clear-all">
+						{{ 'general.clear_all' | t }}
+					</a>
+				</div>
+				{% render 'loading__section' %}
+			</div>
+		</div>
+	</div>
+</div>

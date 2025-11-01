@@ -1,0 +1,175 @@
+<gsp-cart class="gsp-main-cart {% if cart == empty %} gsp-cart-empty{% endif %}" id="gspCart">
+	<div class="gsp-main-cart-inner">
+		{%- liquid
+			if settings.cs_show_fsg_on_cart_page and settings.cs_fsg_minimum_amount != blank
+				assign minimum_amount = settings.cs_fsg_minimum_amount | remove: ' '
+				render 'product__free-shipping-goal', minimum_amount: minimum_amount
+			endif
+		-%}
+		<div class="gsp-main-cart-body">
+			<div
+				class="gsp-cart-main-label bg-muted text-heading text-uppercase fw-heading ls-1 py-2 px-4 d-none d-xl-block">
+				<div class="row py-1">
+					<div class="gsp-cart-column gsp-cart-column-product col-md-6">
+						{{ 'cart.label.product' | t }}
+					</div>
+					<div class="gsp-cart-column gsp-cart-column-quantity col-md-2">
+						{{ 'cart.label.quantity' | t }}
+					</div>
+					<div class="gsp-cart-column gsp-cart-column-price col-md-3 text-end">
+						{{ 'cart.label.price' | t }}
+					</div>
+					<div class="gsp-cart-column gsp-cart-column-remove col-md-1">
+					</div>
+				</div>
+			</div>
+			<div class="gsp-cart-main-items">
+				<gsp-cart-items class="gsp-cart-items" data-gsp-cart-items>
+					{%- if cart.item_count > 0 -%}
+						<form id="main-cart-form" action="{{ routes.cart_url }}" method="post" novalidate>
+							{% for item in cart.items %}
+								{% render 'product-cart__main-items', item: item, is_first : forloop.first %}
+							{% endfor %}
+						</form>
+					{%- else -%}
+						<h3 class="gsp-cart__empty text-center">
+							{{ 'cart.general.no_products' | t }}
+							<a class="gsp-text-link text-decoration-none border-bottom border-currentColor" href="{{ routes.all_products_collection_url }}">
+								{{ 'page.back_to_shopping' | t }}
+							</a>
+						</h3>
+					{%- endif -%}
+				</gsp-cart-items>
+			</div>
+			<div
+				class="gsp-cart-main-actions pt-1 mt-4 d-flex flex-column flex-lg-row justify-content-lg-between align-items-lg-center border-bottom pb-5">
+				{% if settings.cs_enable_discount_code %}
+					<gsp-cart-addon-discount-code class="d-flex mb-4 mb-lg-0">
+						<input
+							form="main-cart-form"
+							placeholder="{{ 'cart.general.discount_placeholder' | t }}"
+							type="text"
+							name="discount"
+							class="form-control flex-1"
+						/>
+						<button class="btn btn-dark gsp-cart-addon-save ms-3" type="button" aria-expanded="false"
+								data-action="discount">
+							{{ 'cart.general.save_coupon' | t }}
+						</button>
+					</gsp-cart-addon-discount-code>
+				{% endif %}
+				<div class="d-flex align-items-center">
+					<a class="gsp-text-link btn btn-outline-light border-2"
+					   href="{{ routes.all_products_collection_url }}">
+						{{ 'page.countinue_shopping' | t }}
+					</a>
+					<gps-cart-clear-all>
+						<button class="btn btn-link btn-border-bottom ms-3 text-danger-hover" type="button">
+							{% render 'icons', icon: 'xmark' %}
+							{{ 'cart.general.clear_shopping_cart' | t }}
+						</button>
+					</gps-cart-clear-all>
+				</div>
+			</div>
+
+		</div>
+		<div class="gsp-main-cart-footer row mt-5 mt-lg-6 pt-lg-1">
+			{%- liquid
+				assign class_col_subtotal = 'col-lg-4 col-md-6'
+				if settings.cs_enable_cart_note and settings.cs_enable_estimate_shipping
+					assign class_col_subtotal = 'col-lg-4'
+				endif
+			-%}
+			{% if settings.cs_enable_cart_note %}
+				<div class="col-lg-4 col-md-6 mb-lg-0 mb-5">
+					<h4 class="fs-24 mb-3">{{ 'cart.general.cart_note_heading' | t }}</h4>
+					<gsp-cart-addon-note>
+							<textarea name="note" class="form-control mb-4"
+									  {% if form_id %}form="{{ form_id }}"{% endif %} rows="7"
+									  placeholder="{{ 'cart.general.note_placeholder' | t }}">{{ cart.note }}</textarea>
+						<button class="btn btn-dark gsp-cart-addon-save" type="button" data-bs-toggle="collapse"
+								data-bs-target="#gsp-cart-addon-note" aria-expanded="false"
+								aria-controls="gsp-cart-addon-note" data-action="note">
+							{{ 'cart.general.save' | t }}
+						</button>
+					</gsp-cart-addon-note>
+				</div>
+			{% endif %}
+			{% if settings.cs_enable_estimate_shipping %}
+				{%- liquid
+					assign show_delivery_days = settings.cs_show_delivery_days
+				-%}
+				<div class="col-lg-4 col-md-6 mb-lg-0 mb-5">
+					<h4 class="fs-24 mb-3">{{ 'cart.general.cart_shipping_rates_heading' | t }}</h4>
+					<gsp-cart-addon-estimate-shipping data-show-delivery-days="{{ show_delivery_days }}"
+													  {% if show_delivery_days %}data-delivery-one="{{ 'cart.general.delivery_days.one' | t }}"
+													  data-delivery-other="{{ 'cart.general.delivery_days.other' | t }}" {% endif %}>
+						<div data-address="root">
+							<div class="mb-3" id="MadrressCountry">
+								<label for="AddressCountry"
+									   class="form-label text-heading fw-heading">{{ 'customer.addresses.country' | t }}</label>
+								<select class="form-control" id="AddressCountry" name="address[country]"
+										data-default="{{ settings.cs_default_country_estimate_shipping | default: 'US' }}"></select>
+							</div>
+
+							<div class="mb-3" id="AddressProvinceContainer">
+								<label for="AddressProvince"
+									   class="form-label text-heading fw-heading">{{ 'customer.addresses.province' | t }}</label>
+								<select class="form-control" id="AddressProvince" name="address[province]"
+										data-default="{{ form.province }}"></select>
+							</div>
+
+							<div class="mb-4">
+								<label for="AddressZip"
+									   class="form-label text-heading fw-heading">{{ 'customer.addresses.zip' | t }}</label>
+								<input class="form-control" type="text" id="AddressZip" name="address[zip]"
+									   value="{{ form.zip }}" autocapitalize="characters">
+							</div>
+						</div>
+						<div class="gsp-cart-addon__shipping-rate mb-2"></div>
+						<button class="btn btn-dark gsp-cart-estimate-shipping-match gsp-spin-wrapper" type="button"
+								data-action="shipping">
+							<span class="gsp-button__content lh-0 active">
+								{{ 'cart.general.calculate_shipping_rates' | t }}
+							</span>
+							<span class="gsp-button__spin">
+								{% render 'spin', custom_class: 'fs-18px' %}
+							</span>
+						</button>
+					</gsp-cart-addon-estimate-shipping>
+				</div>
+			{% endif %}
+			<div class="{{ class_col_subtotal }}">
+				<gsp-cart-subtotal class="d-block shadow-2 px-4 py-3" data-cart-subtotal>
+					<div class="subtotal d-flex justify-content-between">
+						<label class="text-heading fw-heading">{{ 'cart.general.subtotal' | t }}:</label>
+						<p class="totals__total-value fs-24px text-heading fw-semibold mb-0">    {% render 'format-currency', price: cart.total_price %}</p>
+					</div>
+					{%- capture taxes_shipping_checkout -%}
+						{%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
+							{{ 'cart.general.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
+						{%- elsif cart.taxes_included -%}
+							{{ 'cart.general.taxes_included_but_shipping_at_checkout' | t }}
+						{%- elsif shop.shipping_policy.body != blank -%}
+							{{ 'cart.general.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
+						{%- else -%}
+							{{ 'cart.general.taxes_and_shipping_at_checkout' | t }}
+						{%- endif -%}
+					{%- endcapture -%}
+					<div class="gsp-cart__shipping-note mt-2">{{ taxes_shipping_checkout }}</div>
+					<button type="submit" name="checkout" class="btn btn-dark w-100 mt-3" form="main-cart-form">
+						{{ 'cart.general.checkout' | t }}
+					</button>
+					{%- if additional_checkout_buttons -%}
+						<div class="additional-checkout-buttons w-100 mt-3">
+							{{ content_for_additional_checkout_buttons }}
+						</div>
+					{%- endif -%}
+				</gsp-cart-subtotal>
+			</div>
+		</div>
+		<div class="gsp-cart-drawer-overlay">
+		</div>
+
+	</div>
+</gsp-cart>

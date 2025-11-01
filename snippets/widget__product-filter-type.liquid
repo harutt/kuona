@@ -1,0 +1,30 @@
+{% comment %}
+	- args: Filter settings | Obj
+	- ids: Id Filter
+{% endcomment %}
+{%- liquid
+	assign design = args.design
+	if ids == nil
+		assign ids = "type"
+	endif
+
+	assign source = collection.filters
+	if template contains 'search'
+		assign source = search.filters
+	endif
+-%}
+
+
+{%- for filter in source -%}
+	{%- liquid
+		assign scope = filter.param_name | replace: 'filter.p.', '' | split: '.' | first
+	-%}
+	{%- if scope == "product_type" and filter.type == "list" -%}
+		{% render 'product-filter__list',
+			filter: filter,
+			design: design,
+			ids: ids,
+			tag_html: 'gsp-widget-filter-list' %}
+		{% break %}
+	{%- endif -%}
+{%- endfor -%}

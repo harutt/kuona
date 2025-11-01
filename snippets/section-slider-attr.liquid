@@ -1,0 +1,26 @@
+{%- liquid
+	assign slider_show_navigation = section.settings.slider_show_navigation
+	assign slider_show_pagination = section.settings.slider_show_pagination
+
+	assign is_show_navigation = true
+	if slider_show_navigation == 'none'
+		assign is_show_navigation = false
+	endif
+
+	assign slider_center_mode = section.settings.slider_center_mode
+	assign slider_center_padding = section.settings.slider_center_padding
+	if slider_center_padding == blank
+		assign slider_center_padding = 0
+	endif
+
+	assign slider_items_show = section.settings.slider_items_show
+	assign slider_items_show_on_tablet = section.settings.slider_items_show_on_tablet
+-%}
+class="gsp-slider slick-slider"
+data-slick-slides-to-show="{{ slider_items_show }}"
+data-slick-slides-to-show-tablet="{{ slider_items_show_on_tablet }}"
+data-slick-arrows="{{ is_show_navigation }}"
+data-slick-dots="{{ slider_show_pagination }}"
+data-slick-center-mode="{{ slider_center_mode }}"
+data-slick-center-padding="{{ slider_center_padding }}"
+{%- if slider_show_navigation == 'header' or slider_show_navigation == 'bottom' %} data-slick-append-arrows=".slider-nav-{{ section.id }}"{% endif -%}

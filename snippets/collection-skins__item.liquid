@@ -1,0 +1,80 @@
+{% comment %}
+  Accepts:
+	- skin: skin skin product
+	- collection: collection object (required)
+	- placeholder: placeholder image
+	- aspect_ratio: Ratio of the image
+	- image_size: image size
+	- hover_style: hover style
+	- featured_image: Custom featured image (not required)
+	- title: Custom title collection (not required)
+{% endcomment %}
+{% liquid
+	if skin == nil or skin == '' or skin == 'default' or skin == 'inherit'
+		assign skin = settings.bc_skin
+	endif
+	assign aspect_ratio = aspect_ratio | default: nil
+	assign image_size = image_size | default: nil
+	assign hover_style = hover_style | default: nil
+	assign hover_effect = hover_effect | default: nil
+	assign placeholder = placeholder | default: nil
+	assign featured_image = featured_image | default: nil
+	assign title = title | default: nil
+%}
+{% case skin %}
+	{% when 'skin-grid-01' %}
+		{% render 'collection-skins__01',
+			collection: collection,
+			image_size: image_size,
+			aspect_ratio: aspect_ratio,
+			hover_style: hover_style,
+			hover_effect: hover_effect,
+			placeholder: placeholder,
+			animation_type: animation_type,
+			featured_image: featured_image,
+			title: title
+		%}
+	{% when 'skin-grid-02' %}
+		{% render 'collection-skins__02',
+			collection: collection,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			hover_effect: hover_effect,
+			placeholder: placeholder,
+			animation_type: animation_type,
+			featured_image: featured_image,
+			title: title
+		%}
+	{% when 'skin-grid-03' %}
+		{% render 'collection-skins__03',
+			collection: collection,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			hover_effect: hover_effect,
+			placeholder: placeholder,
+			animation_type: animation_type,
+			featured_image: featured_image,
+			title: title
+		%}
+	{% when 'skin-grid-04' %}
+		{% render 'collection-skins__04',
+			collection: collection,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			hover_effect: hover_effect,
+			placeholder: placeholder,
+			animation_type: animation_type,
+			featured_image: featured_image,
+			title: title
+		%}
+	{% when 'predictive-search' %}
+		{% render 'collection-skins__predictive-search',
+			collection: collection,
+			placeholder: placeholder,
+			featured_image: featured_image,
+			title: title
+		%}
+{% endcase %}

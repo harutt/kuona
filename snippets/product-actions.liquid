@@ -1,0 +1,73 @@
+{% comment %}
+	- product: product object
+	- layout: Layout action
+	- custom_css: Custom css
+{% endcomment %}
+{% liquid
+	assign layout = layout | default: 'layout-01'
+	assign custom_css = custom_css | default: ''
+	assign enable_quick_view = settings.enable_quick_view
+	assign enable_add_to_cart = settings.enable_add_to_cart
+	assign enable_wishlist = settings.enable_wishlist
+	assign enable_compare = settings.enable_compare
+%}
+{% case layout %}
+	{% when 'layout-01' %}
+		<div
+			class="gsp-product-actions gsp-product-actions-main gsp-product-actions-layout-01 d-flex align-items-center justify-content-center {{ custom_css }}">
+			{% if enable_add_to_cart == true %}
+				{% render 'product-actions__add-to-cart', product: product %}
+			{% endif %}
+			{% if enable_quick_view == true %}
+				{% render 'product-actions__quick-view', product: product %}
+			{% endif %}
+			{% if enable_wishlist == false %}
+				{% render 'product-actions__add-to-wishlist', product: product %}
+			{% endif %}
+			{% if enable_compare == true %}
+				{% render 'product-actions__compare', product: product %}
+			{% endif %}
+		</div>
+	{% when 'layout-02' %}
+		<div class="gsp-product-actions gsp-product-actions-main d-flex align-items-center gsp-product-actions-layout-02 {{ custom_css }}">
+			{% if enable_add_to_cart == true %}
+				{% render 'product-actions__add-to-cart', product: product, classes_icon: 'fs-23px me-1', classes_button: 'btn btn-dark gsp-product-actions-button gsp-spin-wrapper px-4', show_label: true %}
+			{% endif %}
+			{% if enable_quick_view == true %}
+				{% render 'product-actions__quick-view', product: product %}
+			{% endif %}
+			{% if enable_wishlist == true %}
+				{% render 'product-actions__add-to-wishlist', product: product %}
+			{% endif %}
+			{% if enable_compare == true %}
+				{% render 'product-actions__compare', product: product %}
+			{% endif %}
+		</div>
+	{% when 'layout-03' %}
+		<div class="gsp-product-actions gsp-product-actions-main d-flex flex-column gsp-product-actions-layout-03 {{ custom_css }}">
+			{% if enable_quick_view == true %}
+				{% render 'product-actions__quick-view', product: product %}
+			{% endif %}
+			{% if enable_wishlist == true %}
+				{% render 'product-actions__add-to-wishlist', product: product %}
+			{% endif %}
+			{% if enable_compare == true %}
+				{% render 'product-actions__compare', product: product %}
+			{% endif %}
+		</div>
+	{% when 'layout-04' %}
+		<div class="gsp-product-actions gsp-product-actions-main d-flex flex-column gsp-product-actions-layout-03 {{ custom_css }}">
+			{% if enable_add_to_cart == true %}
+				{% render 'product-actions__add-to-cart', product: product %}
+			{% endif %}
+			{% if enable_quick_view == true %}
+				{% render 'product-actions__quick-view', product: product %}
+			{% endif %}
+			{% if enable_wishlist == true %}
+				{% render 'product-actions__add-to-wishlist', product: product %}
+			{% endif %}
+			{% if enable_compare == true %}
+				{% render 'product-actions__compare', product: product %}
+			{% endif %}
+		</div>
+{% endcase %}

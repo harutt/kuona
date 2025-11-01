@@ -1,0 +1,66 @@
+{% comment %}
+  Renders meta product
+
+  Accepts:
+  - product: {Object} Product Liquid object (required)
+  - enable_vendor: Show vendor
+  - enable_type: Show type
+  - enable_collections: Show collections
+  - enable_availability: Show availability
+  - enable_sku: Show sku
+{% endcomment %}
+
+{% liquid
+	assign selected_variant = product.selected_or_first_available_variant
+	assign enable_vendor = enable_vendor | default: false
+	assign enable_type = enable_type | default: false
+	assign enable_collections = enable_collections | default: false
+	assign enable_availability = enable_availability | default: false
+	assign enable_sku = enable_sku | default: false
+%}
+
+<ul class="gsp-product-meta list-unstyled mb-0">
+	{% if enable_vendor and product.vendor != blank %}
+		<li class="d-flex fs-14px mb-1">
+			<span class="gsp-product-meta-label text-heading">{{ 'products.product.vendor' | t }}:</span>
+			<div class="gsp-product-meta-value ps-1">{{ product.vendor | link_to_vendor : class: 'text-decoration-none text-inherit' }}</div>
+		</li>
+	{% endif %}
+	{% if enable_type and product.type != blank %}
+		<li class="d-flex fs-14px mb-1">
+			<span class="gsp-product-meta-label text-heading">{{ 'products.product.type' | t }}:</span>
+			<div class="gsp-product-meta-value ps-1">{{ product.type | link_to_type : class: 'text-decoration-none text-inherit' }}</div>
+		</li>
+	{% endif %}
+	{% if enable_collections and product.collections.size > 0 %}
+		<li class="d-flex fs-14px mb-1">
+			<span class="gsp-product-meta-label text-heading">{{ 'products.product.collections' | t }}:</span>
+			<div class="gsp-product-meta-value ps-1">
+				{% for collection in product.collections %}
+					<a href="{{ collection.url }}" class="text-decoration-none text-inherit">
+						{{ collection.title }}
+						{%- if forloop.last != true -%},{%- endif -%}
+					</a>
+				{% endfor %}
+			</div>
+		</li>
+	{% endif %}
+	{% if enable_availability %}
+		<li class="d-flex fs-14px mb-1">
+			<span class="gsp-product-meta-label text-heading">{{ 'products.product.availability' | t }}:</span>
+			<div class="gsp-product-meta-value ps-1" data-availability>
+				{%- if selected_variant.available -%}
+					<span>{{ 'products.product.in_stock' | t }}</span>
+				{%- else -%}
+					<span>{{ 'products.product.unavailable' | t }}</span>
+				{%- endif -%}
+			</div>
+		</li>
+	{% endif %}
+	{% if enable_sku %}
+		<li class="d-flex fs-14px mb-1">
+			<span class="gsp-product-meta-label text-heading">{{ 'products.product.sku' | t }}:</span>
+			<div class="gsp-product-meta-value ps-1" data-variant-sku>{{ selected_variant.sku | default: 'N/A' }}</div>
+		</li>
+	{% endif %}
+</ul>

@@ -1,0 +1,17 @@
+{% comment %}
+  Accepts:
+  	- article: article object (required)
+  	- show_arrow: Show icon arrow
+	- custom_css: Add class css
+{% endcomment %}
+{% liquid
+	if show_arrow == nil
+		assign show_arrow = false
+	endif
+%}
+<a class="gsp-blogs-card-read-more gsp-blogs-card-item btn {{ custom_css }}" href="{{ article.url | default: "#" }}">
+	{{ 'blogs.read_more' | t }}
+	{%- if show_arrow -%}
+		<span class="ms-1">{% render 'icons', icon: 'arrow-right' %}</span>
+	{%- endif -%}
+</a>

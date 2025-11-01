@@ -1,0 +1,19 @@
+{% comment %}
+	- args: Widget settings | Obj
+{% endcomment %}
+
+{%- liquid
+	if args.show_all
+		assign source = collections
+	else
+		assign source = args.collection_list
+	endif
+-%}
+
+<ul class="product-list-collections ps-0 mb-0 list-unstyled">
+	{% for collection in source %}
+		<li class="product-collections-item">
+			<h4 class="text-main fs-14px text-uppercase">{{- collection.title | link_to: collection.url, class: 'text-decoration-none text-inherit' }}</h4>
+		</li>
+	{% endfor %}
+</ul>

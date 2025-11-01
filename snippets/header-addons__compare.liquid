@@ -1,0 +1,15 @@
+{% comment %}
+	Render addons compare icon in header
+	Arguments:
+	- classes: extra class
+{% endcomment %}
+<div class="gsp-header-addons-item gsp-header-addons-item__compare">
+	<a href="{{ pages[settings.product_compare_page].url | default: '#' }}"
+	   class="gsp-header-addons-item-link position-relative {%- if classes != '' %} {{ classes }}{% endif -%}" title="{{ 'header.addon.compare' | t }}" aria-label="{{ 'header.addon.compare' | t }}">
+		<span class="fs-25px fs-lg-28px">
+			{% render 'icons', icon: 'compare' %}
+		</span>
+		<span
+			class="gsp-header-badge badge gsp-header-badge-compare-count position-absolute top-0 start-100 translate-middle rounded-circle p-0 square">0</span>
+	</a>
+</div>

@@ -1,0 +1,43 @@
+{% comment %}
+	Element Simple Countdown
+	Accepts:
+	- args: args object
+{% endcomment %}
+{% liquid
+	assign color = args.settings.el_simple_countdown_color
+	assign font_size = args.settings.el_simple_countdown_fs
+	assign spacing = args.settings.el_simple_countdown_sp
+	assign alignment = args.settings.el_simple_countdown_alignment
+%}
+<div class="gsp-simple-countdown gsp-element gsp-simple-countdown-{{ args.id }}">
+	<div class="d-flex flex-wrap {%- if alignment != "default" %} justify-content-{{ alignment }} {% endif -%}" data-countdown="{{ args.settings.el_simple_countdown_end_date | escape }}">
+		<div class="gsp-simple-countdown-item">
+			<span class="day">00</span>
+		</div>
+		<div class="separate">:</div>
+		<div class="gsp-simple-countdown-item">
+			<span class="hour">00</span>
+		</div>
+		<div class="separate">:</div>
+		<div class="gsp-simple-countdown-item">
+			<span class="minute">00</span>
+		</div>
+		<div class="separate">:</div>
+		<div class="gsp-simple-countdown-item">
+			<span class="second">00</span>
+		</div>
+	</div>
+</div>
+{% style %}
+	.gsp-simple-countdown-{{ args.id }} {
+	{%- if color != blank and color != "rgba(0,0,0,0)" %}
+		--gsp-simple-countdown-color: {{ color }} !important;
+	{% endif -%}
+	{%- if font_size != blank and font_size != -1 %}
+		--gsp-simple-countdown-fs: {{ font_size }}px !important;
+	{% endif -%}
+	{%- if spacing != blank and spacing != -1 %}
+		--gsp-simple-countdown-sp: {{ spacing }}px !important;
+	{% endif -%}
+	}
+{% endstyle %}

@@ -1,0 +1,197 @@
+<header class="pt-header" role="banner">
+  <div class="pt-header__inner">
+
+    <!-- LEFT: primary items -->
+    <nav class="pt-nav pt-nav--left" aria-label="Primary">
+      {% if section.settings.menu_left != blank %}
+        {% assign left_menu = linklists[section.settings.menu_left] %}
+        {% for link in left_menu.links %}
+
+          {% if link.links.size > 0 %}
+            <!-- Menu item with dropdown/mega -->
+            <div class="pt-item {% if link.title == 'Brands' %}pt-has-mega{% else %}pt-has-drop{% endif %}">
+              <button class="pt-link pt-drop__btn" aria-haspopup="true" aria-expanded="false">{{ link.title }}</button>
+
+              {% if link.title == 'Brands' %}
+                <!-- Mega menu for Brands -->
+                <div class="pt-mega" aria-hidden="true">
+                  <div class="pt-mega__inner">
+                    <div class="pt-mega__col">
+                      <div class="pt-mega__title">Brands</div>
+                      <div class="pt-brands">
+                        {% for block in section.blocks %}
+                          {% if block.type == 'brand' %}
+                            <a href="{{ block.settings.url | default: '#' }}" class="pt-brand">
+                              {% if block.settings.logo != blank %}
+                                {{ block.settings.logo | image_url: width: 160 | image_tag: class: 'pt-brand__img', alt: block.settings.name | escape }}
+                              {% else %}
+                                <span class="pt-brand__text">{{ block.settings.name }}</span>
+                              {% endif %}
+                            </a>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <div class="pt-mega__col pt-mega__links">
+                      {% for child_link in link.links %}
+                        <a href="{{ child_link.url }}" class="pt-mega__link">{{ child_link.title }}</a>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              {% else %}
+                <!-- Regular dropdown -->
+                <div class="pt-drop" aria-hidden="true">
+                  {% for child_link in link.links %}
+                    <a class="pt-drop__link" href="{{ child_link.url }}">{{ child_link.title }}</a>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% else %}
+            <!-- Simple link -->
+            <a href="{{ link.url }}" class="pt-link">{{ link.title }}</a>
+          {% endif %}
+
+        {% endfor %}
+      {% endif %}
+    </nav>
+
+    <!-- CENTER LOGO -->
+    <a href="{{ routes.root_url }}" class="pt-logo" aria-label="{{ shop.name }}">
+      {% if section.settings.logo != blank %}
+        {{ section.settings.logo | image_url: width: 220 | image_tag: width: section.settings.logo_width, alt: shop.name, class: 'pt-logo__img' }}
+      {% else %}
+        <span class="pt-logo__text">{{ section.settings.logo_text | default: shop.name }}</span>
+      {% endif %}
+    </a>
+
+    <!-- RIGHT: utility + book -->
+    <nav class="pt-nav pt-nav--right" aria-label="Secondary">
+      {% if section.settings.menu_right != blank %}
+        {% assign right_menu = linklists[section.settings.menu_right] %}
+        {% for link in right_menu.links %}
+
+          {% if link.links.size > 0 %}
+            <!-- Menu item with dropdown -->
+            <div class="pt-item pt-has-drop">
+              <button class="pt-link pt-drop__btn" aria-haspopup="true" aria-expanded="false">{{ link.title }}</button>
+              <div class="pt-drop" aria-hidden="true">
+                {% for child_link in link.links %}
+                  <a class="pt-drop__link" href="{{ child_link.url }}">{{ child_link.title }}</a>
+                {% endfor %}
+              </div>
+            </div>
+          {% else %}
+            <!-- Simple link -->
+            <a href="{{ link.url }}" class="pt-link">{{ link.title }}{% if link.url == routes.cart_url and cart.item_count > 0 %}<sup class="pt-badge">{{ cart.item_count }}</sup>{% endif %}</a>
+          {% endif %}
+
+        {% endfor %}
+      {% endif %}
+
+      {% if section.settings.book_url != blank %}
+        <a href="{{ section.settings.book_url }}" class="pt-book">Book Appointment</a>
+      {% endif %}
+    </nav>
+
+  </div>
+</header>
+
+<style>
+  :root{ --pt-offset: 0px; }
+  /* compact white bar with thin border and small gutter */
+  .pt-header{position:fixed;top:0;left:0;right:0;z-index:60;
+    width:calc(100% - 12px);margin:6px auto 0;background:#fff;border:1px solid #efefef;
+    box-shadow:0 1px 0 rgba(0,0,0,.04);transition:padding .2s ease,margin .2s ease,width .2s ease}
+  .pt-header__inner{max-width:1280px;margin:0 auto;padding:9px 18px;display:flex;align-items:center;justify-content:space-between;position:relative}
+  .pt-nav{display:flex;gap:18px;align-items:center}
+  .pt-link{font-size:13px;letter-spacing:.05em;text-decoration:none;color:#111}
+  .pt-link:hover{opacity:.75}
+  .pt-logo{position:absolute;left:50%;transform:translateX(-50%);text-decoration:none;color:#111}
+  .pt-logo__text{font-weight:600;letter-spacing:.26em;font-size:16px}
+  .pt-logo__img{display:block;height:auto}
+  .pt-badge{font-size:10px;line-height:1;position:relative;top:-.35em;margin-left:.25em}
+  .pt-book{margin-left:12px;padding:7px 12px;border:1px solid #111;text-decoration:none;color:#111;font-size:12px;letter-spacing:.05em}
+  .pt-book:hover{background:#111;color:#fff}
+
+  /* dropdowns */
+  .pt-item{position:relative}
+  .pt-has-mega:hover .pt-mega{opacity:1;visibility:visible;transform:translateY(0)}
+  .pt-has-drop:hover .pt-drop{opacity:1;visibility:visible;transform:translateY(0)}
+  .pt-drop__btn{all:unset;cursor:pointer}
+  .pt-mega{position:absolute;left:0;top:100%;transform:translateY(6px);
+    opacity:0;visibility:hidden;transition:.18s ease;background:#fff;border:1px solid #efefef;box-shadow:0 8px 24px rgba(0,0,0,.06);padding:16px}
+  .pt-mega__inner{display:grid;grid-template-columns:2fr 1fr;gap:24px;min-width:720px}
+  .pt-mega__col{}
+  .pt-mega__title{font-size:12px;letter-spacing:.08em;color:#555;margin-bottom:10px}
+  .pt-brands{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .pt-brand{display:flex;align-items:center;justify-content:center;border:1px solid #eee;padding:8px;height:54px;text-decoration:none;color:#111}
+  .pt-brand__img{max-height:28px;max-width:100%;object-fit:contain}
+  .pt-brand__text{font-size:12px;letter-spacing:.04em}
+  .pt-mega__links{display:flex;flex-direction:column;gap:8px}
+  .pt-mega__link{font-size:13px;text-decoration:none;color:#111}
+  .pt-mega__link:hover{opacity:.7}
+
+  .pt-drop{position:absolute;left:0;top:100%;transform:translateY(6px);
+    opacity:0;visibility:hidden;transition:.18s ease;background:#fff;border:1px solid #efefef;box-shadow:0 8px 24px rgba(0,0,0,.06);padding:10px 12px;min-width:220px}
+  .pt-drop__link{display:block;padding:7px 6px;text-decoration:none;color:#111;font-size:13px}
+  .pt-drop__link:hover{background:#f7f7f7}
+
+  /* shrink on scroll */
+  .pt-header.is-shrink .pt-header__inner{padding:6px 14px}
+  .pt-header.is-shrink .pt-book{padding:6px 10px}
+
+  /* mobile */
+  @media (max-width:960px){
+    .pt-nav--left{gap:14px}
+    .pt-mega__inner{min-width:88vw}
+    .pt-brands{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .pt-logo__text{font-size:15px;letter-spacing:.22em}
+  }
+</style>
+
+<script>
+  (function(){
+    var el = document.querySelector('.pt-header'); if(!el) return;
+    function setOffset(){ var off = (el.offsetHeight||0) + 6; document.documentElement.style.setProperty('--pt-offset', off+'px'); }
+    setOffset();
+    var last=0;
+    function onScroll(){
+      var y = window.pageYOffset || document.documentElement.scrollTop;
+      if(y>20 && last<=20) el.classList.add('is-shrink'); else if(y<=20 && last>20) el.classList.remove('is-shrink');
+      last=y; setOffset();
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', setOffset);
+    window.addEventListener('load', setOffset);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Kuona Header ",
+  "settings": [
+    { "type":"image_picker", "id":"logo", "label":"Logo (optional)" },
+    { "type":"number", "id":"logo_width", "label":"Logo width (px)", "default": 120 },
+    { "type":"text", "id":"logo_text", "label":"Logo text (if no image)", "default":"KUONA" },
+
+    { "type":"link_list", "id":"menu_left", "label":"Left Menu" },
+    { "type":"link_list", "id":"menu_right", "label":"Right Menu" },
+
+    { "type":"url", "id":"book_url", "label":"Book Appointment URL" }
+  ],
+  "blocks": [
+    {
+      "type":"brand",
+      "name":"Brand logo",
+      "settings":[
+        { "type":"text", "id":"name", "label":"Name" },
+        { "type":"image_picker", "id":"logo", "label":"Logo" },
+        { "type":"url", "id":"url", "label":"Link" }
+      ]
+    }
+  ],
+  "presets":[{"name":"Kuona Header"}]
+}
+{% endschema %}

@@ -1,0 +1,127 @@
+{% comment %}
+	Element Heading
+	Accepts:
+	- args: heading settings | Obj
+	- custom_css: Custom css
+	- animation_attr: animation attr
+	- animation_attr_sub_image: Custom attr sub image
+	- animation_attr_sub_title: Custom attr sub title
+	- animation_attr_title: Custom attr title
+	- animation_attr_desc: Custom attr description
+	- animation_attr_button: Custom attr button
+{% endcomment %}
+{% liquid
+	assign class_wrap = "gsp-heading gsp-element gsp-heading-" | append: args.id
+	assign class_inner = "gsp-heading-inner"
+	if args.settings.el_heading_title_tag == nil
+		assign heading_tag_title = "h2"
+	else
+		assign heading_tag_title = args.settings.el_heading_title_tag
+	endif
+	if custom_css != nil
+		assign class_wrap = class_wrap | append: " " | append: custom_css
+	endif
+	if args.settings.el_heading_alignment != nil and args.settings.el_heading_alignment != 'default'
+		assign class_wrap = class_wrap | append: " text-" | append: args.settings.el_heading_alignment
+	endif
+	if args.settings.el_heading_mw != blank and args.settings.el_heading_mw != -1
+		assign heading_mw = args.settings.el_heading_mw
+		assign class_inner = class_inner | append: " d-inline-block"
+	endif
+
+	assign title_color = args.settings.el_heading_title_color
+	assign sub_title_color = args.settings.el_heading_sub_title_color
+	assign desc_color = args.settings.el_heading_desc_color
+	assign fs_title = args.settings.el_heading_fs_title
+	assign sub_title = args.settings.el_heading_fs_sub_title
+	assign fs_desc = args.settings.el_heading_fs_desc
+	assign sp_sub_title = args.settings.el_heading_sp_sub_title
+	assign sp_sub_image = args.settings.el_heading_sp_sub_image
+	assign sp_desc = args.settings.el_heading_sp_desc
+	assign sp_button = args.settings.el_heading_sp_button
+
+	assign animation_attr_sub_image = animation_attr_sub_image | default: animation_attr
+	assign animation_attr_sub_image = animation_attr_sub_image | default: animation_attr
+	assign animation_attr_sub_title = animation_attr_sub_title | default: animation_attr
+	assign animation_attr_title = animation_attr_title | default: animation_attr
+	assign animation_attr_desc = animation_attr_desc | default: animation_attr
+	assign animation_attr_button = animation_attr_button | default: animation_attr
+	assign heading_sub_image =  args.settings.el_heading_image
+
+	assign icon_available = false
+	if args.settings.el_button_icon != 'none' and args.settings.el_button_icon != nil
+		assign icon_available = true
+	endif
+%}
+{% if args.settings.el_heading_image != blank or args.settings.el_heading_sub_title != blank or args.settings.el_heading_title != blank or args.settings.el_heading_desc != blank or args.settings.el_button_text != blank %}
+	<div class="{{ class_wrap }}">
+		<div class="{{ class_inner }}">
+			{% if heading_sub_image != blank %}
+				<div class="gsp-heading-sub-image gsp-element-item" {{ animation_attr_sub_image }}>
+					<img src="{{ heading_sub_image | image_url }}"  width="{{ heading_sub_image.width }}"
+						 height="{{ heading_sub_image.height }}"
+						 alt="{{ args.settings.el_heading_sub_title | escape }}">
+				</div>
+			{% endif %}
+			{% if args.settings.el_heading_sub_title != nil and args.settings.el_heading_sub_title != '' %}
+				<p class="gsp-heading-sub-title h6 gsp-element-item" {{ animation_attr_sub_title }}>
+					{{ args.settings.el_heading_sub_title | newline_to_br }}
+				</p>
+			{% endif %}
+			{% if args.settings.el_heading_title != nil and args.settings.el_heading_title != '' %}
+			<{{ heading_tag_title }} class="gsp-heading-title gsp-element-item mb-0" {{ animation_attr_title }}>
+			{{ args.settings.el_heading_title | newline_to_br }}
+		</{{ heading_tag_title }}>
+		{% endif %}
+		{% if args.settings.el_heading_desc != nil and args.settings.el_heading_desc != '' %}
+			<p class="gsp-heading-desc gsp-element-item mb-0" {{ animation_attr_desc }}>
+				{{ args.settings.el_heading_desc }}
+			</p>
+		{% endif %}
+		{% if args.settings.el_button_text != blank or icon_available %}
+			<div class="gsp-heading-button gsp-element-item" {{ animation_attr_button }}>
+				{% render 'el__button', args: args %}
+			</div>
+		{% endif %}
+	</div>
+	</div>
+	{% style %}
+		.gsp-heading-{{ args.id }} {
+		{%- if title_color != blank and title_color != "rgba(0,0,0,0)" %}
+			--gsp-heading-color-title: {{ title_color }} !important;
+		{% endif -%}
+		{%- if sub_title_color != blank and sub_title_color != "rgba(0,0,0,0)" %}
+			--gsp-heading-color-subtitle: {{ sub_title_color }} !important;
+		{% endif -%}
+		{%- if desc_color != blank and desc_color != "rgba(0,0,0,0)" %}
+			--gsp-heading-color-desc: {{ desc_color }} !important;
+		{% endif -%}
+		{%- if fs_title != blank and fs_title != -1 %}
+			--gsp-heading-fs-title: {{ fs_title }}px !important;
+		{% endif -%}
+		{%- if sub_title != blank and sub_title != -1 %}
+			--gsp-heading-fs-subtitle: {{ sub_title }}px !important;
+		{% endif -%}
+		{%- if fs_desc != blank and fs_desc != -1 %}
+			--gsp-heading-fs-desc: {{ fs_desc }}px !important;
+		{% endif -%}
+		{%- if sp_sub_title != blank and sp_sub_title != -1 %}
+			--gsp-heading-spacing-subtitle: {{ sp_sub_title }}px !important;
+		{% endif -%}
+		{%- if sp_sub_image != blank and sp_sub_image != -1 %}
+			--gsp-heading-spacing-sub-image: {{ sp_sub_image }}px !important;
+		{% endif -%}
+		{%- if sp_desc != blank and sp_desc != -1 %}
+			--gsp-heading-spacing-desc: {{ sp_desc }}px !important;
+		{% endif -%}
+		{%- if sp_button != blank and sp_button != -1 %}
+			--gsp-heading-spacing-btn: {{ sp_button }}px !important;
+		{% endif -%}
+		}
+		{%- if heading_mw != blank %}
+			.gsp-heading-{{ args.id }} .gsp-heading-inner{
+			max-width: {{ heading_mw }}px !important;
+			}
+		{% endif -%}
+	{% endstyle %}
+{% endif %}

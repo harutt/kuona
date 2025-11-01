@@ -1,0 +1,46 @@
+{% comment %}
+	Divider block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+
+	assign style = block.settings.style
+	assign size = block.settings.size
+	assign align = block.settings.align
+	assign custom_width = block.settings.custom_width
+	assign color = block.settings.color
+	assign pd_top = block.settings.padding_top
+	assign pd_bottom = block.settings.padding_bottom
+%}
+<div class="gsp-block__{{ block.id }} gsp-block gsp-divider gsp-divider-{{ style }}" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner gsp-divider-inner {%- if custom_width != blank %} d-flex justify-content-{{ align }}{% endif -%}">
+		<div class="gsp-divider-element">
+		</div>
+	</div>
+</div>
+{% style %}
+	{%- if custom_width != blank %}
+		.gsp-block__{{ block.id }} .gsp-divider-element{
+		max-width: {{ custom_width }};
+		width: 100%;
+		}
+	{% endif -%}
+	.gsp-block__{{ block.id }}{
+	{%- if size != blank %}
+		--gsp-divider-size: {{ size }}px;
+	{% endif -%}
+	{%- if color != blank and color != "rgba(0,0,0,0)" %}
+		--gsp-divider-color: {{ color }};
+	{% endif -%}
+	{%- if pd_top != blank %}
+		--gsp-divider-padding-top: {{ pd_top }}px;
+	{% endif -%}
+	{%- if pd_bottom != blank %}
+		--gsp-divider-padding-bottom: {{ pd_bottom }}px;
+	{% endif -%}
+	}
+{% endstyle %}

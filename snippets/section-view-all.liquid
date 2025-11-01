@@ -1,0 +1,24 @@
+{% comment %}
+	View All Block
+	Accepts:
+	- custom_css: Custom css
+{% endcomment %}
+{% if section.settings.view_all_el_button_text != blank or section.settings.view_all_el_button_icon != 'none' %}
+	{% liquid
+		capture animation_attr
+			render 'animation-attr', type: section.settings.animation_type
+		endcapture
+	%}
+	<div class="gsp-section-btn-view-all {{ custom_css }}" {{ animation_attr }}>
+		<div class="gsp-heading-button gsp-element-item">
+			{% render 'el__button',
+				style: section.settings.view_all_el_button_style,
+				color: section.settings.view_all_el_button_color,
+				size: section.settings.view_all_el_button_size,
+				link: section.settings.view_all_el_button_link,
+				text: section.settings.view_all_el_button_text,
+				icon: section.settings.view_all_el_button_icon
+			%}
+		</div>
+	</div>
+{% endif %}

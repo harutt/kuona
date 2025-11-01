@@ -1,0 +1,22 @@
+{% comment %}
+  Accepts:
+  - product: {Object} Product Liquid object (required)
+  - block: {Object} block Liquid object (required)
+{% endcomment %}
+<div class="fw-heading d-flex flex-md-row flex-column py-1">
+	{%- liquid
+		assign compare_title = 'products.actions.compare_title' | t
+		assign wishlist_title = 'products.actions.add_to_wishlist' | t
+		assign share_title = 'products.actions.share' | t
+		assign url = shop.url | append: product.url
+	-%}
+	{% if settings.enable_compare and block.settings.show_compare %}
+		{% render 'product-actions__compare', product: product, label: compare_title, classes_item: 'gsp-product-actions-item gsp-product-actions-compare rounded-circle gsp-spin-wrapper text-decoration-none text-heading text-primary-hover' %}
+	{% endif %}
+	{% if settings.enable_wishlist and block.settings.show_wishlist %}
+		{% render 'product-actions__add-to-wishlist', product: product, label: wishlist_title, classes_item: 'gsp-product-actions-item gsp-product-actions-wishlist rounded-circle text-decoration-none ms-md-4 mt-md-0 mt-2 text-heading text-primary-hover' %}
+	{% endif %}
+	{% if block.settings.show_social %}
+		{% render 'product-actions__share', url: url, label: share_title, classes_item: 'gsp-product-actions-item gsp-product-actions-share rounded-circle text-decoration-none text-heading text-primary-hover ms-md-4 mt-md-0 mt-2' %}
+	{% endif %}
+</div>

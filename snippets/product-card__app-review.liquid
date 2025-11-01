@@ -1,0 +1,27 @@
+{% comment %}
+  Accepts:
+  	- product: product object (required)
+	- show_rating: Show description
+	- class_css: Add class css
+{% endcomment %}
+
+{%- liquid
+	assign review_app = settings.review_app
+	if show_rating == nil or show_rating == '' or show_rating == 'default' or show_rating == 'inherit'
+		assign show_rating = settings.pc_show_rating
+	endif
+%}
+{% if show_rating == "on" %}
+	<div class="gsp-product-card-rating gsp-product-card-item {{ class_css }}">
+		{% case review_app %}
+			{% when 'other' %}
+				{% render 'product-card__app-review-other', product: product %}
+			{% when 'judge' %}
+				{% render 'product-reviews__judge', widget_type: 'star_ratings', product: product %}
+			{% when 'loox' %}
+				{% render 'product-reviews__loox', widget_type: 'rating_widget', product: product %}
+			{% when 'lai_reviews' %}
+				{% render 'product-reviews__lai', widget_type: 'star_ratings', product: product %}
+		{% endcase %}
+	</div>
+{% endif %}

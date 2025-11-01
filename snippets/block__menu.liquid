@@ -1,0 +1,79 @@
+{% comment %}
+	Block Menu
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	assign title_block = block.settings.title
+	assign menu = linklists[block.settings.menu]
+	assign layout = block.settings.layout_menu
+	assign color_title = block.settings.color_title
+	assign color_menu = block.settings.color_menu
+	assign color_hover_menu = block.settings.color_hover_menu
+	assign fs_title = block.settings.fs_title
+	assign fs_menu = block.settings.fs_menu
+	assign spacing = block.settings.spacing
+	assign spacing_menu = block.settings.spacing_menu
+	assign tag_title = block.settings.title_tag
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+<div
+	class="gsp-block__{{ block.id }} gsp-block gsp-block-menu gsp-block-has-title" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner {%- if block.settings.content_alignment != "default" %} text-{{ block.settings.content_alignment }} {% endif %}">
+		{%- if title_block != blank and title_block != "" %}
+			<{{ tag_title }} class="gsp-block-title">{{ title_block }}</{{ tag_title }}>
+		{% endif %}
+		<div class="gsp-block-body">
+			{% if menu.links != blank %}
+				<ul class="gsp-block-menu-inner list-unstyled d-inline-flex flex-wrap mb-0 {%- if layout == "vertical" %} flex-column {% endif %}">
+					{% for link in menu.links %}
+						<li class="gsp-menu-item text-capitalize">
+							<a href="{{ link.url }}" class="gsp-menu-link">
+								{% if link.title contains 'gsp-menu-badge__' %}
+									{%- liquid
+										assign badge = link.title | split: '__' | last
+										assign content_menu = badge | split: '_' | last | replace: '-', ' '
+										assign content_badge = badge | split: '_' | first
+									-%}
+									<div class="gsp-menu-badge-wrap position-relative">
+										<span>{{ content_menu }}</span> <span
+											class="gsp-menu-badge badge {{ content_badge }}">{{ content_badge }}</span>
+									</div>
+								{% else %}
+									{{ link.title }}
+								{% endif %}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% style %}
+	.gsp-block__{{ block.id }} {
+	{%- if color_title != blank and color_title != "rgba(0,0,0,0)" %}
+		--gsp-block-color-title: {{ color_title }};
+	{% endif -%}
+	{%- if color_menu != blank and color_menu != "rgba(0,0,0,0)" %}
+		--gsp-block-menu-color: {{ color_menu }};
+	{% endif -%}
+	{%- if color_hover_menu != blank and color_hover_menu != "rgba(0,0,0,0)" %}
+		--gsp-block-menu-color-hover: {{ color_hover_menu }};
+	{% endif -%}
+	{% if fs_title != blank and fs_title != 0 %}
+		--gsp-block-fs-title: {{ fs_title }}px;
+	{% endif -%}
+	{% if fs_menu != blank and fs_menu != 0 %}
+		--gsp-block-menu-fs: {{ fs_menu }}px;
+	{% endif -%}
+	{% if spacing != blank and spacing != 0 %}
+		--gsp-block-spacing: {{ spacing }}px;
+	{% endif -%}
+	{% if spacing_menu != blank and spacing_menu != 0 %}
+		--gsp-block-menu-spacing: {{ spacing_menu }}px;
+	{% endif -%}
+	}
+{% endstyle %}

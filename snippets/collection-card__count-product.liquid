@@ -1,0 +1,10 @@
+{% comment %}
+  Accepts:
+  	- collection: collection object (required)
+	- custom_css: Add class css
+{% endcomment %}
+{%- if collection != blank and collection.all_products_count != 0 -%}
+	<p class="gsp-collection-card-count gsp-collection-card-item mb-0 {{ custom_css }}">
+		{{ 'collection.general.collection_items' | t: count: collection.all_products_count }}
+	</p>
+{%- endif -%}

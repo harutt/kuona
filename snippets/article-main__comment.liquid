@@ -1,0 +1,132 @@
+{% comment %}
+	- article: obj article
+	- enable_comment: [bool] Enable comment | default : true
+	- custom_css: Custom css
+{% endcomment %}
+{% liquid
+	if enable_comment == nil
+		assign enable_comment = true
+
+	endif
+%}
+{%- if blog.comments_enabled? and enable_comment %}
+	{% liquid
+		assign new_comment = false
+		assign number_of_comments = article.comments_count
+		if comment and comment.created_at
+			assign new_comment = true
+			assign new_comment_id = comment.id
+		endif
+
+		if new_comment
+			assign duplicate_comment = false
+			for comment in article.comments
+				if comment.id == new_comment_id
+					assign duplicate_comment = true
+					break
+				endif
+			endfor
+			unless duplicate_comment
+				assign number_of_comments = article.comments_count | plus: 1
+			endunless
+		endif
+	%}
+
+	<div class="gsp-article-comment pt-6 mt-6 border-top {{ custom_css }}">
+		{% if number_of_comments > 0 %}
+			<div class="gsp-comment-section mb-6">
+				<h3 class="gsp-article-heading gsp-comment-section-heading text-center mb-5">
+					{{ 'blogs.comments.comments_with_count' | t: count: number_of_comments }}
+				</h3>
+				{% paginate article.comments by 5 %}
+					<div id="gsp-comments" class="gsp-comment-section__wrapper">
+						{% if comment and comment.status and comment.id != blank and paginate.current_page == 1 %}
+							{% if blog.moderated? and comment.status != 'published' %}
+								<p class="alert alert-info py-2" role="alert">
+									{{ 'blogs.comments.success_moderated' | t }}
+								</p>
+							{% else %}
+								<p class="alert alert-success py-2" role="alert">
+									{{ 'blogs.comments.success' | t }}
+								</p>
+							{% endif %}
+						{% endif %}
+						{% if article.comments_count > 0 %}
+							<ul class="gsp-comment-list list-unstyled mb-0">
+								{% if comment and comment.status != 'published' and comment.id != blank %}
+									<li id="{{ comment.id }}" class="gsp-comment-item gsp-comment--unpublished">
+										<div
+											class="gsp-comment-author fs-14px text-heading text-uppercase ls-2px fw-heading mb-1">
+											{{ comment.author }}
+										</div>
+										<div class="gsp-comment-content">
+											{{ comment.content }}
+										</div>
+									</li>
+								{% endif %}
+
+								{% for comment in article.comments %}
+									<li id="{{ comment.id }}"
+										class="gsp-comment-item border-bottom mb-4 pb-4">
+										<div
+											class="gsp-comment-author fs-14px text-heading text-uppercase ls-2px fw-heading mb-1">{{ comment.author }}</div>
+										<div class="gsp-comment-content mb-1">
+											{{ comment.content }}
+										</div>
+										<div class="gsp-comment-meta d-flex align-items-center">
+											<div class="gsp-comment-date pe-2 lh-1 border-end border-currentColor">
+												{{ comment.created_at | date: "%b %d, %Y" }} {{ 'blogs.comments.at_time' | t }} {{ comment.created_at | date: "%H:%M" }}
+											</div>
+											<a href="#gsp-leave-comment"
+											   class="gsp-comment-reply btn btn-link fw-heading lh-1 rounded-0 ms-2">{{ 'blogs.comments.reply' | t }}</a>
+										</div>
+									</li>
+								{% endfor %}
+							</ul>
+
+							{% if paginate.pages > 1 %}
+								{% render 'el__pagination', paginate: paginate, type: 'paginate_shopify', customClass: 'mt-3' %}
+							{% endif %}
+						{% endif %}
+					</div>
+				{% endpaginate %}
+			</div>
+		{% endif %}
+		<div class="gsp-comment-form" id="gsp-leave-comment">
+			{% form 'new_comment', article %}
+				<h3 class="gsp-article-heading gsp-comment-section-heading text-center mb-5">{{ 'blogs.comments.title' | t }}</h3>
+				{% render 'form__error', form: form, extended_css: "mb-4" %}
+				<div class="gsp-comment-form-fields row g-default">
+					<div class="col-md-6">
+						<label for="CommentAuthor"
+							   class="form-label visually-hidden">  {{ 'blogs.comments.name' | t }}</label>
+						<input type="text" name="comment[author]" id="CommentAuthor" class="form-control"
+							   placeholder="{{ 'blogs.comments.name' | t }}" value="{{ form.author }}"
+							   autocapitalize="words">
+					</div>
+					<div class="col-md-6">
+						<label for="CommentEmail"
+							   class="form-label visually-hidden">{{ 'blogs.comments.email' | t }}</label>
+						<input type="email" name="comment[email]" id="CommentEmail"
+							   class="form-control"
+							   placeholder="{{ 'blogs.comments.email' | t }}" value="{{ form.email }}"
+							   spellcheck="false"
+							   autocomplete="off" autocapitalize="off">
+					</div>
+					<div class="col-12">
+						<label for="CommentBody"
+							   class="form-label visually-hidden">{{ 'blogs.comments.message' | t }}</label>
+						<textarea name="comment[body]" id="CommentBody"
+								  class="form-control"
+								  placeholder="{{ 'blogs.comments.message' | t }}" rows="6">
+                  			{{- form.body -}}
+                  		</textarea>
+					</div>
+					<div class="col-12">
+						<input type="submit" class="btn btn-dark" value="{{ 'blogs.comments.post' | t }}">
+					</div>
+				</div>
+			{% endform %}
+		</div>
+	</div>
+{% endif -%}

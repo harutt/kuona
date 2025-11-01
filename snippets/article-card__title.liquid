@@ -1,0 +1,12 @@
+{% comment %}
+  Accepts:
+  	- article: article object (required)
+	- custom_css: Add class css
+{% endcomment %}
+{% liquid
+	assign title_default = 'blogs.title_example' | t
+%}
+<h3 class="gsp-blogs-card-title gsp-blogs-card-item card-title mb-0 {{ custom_css }}">
+	<a href="{{ article.url | default: '#' }}"
+	   class="text-decoration-none text-inherit">{{ article.title | default: title_default }}</a>
+</h3>

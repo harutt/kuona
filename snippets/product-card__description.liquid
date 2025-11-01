@@ -1,0 +1,10 @@
+{% comment %}
+  Accepts:
+  	- product: product object (required)
+	- show_description: Show description
+	- class_css: Add class css
+{% endcomment %}
+
+{% if product.description != blank %}
+	<p class="gsp-product-card-desc gsp-product-card-item card-text mb-0 {{ class_css }}">{{ product.description | strip_html | truncatewords: 50 }}</p>
+{% endif %}

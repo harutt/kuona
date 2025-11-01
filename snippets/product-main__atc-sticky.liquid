@@ -1,0 +1,154 @@
+{% comment %}
+  Renders Add To Cart Sticky
+
+  Accepts:
+  - product: {Object} Product Liquid object (required)
+  - enable_vendor: Show vendor
+  - enable_type: Show type
+  - enable_collections: Show collections
+  - enable_availability: Show availability
+  - enable_sku: Show sku
+{% endcomment %}
+{% liquid
+	assign show_desktop = section.settings.atcs_show_on_desktop
+	assign show_mobile = section.settings.atcs_show_on_mobile
+	assign enable_wishlist = settings.enable_wishlist
+	assign enable_compare = settings.enable_compare
+	assign aspect_ratio = '3/4'
+	assign placeholder = 'product-1'
+	assign image_preview = settings.pc_default_image | default: nil
+	if product.media[0].preview_image != blank
+		assign image_preview = product.media[0].preview_image
+	endif
+
+	assign product_form_id = 'atc-sticky-form-' | append: section.id
+	assign product_form_class = 'atc-sticky-form atc-sticky-form-' | append: section.id
+
+	assign style_button_atc = "btn btn-dark"
+	if section.settings.atcs_show_dynamic_checkout
+		assign style_button_atc = "btn btn-outline-light"
+	endif
+%}
+<gsp-atc-sticky
+	class="gsp-atc-sticky position-fixed z-index-15 px-lg-2 {% if show_desktop != true -%} d-md-none d-block {%- endif -%} {% if show_mobile != true -%} d-none d-md-block {%- endif -%}">
+	<div class="container-fluid">
+		<div class="gsp-atc-sticky-wrap d-flex align-items-center justify-content-between py-3 px-lg-4">
+			<div class="gsp-atc-sticky-product-preview align-items-center d-none d-md-flex flex-1">
+				<div class="gsp-atc-sticky-image me-3">
+					{% render 'responsive-image', image: image_preview, placeholder: placeholder, aspect_ratio: aspect_ratio, wrapper_class: ' gsp-main-cart-item__image ' %}
+				</div>
+				<div class="card-body gsp-atc-sticky-info text-end text-md-start">
+					<div class="fs-14px">
+						{% render 'product-card__prices', product: product, use_variant: true %}
+					</div>
+					<h6 class="card-title text-heading fs-15px text-decoration-none line-clamp-1">
+						{{- product.title -}}
+					</h6>
+				</div>
+			</div>
+
+			{% if settings.enable_add_to_cart %}
+				<div class="gsp-atc-sticky-form">
+					<product-form class="gsp-product-form" data-product-id="{{ product.id }}">
+						{%- form 'product',
+							product,
+							id: product_form_id,
+							data-product-id: product.id,
+							class: product_form_class,
+							novalidate: 'novalidate',
+							data-type: 'add-to-cart-form',
+							data-product-handle: product.handle,
+							data-dynamic-checkout: false
+						-%}
+							<div class="gps-product-form-wrapper d-flex align-items-end flex-wrap">
+								<select
+									class="form-select select-variant w-auto me-3 text-heading fw-semibold {%- if product.has_only_default_variant %} d-none {% endif %}"
+									name="id">
+									{% for variant in product.variants %}
+										{% assign selected = false %}
+										{%- if variant.id == product.selected_or_first_available_variant.id -%}
+											{% assign selected = true %}
+										{%- endif -%}
+										<option
+											value="{{ variant.id }}"
+											{% if selected %}
+												selected="true"
+											{% endif %}
+										>
+											{{ variant.title }}
+										</option>
+									{% endfor %}
+								</select>
+								<div class="gps-product-form--input">
+									<gps-quantity-input
+										class="gps-quantity input-group quantity position-relative">
+										<a href="#"
+										   class="gps-quantity-btn quantity-down text-black position-absolute translate-middle-y top-50 start-0 ps-2 z-index-5 fs-6">
+											{% render 'icons', icon: 'minus' %}
+										</a>
+										<input
+											class="gps-quantity-input form-control text-center z-index-1 border-transparent text-heading fw-semibold"
+											type="number"
+											data-product-id="{{ product.id }}"
+											name="quantity"
+											value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+											min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+											{% if product.selected_or_first_available_variant.quantity_rule.max != null %}
+												max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+											{% endif %}
+											step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
+											form="{{ product_form_id }}"
+										>
+										<a href="#"
+										   class="gps-quantity-btn quantity-up text-black position-absolute translate-middle-y top-50 end-0 pe-2 z-index-5 fs-6">
+											{% render 'icons', icon: 'plus' %}
+										</a>
+									</gps-quantity-input>
+
+								</div>
+								<button type="submit" name="add"
+										class="{{ style_button_atc }} gsp-product-actions-button d-flex align-items-center justify-content-center gsp-spin-wrapper ms-3 flex-1"
+									{% unless product.selected_or_first_available_variant.available %} disabled {% endunless %}
+								>
+								<span class="gsp-button__content active">
+									<span>
+											{% if product.selected_or_first_available_variant.available %}
+												{{ 'products.product.add_to_cart' | t }}
+											{% else %}
+												{{ 'products.product.sold_out' | t }}
+											{% endif %}
+									</span>
+									{% render 'icons', icon: 'add-cart' %}
+								</span>
+									<span class="gsp-button__spin">
+									{% render 'spin', custom_class: 'fs-18px' %}
+								</span>
+								</button>
+								{% if section.settings.atcs_show_dynamic_checkout %}
+									<div
+										class="gsp-product-dynamic-checkout buy-one-click show-add-to-cart w-auto ms-3 d-none d-lg-block">
+										{{ form | payment_button }}
+									</div>
+								{% endif %}
+							</div>
+						{% endform %}
+					</product-form>
+				</div>
+			{% endif %}
+
+			{% if section.settings.atcs_show_wishlist or section.settings.atcs_show_compare %}
+				<div class="gsp-atc-sticky-actions flex-row d-none d-md-flex ms-4">
+					{% if section.settings.atcs_show_compare and enable_compare %}
+						{% render 'product-actions__compare', product: product, compare_settings: '{"enablePreviewCompare": false}' %}
+					{% endif %}
+					{% if section.settings.atcs_show_wishlist and enable_wishlist %}
+						{% render 'product-actions__add-to-wishlist', product: product %}
+					{% endif %}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+	<script type="application/json">
+    {{ product.variants | json }}
+	</script>
+</gsp-atc-sticky>

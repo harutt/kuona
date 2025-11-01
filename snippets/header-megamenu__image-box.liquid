@@ -1,0 +1,21 @@
+{% liquid
+	assign heading_fs = block.settings.fs_heading_menu
+%}
+<div class="gsp-megamenu-block-{{ block.id }} gsp-megamenu-block gsp-megamenu-block__image-box col-{{ block.settings.block_width }} {{ block.settings.custom_css }}" {{ block.shopify_attributes }}>
+	{% if block.settings.heading != blank %}
+		<h3 class="gsp-megamenu-block__heading">{{ block.settings.heading | escape_once }}</h3>
+	{% endif %}
+	<div class="gsp-megamenu-block__content">
+		{% if block.settings.image == blank %}
+			{% capture current %}{% cycle 2, 3 , 4 %}{% endcapture %}
+		{% endif %}
+		{% render 'el__image-box', args: block, image_plackholder_index: current %}
+	</div>
+	{% style %}
+		{%- if heading_fs != blank and heading_fs != -1 %}
+			.gsp-megamenu-block-{{ block.id }}{
+			--gsp-megamenu-fs-heading: {{ heading_fs }}px;
+			}
+		{% endif -%}
+	{% endstyle %}
+</div>

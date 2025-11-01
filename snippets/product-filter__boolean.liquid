@@ -1,0 +1,65 @@
+{% comment %}
+	- filter: Filter [Obj]
+	- tag_html: Tag Html | Default gsp-filter-list
+	- show_count: Show Cout Product [bol]
+	- limit_value: Limit value filter
+	- ids: Id widget
+	- class_additional: Additional class css wrap.
+{% endcomment %}
+{% liquid
+	assign except = "badge__"
+	if tag_html == nil
+		assign tag_html = 'gsp-filter-list'
+	endif
+	if show_count == nil
+		assign show_count = true
+	endif
+	if show_label == nil
+		assign show_label = true
+	endif
+	if ids == nil
+		assign ids = 'gsp-filter-list'
+	endif
+
+	assign count = 0
+	assign has_limit = false
+	if limit_value != nil and limit_value != "" and limit_value > 0
+		assign has_limit = true
+		assign limit = limit_value
+	endif
+
+%}
+<{{ tag_html }} class="d-flex flex-column gsp-product-filter-list text-capitalize gsp-product-option-type-check-box {{ class_additional }}">
+<ul class="gsp-product-option-content list-unstyled m-0 p-0 d-flex flex-column"
+	data-param="{{ filter.param_name }}">
+	{%- for filter_value in filter.values  limit: limit_value -%}
+		{%- liquid
+			if filter_value.value contains except
+				continue
+			endif
+		-%}
+		{% if count < limit or has_limit == false %}
+			{% if filter_value.count > 0 or filter_value.active != false -%}
+				<li class="gsp-filter-availability-item form-check">
+					<input class="form-check-input" type="checkbox"
+						   name="{{ filter_value.param_name }}"
+						   value="{{ filter_value.value }}"
+						   {% if filter_value.active -%}checked{%- endif %}
+						{% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+						   id="{{ ids }}-{{ filter.param_name }}-{{ forloop.index }}">
+					<label class="form-check-label"
+						   for="{{ ids }}-{{ filter.param_name }}-{{ forloop.index }}">
+						<span>{{ filter_value.label }}</span>
+						{% if show_count -%}
+							<span class="count">({{ filter_value.count }})</span>
+						{%- endif %}
+					</label>
+				</li>
+			{%- endif %}
+			{% assign count = count | plus: 1 %}
+		{% else %}
+			{% break %}
+		{%- endif %}
+	{%- endfor -%}
+</ul>
+</{{ tag_html }}>

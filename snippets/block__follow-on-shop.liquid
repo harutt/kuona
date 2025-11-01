@@ -1,0 +1,26 @@
+{% comment %}
+	Copyright block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+	assign pre_part = block.settings.pre_part
+	assign last_part = block.settings.last_part
+	assign content_color = block.settings.content_color
+	assign copyright_color = block.settings.copyright_color
+	assign copyright_color_hover = block.settings.copyright_color_hover
+	assign content_fs = block.settings.content_fs
+	assign show_powered = block.settings.show_powered
+	assign content_align = block.settings.content_align
+%}
+<div class="gsp-block__{{ block.id }} gsp-block gsp-follow-on-shop {%- if content_align != "default" %} text-{{ content_align }} {% endif %}" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		{% comment %} TODO: enable theme-check once `login_button` is accepted as valid filter {% endcomment %}
+		{% # theme-check-disable %}
+		{{ shop | login_button: action: 'follow' }}
+		{% # theme-check-enable %}
+	</div>
+</div>

@@ -1,0 +1,83 @@
+{% comment %}
+	Instagram
+	Accepts:
+	- hover_style: hover style image
+	- aspect_ratio: aspect ratio image
+	- limit_item: limit item
+	- slider_enable: [bool] Enable Slider
+	- col_xl: Col xl
+	- col_lg: Col lg
+	- col_md: Col md
+	- col_sm: Col sm
+	- col_xs: Col xs
+	- extended_css: Extended css for item
+	- animation_type: Animation type
+	- arrows: arrows slider
+	- dots: dots slider
+	- auto_height: auto height slider
+	- autoplay: autoplay slider
+	- autoplay_speed: autoplay speed slider
+	- fade: fade mode slider
+	- loop: loop slider
+	- center_mode: center mode slider
+	- center_padding: center padding slider
+	- append_arrows: append arrows slider
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', attr: 'data-animate-item-inner', type: animation_type
+	endcapture
+	if aspect_ratio == "default" or aspect_ratio == "original" or aspect_ratio == blank
+		assign aspect_ratio = ""
+	endif
+	if hover_style == "none" or hover_style == blank
+		assign hover_style = ""
+	endif
+
+	assign class_item = 'gsp-instagram-item'
+	if extended_css != nil and extended_css != ''
+		assign class_item = class_item | append: " " | append: extended_css
+	endif
+%}
+<gsp-instagram class="gsp-instagram" data-hover-style="{{ hover_style }}" data-aspect-ratio="{{ aspect_ratio }}"
+			   data-item-limit="{{ limit_item }}">
+	{% if slider_enable %}
+		<div {% render 'slider-attr',
+			classes: 'gsp-slider slick-slider manual gsp-gutter-wrap gsp-instagram-inner',
+			item_to_show: col_xl,
+			arrows: arrows,
+			dots: dots,
+			auto_height: auto_height,
+			autoplay: auto_height,
+			autoplay_speed: autoplay_speed,
+			fade: fade,
+			loop: loop,
+			center_mode: center_mode,
+			center_padding: center_padding,
+			lg_settings: true,
+			item_to_show_on_lg: col_lg,
+			item_to_scroll_on_lg: col_lg,
+			md_settings: true,
+			item_to_show_on_md: col_md,
+			item_to_scroll_on_md: col_md,
+			sm_settings: true,
+			item_to_show_on_sm: col_sm,
+			item_to_scroll_on_sm: col_sm,
+			xs_settings: true,
+			item_to_show_on_xs: col_xs,
+			item_to_scroll_on_xs: col_xs
+		%}
+			data-gsp-instagram
+			{{- animation_attr -}}
+			data-classes-item-inner="{{ class_item }}"
+			{%- if append_arrows != nil -%}
+				data-slick-append-arrows="{{ append_arrows }}"
+			{%- endif -%}
+		>
+		</div>
+	{% else %}
+		<div class="row gsp-instagram-inner gsp-gutter-wrap" {{- animation_attr -}}
+			 data-gsp-instagram {% render 'classes-col-bootstrap', attr: 'data-classes-item-inner', additional: class_item, col_xl: col_xl, col_lg: col_lg, col_md: col_md, col_sm: col_sm, col: col_xs %}>
+		</div>
+	{% endif %}
+</gsp-instagram>

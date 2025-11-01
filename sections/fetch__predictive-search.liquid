@@ -1,0 +1,133 @@
+{% liquid
+	assign has_result = false
+	assign litmit = settings.search_limit
+%}
+
+{%- if predictive_search.performed -%}
+	<div class="gsp-predictive-search-results-wrapper gsp-scrollbar text-start">
+		{%- if predictive_search.resources.queries.size > 0 -%}
+			<div class="gsp-predictive-search-group">
+				{% liquid
+					assign has_result = true
+				%}
+				<h4 class="gsp-predictive-search-heading fs-18px mb-4 pb-2 border-bottom">
+					{{ 'general.suggestions' | t }}
+				</h4>
+				<ul id="gsp-predictive-search-queries-list" class="gsp-predictive-search-queries-list list-unstyled d-flex flex-wrap gap-3">
+					{%- for query in predictive_search.resources.queries -%}
+						<li id="gsp-predictive-search-queries-{{ forloop.index }}"
+							class="gsp-predictive-search-queries-item lh-1">
+							<a href="{{ query.url }}" class="text-capitalize text-main text-heading-hover border-bottom" title="{{ query.text }}">
+								<span>{{ query.text }}</span>
+							</a>
+						</li>
+					{%- endfor -%}
+				</ul>
+			</div>
+		{%- endif -%}
+		{%- if predictive_search.resources.products.size > 0 -%}
+			{% liquid
+				assign has_result = true
+			%}
+			<div class="gsp-predictive-search-group">
+				<h4 class="gsp-predictive-search-heading fs-18px mb-4 pb-2 border-bottom">
+					{{ 'general.product' | t }}
+				</h4>
+				<div class="gsp-predictive-search-list">
+					{%- for product in predictive_search.resources.products limit: litmit -%}
+						<div class="gsp-predictive-search-item">
+							{% render 'product-skins__item',
+								product: product,
+								skin: 'skins__predictive-search'
+							%}
+						</div>
+					{%- endfor -%}
+				</div>
+			</div>
+		{%- endif -%}
+		{%- if predictive_search.resources.collections.size > 0 -%}
+			{% liquid
+				assign has_result = true
+			%}
+			<div class="gsp-predictive-search-group">
+				<h4 class="gsp-predictive-search-heading fs-18px mb-4 pb-2 border-bottom">
+					{{ 'general.collections' | t }}
+				</h4>
+				<div class="gsp-predictive-search-list">
+					{%- for collection in predictive_search.resources.collections limit: litmit -%}
+						<div class="gsp-predictive-search-item">
+							{% render 'collection-skins__item',
+								collection: collection,
+								skin: 'predictive-search'
+							%}
+						</div>
+					{%- endfor -%}
+				</div>
+			</div>
+		{%- endif -%}
+		{%- if predictive_search.resources.articles.size > 0 -%}
+			{% liquid
+				assign has_result = true
+			%}
+			<div class="gsp-predictive-search-group">
+				<h3 class="gsp-predictive-search-heading fs-18px mb-4 pb-2 border-bottom">
+					{{ 'general.article' | t }}
+				</h3>
+				<div class="gsp-predictive-search-list">
+					{%- for article in predictive_search.resources.articles limit: litmit -%}
+						<div class="gsp-predictive-search-item">
+							<h4 class="fs-6 mb-0">
+								<a href="{{ article.url }}" class="text-decoration-none">
+									{{ article.title | escape }}
+								</a>
+							</h4>
+							<div class="gsp-predictive-search-meta text-muted fs-14px fst-italic">
+								<span class="date">
+            					  {{- article.published_at | time_tag: format: 'date' -}}
+           				 		</span>
+								-
+								<span class="author">
+             					 <span>{{ article.author }}</span>
+           				 </span>
+							</div>
+						</div>
+					{%- endfor -%}
+				</div>
+			</div>
+		{%- endif -%}
+		{%- if predictive_search.resources.pages.size > 0 -%}
+			{% liquid
+				assign has_result = true
+			%}
+			<div class="gsp-predictive-search-group">
+				<h4 class="gsp-predictive-search-heading fs-18px mb-4 pb-2 border-bottom">
+					{{ 'general.page' | t }}
+				</h4>
+				<div class="gsp-predictive-search-list">
+					{%- for page in predictive_search.resources.pages limit: litmit -%}
+						<div class="gsp-predictive-search-item">
+							<h4 class="fs-6">
+								<a href="{{ page.url }}" class="text-decoration-none">
+									{{ page.title | escape }}
+								</a>
+							</h4>
+						</div>
+					{%- endfor -%}
+				</div>
+			</div>
+		{%- endif -%}
+		{%- if has_result -%}
+			<div class="text-center mt-5">
+				<button class="btn btn-dark" form="gsp-search-popup-header">
+					{{ 'general.view_all' | t }} <span
+						class="fs-14px ms-1 align-text-bottom">{% render 'icons', icon: 'arrow-right' %}</span>
+				</button>
+			</div>
+		{%- else -%}
+			<h4 class="text-center" data-no-result>
+				{{ 'search.no_results' | t }} "{{ predictive_search.terms }}"
+			</h4>
+		{%- endif -%}
+	</div>
+	{% render 'loading__section', class: 'd-none' %}
+{%- endif -%}

@@ -1,0 +1,118 @@
+{% comment %}
+  Accepts:
+	- skin: skin skin product
+	- product: product object (required)
+	- placeholder: placeholder image
+	- aspect_ratio: Ratio of the image
+	- image_size: Image Size
+	- hover_style: style hover image
+	- show_rating: Show rating
+	- support_switch_layout: [bool] Enable switch layout support for skins | default false
+{% endcomment %}
+{% liquid
+	if skin == nil or skin == '' or skin == 'default' or skin == 'inherit'
+		assign skin = settings.pc_skin
+	endif
+	if support_switch_layout == nil
+		assign support_switch_layout = false
+	endif
+	assign aspect_ratio = aspect_ratio | default: nil
+	assign image_size = image_size | default: nil
+	assign hover_style = hover_style | default: nil
+	assign placeholder = placeholder | default: nil
+	assign show_rating = show_rating | default: nil
+	assign animation_type = animation_type | default: 'none'
+	if show_action == nil
+		assign show_action = true
+	endif
+%}
+{% case skin %}
+	{% when 'skin-grid-01' %}
+		{% render 'product-skins__01',
+			product: product,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			show_rating: show_rating,
+			support_switch_layout: support_switch_layout,
+			animation_type: animation_type,
+			show_action: show_action
+		%}
+	{% when 'skin-grid-02' %}
+		{% render 'product-skins__02',
+			product: product,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			show_rating: show_rating,
+			support_switch_layout: support_switch_layout,
+			animation_type: animation_type,
+			show_action: show_action
+		%}
+	{% when 'skin-grid-03' %}
+		{% render 'product-skins__03',
+			product: product,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			show_rating: show_rating,
+			support_switch_layout: support_switch_layout,
+			animation_type: animation_type,
+			show_action: show_action
+		%}
+	{% when 'skin-grid-04' %}
+		{% render 'product-skins__04',
+			product: product,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			show_rating: show_rating,
+			support_switch_layout: support_switch_layout,
+			animation_type: animation_type,
+			show_action: show_action
+		%}
+	{% when 'skin-grid-05' %}
+		{% render 'product-skins__05',
+			product: product,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			show_rating: show_rating,
+			support_switch_layout: support_switch_layout,
+			animation_type: animation_type,
+			show_action: show_action
+		%}
+	{% when 'skin-grid-06' %}
+		{% render 'product-skins__06',
+			product: product,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			show_rating: show_rating,
+			support_switch_layout: support_switch_layout,
+			animation_type: animation_type,
+			show_action: show_action
+		%}
+	{% when 'skin-list-01' %}
+		{% render 'product-skins__list-01',
+			product: product,
+			aspect_ratio: aspect_ratio,
+			image_size: image_size,
+			hover_style: hover_style,
+			placeholder: placeholder,
+			show_rating: show_rating,
+			support_switch_layout: support_switch_layout,
+			animation_type: animation_type,
+			show_action: show_action
+		%}
+	{% when 'skins__predictive-search' %}
+		{% render 'product-skins__predictive-search', product: product %}
+	{% when 'skin-compare-preview' %}
+		{% render 'product-skins__compare-preview', product: product %}
+{% endcase %}

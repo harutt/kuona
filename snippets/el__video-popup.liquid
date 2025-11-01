@@ -1,0 +1,79 @@
+{% comment %}
+	Element Featured Box
+	Accepts:
+	- args: heading settings | Obj
+	- has_background: background element | bool
+	- image_plackholder_index: image plackholder index | int
+{% endcomment %}
+
+{% liquid
+	assign button_style = args.settings.vp_button_style | default: "default"
+	assign button_color = args.settings.vp_button_color | default: "light"
+	assign button_class = "btn btn"
+	if button_style != 'default'
+		assign button_class = button_class | append: "-" | append: button_style
+	endif
+	assign button_class = button_class | append: "-" | append: button_color
+	assign height = args.settings.vp_height
+	assign height_mobile = args.settings.vp_height_mobile
+	assign button_size = args.settings.vp_button_size
+	assign button_icon_size = args.settings.vp_button_icon_size
+%}
+<div class="gsp-element gsp-element-video-popup position-relative gsp-element-video-popup-{{ args.id }}">
+	{%- if has_background %}
+		{% liquid
+			assign bg_image = args.settings.vp_bg_image
+			assign bg_color = args.settings.vp_bg_color
+			assign bg_position = args.settings.vp_bg_position
+			assign bg_size = args.settings.vp_bg_size
+			if bg_color == blank or bg_color == "rgba(0,0,0,0)"
+				assign has_bg_color = true
+			endif
+		%}
+		<div class="gsp-element-video-popup-image-wrap h-100 w-100 position-absolute overflow-hidden">
+			{% if bg_image == blank and has_bg_color %}
+				{% assign placeholder = 'hero-apparel-' | append: image_plackholder_index %}
+				{% render 'responsive-image', placeholder: placeholder %}
+			{% endif %}
+		</div>
+	{% endif %}
+	<div
+		class="gsp-element-video-popup-content card-img-overlay pe-none d-flex align-items-center justify-content-center">
+		<a href="{{ args.settings.vp_url }}" title="{{ 'video.play' | t }}" aria-label="{{ 'video.play' | t }}"
+		   class="{{ button_class }} p-0 gsp-element-video-popup-button view-video pe-auto d-flex align-items-center justify-content-center">
+			{% render 'icons', icon: 'play' %}
+		</a>
+	</div>
+</div>
+{% style %}
+	.gsp-element-video-popup-{{ args.id }}{
+		{%- if height != blank and height != -1 %}
+			--gsp-video-popup-height: {{ height }}px !important;
+		{% endif %}
+		{%- if height_mobile != blank and height_mobile != -1 %}
+			--gsp-video-popup-height-mobile: {{ height_mobile }}px !important;
+		{% endif %}
+		{%- if button_size != blank and button_size != -1 %}
+			--gsp-video-popup-btn-size: {{ button_size }}px !important;
+		{% endif %}
+		{%- if button_icon_size != blank and button_icon_size != -1 %}
+			--gsp-video-popup-icon-size: {{ button_icon_size }}px !important;
+		{% endif %}
+	}
+	{%- if has_background %}
+		.gsp-element-video-popup-{{ args.id }} .gsp-element-video-popup-image-wrap{
+		{% if bg_image != blank %}
+			--gsp-video-popup-bg-image: url({{ bg_image | image_url }});
+		{% endif %}
+		{% if bg_color != blank and bg_color != "rgba(0,0,0,0)" %}
+			--gsp-video-popup-bg-color: {{ bg_color }};
+		{% endif %}
+		{% if bg_position != blank and bg_position != "default" %}
+			--gsp-video-popup-bg-position: {{ bg_position }};
+		{% endif %}
+		{% if bg_size != blank and bg_size != "default" %}
+			--gsp-video-popup-bg-size: {{ bg_size }};
+		{% endif %}
+		}
+	{% endif %}
+{% endstyle %}

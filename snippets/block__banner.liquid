@@ -1,0 +1,15 @@
+{% comment %}
+	Banner block
+	Accepts:
+	- block: block object
+{% endcomment %}
+{% liquid
+	capture animation_attr
+		render 'animation-attr', type: block.settings.animation_type
+	endcapture
+%}
+<div class="gsp-block__{{ block.id }} gsp-block gsp-block-banner" {{- animation_attr -}} {{ block.shopify_attributes }}>
+	<div class="gsp-block__inner">
+		{% render 'el__banner', args: block , image_plackholder_index: image_plackholder_index %}
+	</div>
+</div>

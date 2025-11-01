@@ -1,0 +1,381 @@
+{% comment %}
+	Shopify template stylesheet
+{% endcomment %}
+{% liquid
+	assign color_white = '#ffffff'
+	assign color_black = '#000000'
+
+	assign adv_custom_css = settings.adv_custom_css | replace: "&gt;", ">"
+	assign container_width = settings.container_width
+	assign container_xl_width = settings.container_xl_width
+	assign container_xxl_width = settings.container_xxl_width
+
+	assign color_primary = settings.color_primary
+	assign color_secondary = settings.color_secondary
+	assign color_light = settings.color_light
+	assign color_dark = settings.color_dark
+
+	if color_primary == blank or color_primary == "rgba(0,0,0,0)"
+		assign color_primary = '#4e7661'
+	endif
+	if color_secondary == blank or color_secondary == "rgba(0,0,0,0)"
+		assign color_secondary = '#d54b4b'
+	endif
+	if color_light == blank or color_light == "rgba(0,0,0,0)"
+		assign color_light = '#f6f6f6'
+	endif
+	if color_dark == blank or color_dark == "rgba(0,0,0,0)"
+		assign color_dark = '#000'
+	endif
+
+	assign color_primary_constract = color_primary | color_contrast: color_white
+	assign color_secondary_constract = color_secondary | color_contrast: color_white
+	assign color_light_constract = color_light | color_contrast: color_white
+	assign color_dark_constract = color_dark | color_contrast: color_white
+
+	assign color_primary_foreground = color_white
+	if color_primary_constract < 2.5
+		assign color_primary_foreground = color_black
+	endif
+
+	assign color_secondary_foreground = color_white
+	if color_secondary_constract < 2.5
+		assign color_secondary_foreground = color_black
+	endif
+
+	assign color_light_foreground = color_white
+	if color_light_constract < 2.5
+		assign color_light_foreground = color_black
+	endif
+
+	assign color_dark_foreground = color_white
+	if color_dark_constract < 2.5
+		assign color_dark_foreground = color_black
+	endif
+
+	assign color_primary_rgb = color_primary | color_to_rgb | replace: 'rgb(', '' | replace: ')', ''
+	assign color_secondary_rgb = color_secondary | color_to_rgb | replace: 'rgb(', '' | replace: ')', ''
+	assign color_light_rgb = color_light | color_to_rgb | replace: 'rgb(', '' | replace: ')', ''
+	assign color_dark_rgb = color_dark | color_to_rgb | replace: 'rgb(', '' | replace: ')', ''
+
+	assign color_main_bg = settings.color_main_bg
+	assign color_border = settings.color_border
+	assign color_body_text = settings.color_body_text
+	assign color_heading_text = settings.color_heading_text
+	assign color_sub_text = settings.color_sub_text
+	assign color_text_link = settings.color_text_link
+	assign color_text_link_rgb = color_text_link | color_to_rgb | replace: 'rgb(', '' | replace: ')', ''
+	assign color_text_link_hover = settings.color_text_link_hover
+	assign color_text_link_hover_rgb = color_text_link_hover | color_to_rgb | replace: 'rgb(', '' | replace: ')', ''
+
+	assign color_form_field_bg = settings.color_form_field_bg
+	assign color_form_field_border = settings.color_form_field_border
+	assign color_form_field_text = settings.color_form_field_text
+	assign color_form_field_placeholder = settings.color_form_field_placeholder
+	assign color_form_field_focus_border = color_heading_text
+
+	assign color_header_text = settings.color_header_text | default: '#000'
+	assign color_header_text_constract = color_header_text | color_contrast: color_white
+	assign color_header_text_muted = color_header_text | color_mix: color_white, 50
+	if color_header_text_constract < 2.5
+		assign color_header_text_muted = color_header_text | color_mix: color_black, 70
+	endif
+
+	assign color_header_transparent_text = settings.color_header_transparent_text | default: '#fff'
+	assign color_header_transparent_text_constract = color_header_transparent_text | color_contrast: color_white
+	assign color_header_transparent_text_muted = color_header_transparent_text | color_mix: color_white, 50
+	if color_header_transparent_text_constract < 2.5
+		assign color_header_transparent_text_muted = color_header_transparent_text | color_mix: color_black, 70
+	endif
+
+	assign body_font = settings.typo_font_body
+	assign body_font_bolder = body_font | font_modify: 'weight', 'bolder'
+	assign body_font_normal = body_font | font_modify: 'weight', 'normal'
+	assign body_font_bold = body_font | font_modify: 'weight', 'bold'
+	assign body_font_medium = body_font | font_modify: 'weight', '500'
+	assign body_font_semibold = body_font | font_modify: 'weight', '600'
+	assign body_font_italic = body_font | font_modify: 'style', 'italic'
+	assign typo_enable_custom_font_body = settings.typo_enable_custom_font_body
+	assign typo_custom_body_font = settings.typo_custom_body_font
+
+	assign heading_font = settings.typo_font_heading
+	assign heading_font_bolder = heading_font | font_modify: 'weight', 'bolder'
+	assign heading_font_normal = heading_font | font_modify: 'weight', 'normal'
+	assign heading_font_bold = heading_font | font_modify: 'weight', 'bold'
+	assign heading_font_medium = heading_font | font_modify: 'weight', '500'
+	assign heading_font_semibold = heading_font | font_modify: 'weight', '600'
+	assign heading_font_italic = heading_font | font_modify: 'style', 'italic'
+	assign typo_enable_custom_font_heading = settings.typo_enable_custom_font_heading
+	assign typo_custom_heading_font = settings.typo_custom_heading_font
+
+	assign primary_font = settings.typo_primary_font
+	assign primary_font_bolder = primary_font | font_modify: 'weight', 'bolder'
+	assign primary_font_normal = primary_font | font_modify: 'weight', 'normal'
+	assign primary_font_bold = primary_font | font_modify: 'weight', 'bold'
+	assign primary_font_medium = primary_font | font_modify: 'weight', '500'
+	assign primary_font_semibold = primary_font | font_modify: 'weight', '600'
+	assign primary_font_italic = primary_font | font_modify: 'style', 'italic'
+	assign use_custom_primary_font = settings.use_custom_font_primary
+	assign custom_primary_font = settings.custom_primary_font
+
+	if body_font_bold == heading_font_bold
+		assign font_heading_is_load = true
+	endif
+
+	if body_font_bold == primary_font_bold or heading_font_bold == primary_font_bold
+		assign font_primary_is_load = true
+	endif
+%}
+
+{%- capture typography_variables -%}
+	{%- if typo_enable_custom_font_body == true and typo_custom_body_font != blank -%}
+		{%- assign body_fonts = typo_custom_body_font | newline_to_br | split: '<br />' -%}
+		{%- if body_fonts != blank -%}
+			--gsp-body-font-family: 'GSP-Body-Font';
+			--gsp-body-font-weight: {{ settings.typo_custom_body_font_weight | default: 400 }};
+		{%- endif -%}
+	{% else %}
+		--gsp-body-font-family: {{ body_font.family }}, {{ body_font.fallback_families }};
+		--gsp-body-font-weight: {{ body_font.weight }};
+	{%- endif -%}
+
+
+	{%- if typo_enable_custom_font_heading == true and typo_custom_heading_font != blank -%}
+		{%- assign heading_fonts = typo_custom_heading_font | newline_to_br | split: '<br />' -%}
+		{%- if heading_fonts != blank -%}
+			--gsp-heading-font-family: 'GSP-Heading-Font';
+			--gsp-heading-font-weight: {{ settings.typo_custom_heading_font_weight | default: 400 }};
+		{%- endif -%}
+	{% else %}
+		--gsp-heading-font-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+		--gsp-heading-font-weight: {{ heading_font.weight }};
+	{%- endif -%}
+
+	{%- if use_custom_primary_font == true and custom_primary_font != blank -%}
+		{%- assign primary_font = custom_primary_font | newline_to_br | split: '<br />' -%}
+		{%- if primary_font != blank -%}
+			--gsp-primary-font-family: 'GSP-Primary-Font';
+		{%- endif -%}
+	{% else %}
+		--gsp-primary-font-family: {{ primary_font.family }}, {{ primary_font.fallback_families }};
+	{%- endif -%}
+	--gsp-body-font-size: {{ settings.typo_fs_base | default: 16 }}px;
+	--gsp-body-line-height: {{ settings.typo_lh_base | default: 1.6 }};
+	--gsp-h1-font-size: {{ settings.typo_heading_h1_size | default: 56 }}px;
+	--gsp-h2-font-size: {{ settings.typo_heading_h2_size | default: 48 }}px;
+	--gsp-h3-font-size: {{ settings.typo_heading_h3_size | default: 32 }}px;
+	--gsp-h4-font-size: {{ settings.typo_heading_h4_size | default: 24 }}px;
+	--gsp-h5-font-size: {{ settings.typo_heading_h5_size | default: 20 }}px;
+	--gsp-h6-font-size: {{ settings.typo_heading_h6_size | default: 18 }}px;
+	--gsp-h1-line-height: {{ settings.typo_heading_h1_lh | default: 1.2 }};
+	--gsp-h2-line-height: {{ settings.typo_heading_h2_lh | default: 1.1 }};
+	--gsp-h3-line-height: {{ settings.typo_heading_h3_lh | default: 1.3 }};
+	--gsp-h4-line-height: {{ settings.typo_heading_h4_lh | default: 1.5 }};
+	--gsp-h5-line-height: {{ settings.typo_heading_h5_lh | default: 1.5 }};
+	--gsp-h6-line-height: {{ settings.typo_heading_h6_lh | default: 1.5 }};
+	--gsp-heading-letter-spacing: {{ settings.typo_heading_letter_spacing | default: 0 }}em;
+	--gsp-heading-text-transform: {{ settings.typo_heading_text_transform | default: 'none' }};
+{%- endcapture -%}
+
+{%- capture font_face -%}
+	{%- if typo_enable_custom_font_body == true and typo_custom_body_font != blank -%}
+		{%- assign body_fonts = typo_custom_body_font | newline_to_br | split: '<br />' -%}
+		{%- for link in body_fonts -%}
+			{% liquid
+				assign link_data = link | split: '@'
+				assign font_url = link_data | first | strip_newlines
+				assign weight = link_data | last
+				assign font_type = font_url | split: '.' | last
+				if font_type contains '?v='
+					assign font_type = font_type | split: '?v=' | first
+				endif
+			%}
+			@font-face {
+			font-family: GSP-Body-Font;
+			font-weight: {{- weight -}};
+			src: url({{- font_url -}});
+			font-display: swap;
+			}
+		{% endfor %}
+	{% else %}
+		{{ body_font | font_face: font_display: 'swap' }}
+		{{ body_font_bold | font_face: font_display: 'swap' }}
+		{{ body_font_normal | font_face: font_display: 'swap' }}
+		{{ body_font_medium | font_face: font_display: 'swap' }}
+		{{ body_font_semibold | font_face: font_display: 'swap' }}
+		{{ body_font_bolder | font_face: font_display: 'swap' }}
+		{{ body_font_italic | font_face: font_display: 'swap' }}
+	{%- endif -%}
+	{%- if typo_enable_custom_font_heading == true and typo_custom_heading_font != blank -%}
+		{%- assign heading_fonts = typo_custom_heading_font | newline_to_br | split: '<br />' -%}
+		{%- for link in heading_fonts -%}
+			{% liquid
+				assign link_data = link | split: '@'
+				assign font_url = link_data | first | strip_newlines
+				assign weight = link_data | last
+				assign font_type = font_url | split: '.' | last
+				if font_type contains '?v='
+					assign font_type = font_type | split: '?v=' | first
+				endif
+			%}
+			@font-face {
+			font-family: GSP-Heading-Font;
+			font-weight: {{- weight -}};
+			src: url({{- font_url -}});
+			font-display: swap;
+			}
+		{% endfor %}
+	{% else %}
+		{%- unless font_heading_is_load -%}
+			{{ heading_font | font_face: font_display: 'swap' }}
+			{{ heading_font_bold | font_face: font_display: 'swap' }}
+			{{ heading_font_normal | font_face: font_display: 'swap' }}
+			{{ heading_font_medium | font_face: font_display: 'swap' }}
+			{{ heading_font_semibold | font_face: font_display: 'swap' }}
+			{{ heading_font_bolder | font_face: font_display: 'swap' }}
+			{{ heading_font_italic | font_face: font_display: 'swap' }}
+		{%- endunless -%}
+	{%- endif -%}
+	{%- if use_custom_primary_font == true and custom_primary_font != blank -%}
+		{%- assign primary_fonts = custom_primary_font | newline_to_br | split: '<br />' -%}
+		{%- for link in primary_fonts -%}
+			{% liquid
+				assign link_data = link | split: '@'
+				assign font_url = link_data | first | strip_newlines
+				assign weight = link_data | last
+				assign font_type = font_url | split: '.' | last
+				if font_type contains '?v='
+					assign font_type = font_type | split: '?v=' | first
+				endif
+			%}
+			@font-face {
+			font-family: GSP-Primary-Font;
+			font-weight: {{- weight -}};
+			src: url({{- font_url -}});
+			font-display: swap;
+			}
+		{% endfor %}
+	{% else %}
+		{%- unless font_primary_is_load -%}
+			{{ primary_font | font_face: font_display: 'swap' }}
+			{{ primary_font_bold | font_face: font_display: 'swap' }}
+			{{ primary_font_normal | font_face: font_display: 'swap' }}
+			{{ primary_font_medium | font_face: font_display: 'swap' }}
+			{{ primary_font_semibold | font_face: font_display: 'swap' }}
+			{{ primary_font_bolder | font_face: font_display: 'swap' }}
+			{{ primary_font_italic | font_face: font_display: 'swap' }}
+		{%- endunless -%}
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture css_inline -%}
+	{%- if settings.typo_ls_base != blank and settings.typo_ls_base != 0 -%}
+		body{
+		letter-spacing: {{ settings.typo_ls_base }}em;
+		}
+	{%- endif -%}
+
+	{%- if settings.page_loading != 'none' -%}
+		{% liquid
+			assign page_loading_color_spinner = settings.page_loading_color_spinner
+			assign page_loading_bg_color = settings.page_loading_bg_color
+			assign page_loading_bg_image = settings.page_loading_bg_image
+			assign page_loading_bg_position = settings.page_loading_bg_position
+			assign page_loading_bg_size = settings.page_loading_bg_size
+		%}
+		.gsp-loading-page{
+		{% if page_loading_bg_color != blank and page_loading_bg_color != "rgba(0,0,0,0)" %}
+			--gsp-loading-bg-page: {{ page_loading_bg_color }};
+		{% endif %}
+		{% if page_loading_bg_image != blank %}
+			--gsp-loading-bg-page-image: url({{ page_loading_bg_image | image_url }});
+		{% endif %}
+		{% if page_loading_bg_position != blank and page_loading_bg_position != "default" %}
+			--gsp-loading-bg-page-position: {{ page_loading_bg_position }};
+		{% endif %}
+		{% if page_loading_bg_size != blank and page_loading_bg_size != "default" %}
+			--gsp-loading-bg-page-size: {{ page_loading_bg_size }};
+		{% endif %}
+		}
+		.gsp-loading{
+		{% if page_loading_color_spinner != blank and page_loading_color_spinner != "rgba(0,0,0,0)" %}
+			--gsp-loading-color-spinner: {{ page_loading_color_spinner }};
+		{% endif %}
+		}
+	{%- endif -%}
+{%- endcapture -%}
+
+{% style %}
+	{{ font_face }}
+	:root {
+	--gsp-container-width: {{ container_width }}px;
+	--gsp-container-xl-width: {{ container_xl_width }}px;
+	--gsp-container-xxl-width: {{ container_xxl_width }}px;
+
+	--gsp-primary-color: {{ color_primary }};
+	--gsp-primary-rgb: {{ color_primary_rgb }};
+	--gsp-secondary-color: {{ color_secondary }};
+	--gsp-secondary-rgb: {{ color_secondary_rgb }};
+	--gsp-light-color: {{ color_light }};
+	--gsp-light-rgb: {{ color_light_rgb }};
+	--gsp-dark-color: {{ color_dark }};
+	--gsp-dark-rgb: {{ color_dark_rgb }};
+	--gsp-primary-foreground-color: {{ color_primary_foreground }};
+	--gsp-secondary-foreground-color: {{ color_secondary_foreground }};
+	--gsp-light-foreground-color: {{ color_light_foreground }};
+	--gsp-dark-foreground-color: {{ color_dark_foreground }};
+
+	--gsp-main-bg: {{ color_main_bg }};
+	--gsp-border-color: {{ color_border }};
+	--gsp-body-text-color: {{ color_body_text }};
+	--gsp-heading-color: {{ color_heading_text }};
+	--gsp-sub-text-color: {{ color_sub_text }};
+
+	--gsp-link-color: {{ color_text_link }};
+	--gsp-link-color-rgb: {{ color_text_link_rgb }};
+	--gsp-link-hover-hover: {{ color_text_link_hover }};
+	--gsp-link-hover-hover-rgb: {{ color_text_link_hover_rgb }};
+
+	--gsp-form-field-bg: {{ color_form_field_bg }};
+	--gsp-form-field-border-color: {{ color_form_field_border }};
+	--gsp-form-field-color: {{ color_form_field_text }};
+	--gsp-form-field-placeholder: {{ color_form_field_placeholder }};
+	--gsp-form-field-focus-border-color: {{ color_form_field_focus_border }};
+
+	--gsp-top-bar-transparent-border-color: {{ color_border | color_modify: 'alpha', 0.3 }};
+
+	--gsp-header-bg: {{ settings.color_header_bg | default: '#fff' }};
+	--gsp-header-color: {{ color_header_text }};
+	--gsp-header-text-muted-color: {{ color_header_text_muted }};
+	--gsp-header-cart-wishlist-count-color: {{ settings.color_cart_wishlist_count | default: '#fff' }};
+
+	--gsp-header-transparent-color: {{ color_header_transparent_text }};
+	--gsp-header-transparent-text-muted-color: {{ color_header_transparent_text_muted }};
+	--gsp-header-badge-count-transparent-color: {{ settings.color_cart_wishlist_count_transparent | default: '#000' }};
+
+	--gsp-dropdown-menu-bg: {{ settings.color_dropdown_menu_bg | default: '#fff' }};
+	--gsp-dropdown-menu-color: {{ settings.color_dropdown_menu_text | default: '#171717' }};
+	--gsp-dropdown-menu-hover-color: {{ settings.color_dropdown_menu_text_hover | default: '#000' }};
+	{{ typography_variables }}
+	}
+	{{ css_inline | strip_newlines }}
+	{%- if adv_custom_css != blank -%}
+		{{ adv_custom_css | strip_newlines }}
+	{%- endif -%}
+{% endstyle %}
+
+{%- unless typo_enable_custom_font_body or settings.typo_font_body.system? -%}
+	{% comment %}theme-check-disable AssetPreload{% endcomment %}
+	<link rel="preload" as="font" href="{{ body_font | font_url }}" type="font/woff2" crossorigin>
+	{% comment %}theme-check-enable AssetPreload{% endcomment %}
+{%- endunless -%}
+{%- unless typo_enable_custom_font_heading or settings.typo_font_heading.system? or font_heading_is_load -%}
+	{% comment %}theme-check-disable AssetPreload{% endcomment %}
+	<link rel="preload" as="font" href="{{ heading_font | font_url }}" type="font/woff2" crossorigin>
+	{% comment %}theme-check-enable AssetPreload{% endcomment %}
+{%- endunless -%}
+{%- unless use_custom_primary_font or settings.typo_primary_font.system? or font_primary_is_load -%}
+	{% comment %}theme-check-disable AssetPreload{% endcomment %}
+	<link rel="preload" as="font" href="{{ primary_font | font_url }}" type="font/woff2" crossorigin>
+	{% comment %}theme-check-enable AssetPreload{% endcomment %}
+{%- endunless -%}

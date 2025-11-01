@@ -1,0 +1,12 @@
+{% liquid
+	assign phone_number = settings.store_contact_phone_number
+%}
+{%- if phone_number != '' and phone_number != blank %}
+	<div class="gsp-header-addons-item gsp-header-addons-item__phone">
+		<a class="d-flex align-items-center gsp-top-bar-color text-decoration-none fs-14px"
+		   href="tel:{{ phone_number }}">
+			{% render 'icons', icon: 'mobile-button' %}
+			<span class="ms-1">{{ 'header.addon.call' | t }}: {{ phone_number }}</span>
+		</a>
+	</div>
+{% endif -%}

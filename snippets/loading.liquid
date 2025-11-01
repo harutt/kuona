@@ -1,0 +1,19 @@
+{% comment %}
+	loading element
+	Accepts:
+	- loading_type: loading type
+{% endcomment %}
+
+{%- liquid
+	assign loading_type = loading_type | default: settings.page_loading
+	case loading_type
+		when 'circle'
+			render 'loading__circle'
+		when 'square-dot'
+			render 'loading__square-dot'
+		when 'the-bars'
+			render 'loading__the-bars'
+		when 'rainbow'
+			render 'loading__rainbow'
+	endcase
+-%}

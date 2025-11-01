@@ -1,0 +1,207 @@
+{% comment %}
+	- classes: Class Slick
+	- is_list: If is layout list return Item show is 1 | default: false
+	- item_to_show: Item to show
+	- item_to_scroll: Item next when scroll
+	- arrows: Enable arrows [Bolean]
+	- dots: Enable dots [Bolean]
+	- auto_height: Enable auto height [Bolean]
+	- autoplay: Enable autoplay [Bolean]
+	- autoplay_speed: Autoplay speed
+	- fade: Enable fade Effect [Bolean]
+	- loop: Enable loop [Bolean]
+	- center_mode: Enable center mode [Bolean]
+	- center_padding: center mode padding
+	- orther_setting: Added other settings EX: orther_setting: '"centerMode":true,"centerPadding": "60px"'
+
+	- lg_settings: Enable responsive setting on lg [Bolean]
+	- breakpoint_lg: breakpoint lg
+	- item_to_show_on_lg: Item to show
+	- item_to_scroll_on_lg: Item next when scroll
+	- arrows_on_lg: Enable arrows [Bolean]
+	- dots_on_lg: Enable dots [Bolean]
+	- orther_setting_on_lg: Added other settings EX: orther_setting: '"centerMode":true,"centerPadding": "60px"'
+
+	- md_settings: Enable responsive setting on md [Bolean]
+	- breakpoint_md: breakpoint md
+	- item_to_show_on_md: Item to show
+	- item_to_scroll_on_md: Item next when scroll
+	- arrows_on_md: Enable arrows [Bolean]
+	- dots_on_md: Enable dots [Bolean]
+	- orther_setting_on_md: Added other settings EX: orther_setting: '"centerMode":true,"centerPadding": "60px"'
+
+	- xs_settings: Enable responsive setting on xs [Bolean]
+	- breakpoint_xs: breakpoint xs
+	- item_to_show_on_xs: Item to show
+	- item_to_scroll_on_xs: Item next when scroll
+	- arrows_on_xs: Enable arrows [Bolean]
+	- dots_on_xs: Enable dots [Bolean]
+	- orther_setting_on_xs: Added other settings EX: orther_setting: '"centerMode":true,"centerPadding": "60px"'
+{% endcomment %}
+{% liquid
+	assign lg_option = ''
+	assign md_option = ''
+	assign xs_option = ''
+	assign is_list = is_list | default: false
+	assign item_to_show = item_to_show | default: 4
+	assign item_to_scroll = item_to_scroll | default: item_to_show
+	assign classes = classes | default: 'gsp-slider slick-slider'
+	if dots_color != blank
+		assign classes = classes | append: ' slick-dots-' | append: dots_color
+	endif
+	if arrow_color != blank
+		assign classes = classes | append: ' slick-arrow-' | append: arrow_color
+	endif
+	if arrows == nil
+		assign arrows = true
+	endif
+
+	if is_list
+		assign item_to_show = 1
+		assign item_to_show_on_lg = 1
+		assign item_to_show_on_md = 1
+		assign item_to_show_on_sm = 1
+		assign item_to_show_on_xs = 1
+	endif
+	if dots == nil
+		assign dots = true
+	endif
+
+	assign xl_option = '{"slidesToShow": ' | append: item_to_show | append: ',"slidesToScroll": ' | append: item_to_scroll | append: ',"arrows": ' | append: arrows | append: ',"dots": ' | append: dots
+	if orther_setting != nil
+		assign xl_option = xl_option | append: ',' | append: orther_setting
+	endif
+	if autoplay != nil
+		assign autoplay_speed = autoplay_speed | default: 5000
+		assign xl_option = xl_option | append: ',"autoplay": ' | append: autoplay | append: ',"autoplaySpeed": ' | append: autoplay_speed
+	endif
+	if center_mode != nil
+		assign center_padding = center_padding | default: '0px'
+		assign xl_option = xl_option | append: ',"centerMode": ' | append: center_mode | append: ',"centerPadding": "' | append: center_padding | append: '"'
+		assign xl_option = xl_option | append: ',"infinite": ' | append: true
+	endif
+	if fade != nil
+		assign xl_option = xl_option | append: ',"fade": ' | append: fade
+	endif
+	if loop != nil
+		if center_mode == nil or center_mode != true
+			assign xl_option = xl_option | append: ',"infinite": ' | append: loop
+		endif
+	endif
+	if auto_height != nil
+		assign xl_option = xl_option | append: ',"adaptiveHeight": ' | append: auto_height
+	endif
+
+	if lg_settings
+		assign breakpoint_lg = breakpoint_lg | default: "1200"
+		assign divider = ''
+		assign lg_option = '{"breakpoint": ' | append: breakpoint_lg | append: ',"settings":{'
+		if item_to_show_on_lg != nil
+			assign lg_option = lg_option | append: divider | append: '"slidesToShow":' | append: item_to_show_on_lg
+			assign divider = ','
+		endif
+		if item_to_scroll_on_lg != nil
+			assign lg_option = lg_option | append: divider | append: '"slidesToScroll":' | append: item_to_scroll_on_lg
+			assign divider = ','
+		endif
+		if arrows_on_lg != nil
+			assign lg_option = lg_option | append: divider | append: '"arrows":' | append: arrows_on_lg
+			assign divider = ','
+		endif
+		if dots_on_lg != nil
+			assign lg_option = lg_option | append: divider | append: '"dots":' | append: dots_on_lg
+			assign divider = ','
+		endif
+		if orther_setting_on_lg != nil
+			assign lg_option = lg_option | append: divider | append: orther_setting_on_lg
+			assign divider = ','
+		endif
+		assign lg_option = lg_option | append: '}}'
+	endif
+
+	if md_settings
+		assign breakpoint_md = breakpoint_md | default: "992"
+		assign divider = ''
+		assign md_option = ',{"breakpoint": ' | append: breakpoint_md | append: ',"settings":{'
+		if item_to_show_on_md != nil
+			assign md_option = md_option | append: divider | append: '"slidesToShow":' | append: item_to_show_on_md
+			assign divider = ','
+		endif
+		if item_to_scroll_on_md != nil
+			assign md_option = md_option | append: divider | append: '"slidesToScroll":' | append: item_to_scroll_on_md
+			assign divider = ','
+		endif
+		if arrows_on_md != nil
+			assign md_option = md_option | append: divider | append: '"arrows":' | append: arrows_on_md
+			assign divider = ','
+		endif
+		if dots_on_md != nil
+			assign md_option = md_option | append: divider | append: '"dots":' | append: dots_on_md
+			assign divider = ','
+		endif
+		if orther_setting_on_md != nil
+			assign md_option = md_option | append: divider | append: orther_setting_on_md
+			assign divider = ','
+		endif
+		assign md_option = md_option | append: '}}'
+	endif
+
+	if sm_settings
+		assign breakpoint_sm = breakpoint_sm | default: "768"
+		assign divider = ''
+		assign sm_option = ',{"breakpoint": ' | append: breakpoint_sm | append: ',"settings":{'
+		if item_to_show_on_sm != nil
+			assign sm_option = sm_option | append: divider | append: '"slidesToShow":' | append: item_to_show_on_sm
+			assign divider = ','
+		endif
+		if item_to_scroll_on_sm != nil
+			assign sm_option = sm_option | append: divider | append: '"slidesToScroll":' | append: item_to_scroll_on_sm
+			assign divider = ','
+		endif
+		if arrows_on_sm != nil
+			assign sm_option = sm_option | append: divider | append: '"arrows":' | append: arrows_on_sm
+			assign divider = ','
+		endif
+		if dots_on_sm != nil
+			assign sm_option = sm_option | append: divider | append: '"dots":' | append: dots_on_sm
+			assign divider = ','
+		endif
+		if orther_setting_on_sm != nil
+			assign sm_option = sm_option | append: divider | append: orther_setting_on_sm
+			assign divider = ','
+		endif
+		assign sm_option = sm_option | append: '}}'
+	endif
+
+	if xs_settings
+		assign breakpoint_xs = breakpoint_xs | default: "577"
+		assign divider = ''
+		assign xs_option = ',{"breakpoint": ' | append: breakpoint_xs | append: ',"settings":{'
+		if item_to_show_on_xs != nil
+			assign xs_option = xs_option | append: divider | append: '"slidesToShow":' | append: item_to_show_on_xs
+			assign divider = ','
+		endif
+		if item_to_scroll_on_xs != nil
+			assign xs_option = xs_option | append: divider | append: '"slidesToScroll":' | append: item_to_scroll_on_xs
+			assign divider = ','
+		endif
+		if arrows_on_xs != nil
+			assign xs_option = xs_option | append: divider | append: '"arrows":' | append: arrows_on_xs
+			assign divider = ','
+		endif
+		if dots_on_xs != nil
+			assign xs_option = xs_option | append: divider | append: '"dots":' | append: dots_on_xs
+			assign divider = ','
+		endif
+		if orther_setting_on_xs != nil
+			assign xs_option = xs_option | append: divider | append: orther_setting_on_xs
+			assign divider = ','
+		endif
+		assign xs_option = xs_option | append: '}}'
+	endif
+
+	assign responsive_slick = ',"responsive":[' | append: lg_option | append: md_option | append: sm_option | append: xs_option | append: ']'
+	assign slick_option = xl_option | append: responsive_slick | append: '}'
+%}
+class="{{ classes }}"
+data-slick-options='{{ slick_option }}'

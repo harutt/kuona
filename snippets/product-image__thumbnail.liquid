@@ -1,0 +1,127 @@
+{% comment %}
+  Accepts:
+	- media: In addition to images, merchants can upload 3D models and videos, and attach YouTube or Vimeo videos as product media.
+			This gives merchants the opportunity to offer a rich and immersive product experience.
+	- thumbnail: is thumbnail (boolean)
+	- custom_class: custom css
+	- aspect_ratio: Ratio of the image
+	- placeholder: placeholder image
+	- zoom: Zoom Image (boolean)
+	- gallery_mode: id Gallery
+{% endcomment %}
+
+{% liquid
+	if thumbnail == null
+		assign thumbnail = false
+	endif
+
+	if autoplay == null
+		assign autoplay = false
+	endif
+
+	if media.media_type != null
+		assign media_type = media.media_type
+	else
+		assign media_type = 'image'
+	endif
+	assign gallery_mode = gallery_mode | default: ''
+	assign zoom = zoom | default: false
+	assign image_size = image_size | default: nil
+
+	if media_type == 'model'
+		assign icons_action = 'model-3d'
+	else
+		assign icons_action = 'play'
+	endif
+
+	if aspect_ratio == 'original'
+		assign aspect_ratio = media[0].preview_image.aspect_ratio
+	endif
+%}
+{%- if media_type != 'image' and thumbnail == false -%}
+	{%- capture media_template -%}
+		<button id="Deferred-Poster-Modal-{{ media.id }}"
+				class="deferred-media__poster z-index-1 icon-action position-absolute square rounded-circle fs-4 btn-dark btn"
+				type="button" style="--square-size: 80px;">
+				 <span class="deferred-media__poster-button lh-1">
+					 {% render 'icons', icon: icons_action %}
+				 </span>
+		</button>
+		{% render 'responsive-image', image: media, aspect_ratio: aspect_ratio, image_size: image_size, placeholder: placeholder %}
+		<template>
+			<div class="gsp-product-media-template-inner">
+				{%- liquid
+					assign mute = false
+					if autoplay
+						assign mute = true
+					endif
+					case media_type
+						when 'external_video'
+							assign video_class = 'js-' | append: media.host
+							if media.host == 'youtube'
+								if autoplay
+									echo media | external_video_url: autoplay: autoplay, loop: loop, mute: mute, playlist: media.external_id | external_video_tag: class: video_class, loading: 'lazy'
+								else
+									echo media | external_video_url: playlist: media.external_id, loop: loop | external_video_tag: class: video_class, loading: 'lazy'
+								endif
+							else
+								if autoplay
+									echo media | external_video_url: autoplay: autoplay, loop: loop, mute: mute | external_video_tag: class: video_class, loading: 'lazy'
+								else
+									echo media | external_video_url: loop: loop | external_video_tag: class: video_class, loading: 'lazy'
+								endif
+							endif
+						when 'video'
+							echo media | media_tag: image_size: '2048x', autoplay: autoplay, loop: loop, controls: true, preload: 'none'
+						when 'model'
+							echo media | media_tag: image_size: '2048x', toggleable: true
+					endcase
+				-%}
+			</div>
+		</template>
+	{%- endcapture -%}
+	<div
+		class="gsp-product-thumb gsp-product-thumb-{{ media_type }} {%- if custom_class != blank %} {{ custom_class }}{% endif %}">
+		{%- if media_type == 'model' -%}
+			<product-model class="deferred-media no-js-hidden media-model position-relative square"
+						   data-media-id="{{ media.id }}" data-auto-play="{{ autoplay }}">
+				{{ media_template }}
+			</product-model>
+		{%- else -%}
+			<deferred-media class="deferred-media no-js-hidden position-relative square" data-media-id="{{ media.id }}"
+							data-auto-play="{{ autoplay }}">
+				{{ media_template }}
+			</deferred-media>
+		{%- endif -%}
+	</div>
+{%- else -%}
+	<div
+		class="gsp-product-thumb position-relative gsp-product-thumb-{{ media_type }} {%- if media_type != 'image' and thumbnail -%} square {% endif %} {%- if custom_class != blank %} {{ custom_class }}{% endif %}"
+		{%- if media.id != blank %} data-media-id="{{ media.id }}" {% endif %}>
+		{%- if media == blank and settings.pc_default_image != nil -%}
+			{%- assign media = settings.pc_default_image -%}
+		{%- endif -%}
+		{%- if gallery_mode != '' %}
+			<div class="gsp-open-gallery position-absolute z-index-5 fs-20px square">
+				<a href="{{ media | image_url }}"
+				   class="text-heading bg-white square rounded-circle"
+				   data-gallery="{{ gallery_mode }}">{% render 'icons', icon: 'magnifying-glass' %}</a>
+			</div>
+		{% endif %}
+
+
+		{%- if media_type != 'image' and thumbnail -%}
+			<div class="icon-action z-index-1 position-absolute square rounded-circle fs-18px bg-dark text-white" style="--square-size: 40px;">
+				{% render 'icons', icon: icons_action %}
+			</div>
+		{% endif %}
+
+	{%- if zoom %}
+		<div class="gsp-drift" data-drift-option='{"inlinePane": true}' data-zoom="{{ media | image_url }}">
+			{% endif %}
+			{% render 'responsive-image', image: media, aspect_ratio: aspect_ratio, image_size: image_size, placeholder: placeholder %}
+			{%- if zoom %}
+		</div>
+		{% endif %}
+	</div>
+{%- endif -%}

@@ -1,0 +1,81 @@
+{% comment %}
+	Element Counter
+	Accepts:
+	- args: args object
+	- title: title counter
+	- number_start: number start for counter
+	- number_end: number end for counter
+	- separator: separator for number
+	- decimals: decimals for counter
+	- decimal: decimal for counter
+	- duration: Animation duration for counter
+	- prefix: prefix for counter
+	- suffix: suffix for counter
+{% endcomment %}
+{% liquid
+	assign title = title | default: args.settings.el_counter_title
+	assign number_start = number_start | default: args.settings.el_counter_start
+	assign number_end = number_end | default: args.settings.el_counter_end
+	assign separator = separator | default: args.settings.el_counter_separator
+	assign decimals = end_decimals | default: args.settings.el_counter_decimals
+	assign decimal = decimal | default: args.settings.el_counter_decimal
+	assign duration = duration | default: args.settings.el_counter_duration
+	assign prefix = prefix | default: args.settings.el_counter_prefix
+	assign suffix = suffix | default: args.settings.el_counter_suffix
+	assign number_position = number_position | default: args.settings.el_counter_number_pos
+	assign alignment = alignment | default: args.settings.el_counter_alignment
+	assign color_number = color_number | default: args.settings.el_counter_color_number
+	assign color_title = color_title | default: args.settings.el_counter_color_title
+	assign fs_number = fs_number | default: args.settings.el_counter_fs_number
+	assign fs_title = fs_title | default: args.settings.el_counter_fs_title
+	assign sp_number = sp_number | default: args.settings.el_counter_sp_number
+	assign sp_title = sp_title | default: args.settings.el_counter_sp_title
+%}
+{% if number_end != nil %}
+	<div
+		class="gsp-counter gsp-element d-flex flex-column gsp-counter-pos-{{ number_position }} {% if alignment != nil and alignment != 'default' %} align-items-{{ alignment }} {% endif %} gsp-counter-{{ args.id }}"
+	{% if number_start != nil %} data-start={{ number_start | json }} {% endif %}
+		{% if number_end != nil %} data-end={{ number_end | json }} {% endif %}
+	{% if separator != nil and separator != 'default' %} data-separator={{ separator }} {% endif %}
+		{% if decimals != nil %} data-decimals={{ decimals | json }} {% endif %}
+	{% if decimal != nil %} data-decimal={{ decimal | json }} {% endif %}
+		{% if duration != nil %} data-duration={{ duration | json }} {% endif %}
+	>
+		{% if title != nil and number_position == 'top' %}
+			<div class="gsp-counter-title">
+				{{ title }}
+			</div>
+		{% endif %}
+		<div class="gsp-counter-number">
+			{% if prefix != nil %}<span class="gsp-counter-prefix">{{ prefix }}</span>{% endif %}<span class="gsp-counter-number-end">{{ number_end }}</span>{% if suffix != nil %}<span class="gsp-counter-suffix">{{ suffix }}</span>{% endif %}
+		</div>
+		{% if title != nil and number_position == 'bottom' %}
+			<div class="gsp-counter-title">
+				{{ title }}
+			</div>
+		{% endif %}
+	</div>
+
+	{% style %}
+		.gsp-counter-{{ args.id }} {
+		{%- if color_title != blank and color_title != "rgba(0,0,0,0)" %}
+			--gsp-counter-title-color: {{ color_title }} !important;
+		{% endif -%}
+		{%- if color_number != blank and color_number != "rgba(0,0,0,0)" %}
+			--gsp-counter-number-color: {{ color_number }} !important;
+		{% endif -%}
+		{%- if fs_number != blank and fs_number != -1 %}
+			--gsp-counter-number-size: {{ fs_number }}px !important;
+		{% endif -%}
+		{%- if fs_title != blank and fs_title != -1 %}
+			--gsp-counter-title-size: {{ fs_title }}px !important;
+		{% endif -%}
+		{%- if sp_number != blank and sp_number != -1 %}
+			--gsp-counter-number-sp: {{ sp_number }}px !important;
+		{% endif -%}
+		{%- if sp_title != blank and sp_title != -1 %}
+			--gsp-counter-title-sp: {{ sp_title }}px !important;
+		{% endif -%}
+		}
+	{% endstyle %}
+{% endif %}

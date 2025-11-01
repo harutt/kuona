@@ -1,0 +1,10 @@
+{% comment %}
+	- args: Widget settings | Obj
+{% endcomment %}
+<ul class="list-unstyled p-0 d-flex flex-wrap column-gap-3 row-gap-1 mb-0">
+	{%- for tag in blog.all_tags -%}
+		<li class="d-inline-flex align-items-center fs-15px">
+			<a class="text-hover-decoration-underline" href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>
+		</li>
+	{%- endfor -%}
+</ul>

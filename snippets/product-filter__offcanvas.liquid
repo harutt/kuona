@@ -1,0 +1,85 @@
+<div class="offcanvas offcanvas-start" tabindex="-1" id="gsp-offcanvas-filter-product"
+	 aria-labelledby="gsp-offcanvas-filter-productLabel">
+	<div class="offcanvas-header ps-lg-5">
+		<h4 class="offcanvas-title fs-34px" id="gsp-offcanvas-filter-productLabel">{{ 'general.filter' | t }}</h4>
+		<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body ps-lg-5 gsp-scrollbar">
+		{% liquid
+			assign enable_collapse = settings.pf_enable_collapse
+			assign collapse_always_shows = settings.pf_collapse_always_shows
+
+			assign source = collection.filters
+			if template contains 'search'
+				assign source = search.filters
+			endif
+		%}
+		<div class="gsp-offcanvas-filter-product-inner {% if enable_collapse %}collapse-mode {% endif %}">
+		{% if enable_collapse %}
+			<div class="accordion" id="gsp-accordion-filter-product">
+				{% endif %}
+				{%- for filter in source -%}
+					<div
+						class="gsp-offcanvas-filter-item {% if enable_collapse %} accordion-item border-0 {% if forloop.last != true %}border-bottom{% endif %} {% if forloop.first != true %}pt-4{% endif %} rounded-0 pb-4{% endif %}">
+						{% if enable_collapse %}
+							<h4 class="accordion-header fs-20px mb-0 lh-1">
+								<a href="#"
+								   class="accordion-button p-0 bg-transparent round-0 text-decoration-none fs-20px text-heading shadow-none"
+								   data-bs-toggle="collapse"
+								   data-bs-target="#gsp-accordion-filter-product-item-{{ forloop.index }}"
+								   aria-expanded="true"
+								   aria-controls="gsp-accordion-filter-product-item-{{ forloop.index }}">
+									{{ filter.label }}
+								</a>
+							</h4>
+						{% else %}
+							<h4 class="fs-20px mb-3">{{ filter.label }}</h4>
+						{% endif %}
+					{% if enable_collapse %}
+						<div id="gsp-accordion-filter-product-item-{{ forloop.index }}"
+							 class="accordion-collapse collapse {% if collapse_always_shows %}show{% endif %}">
+							<div class="accordion-body px-0 pt-3 mt-1">
+								{% endif %}
+								{%- case filter.type -%}
+									{%- when 'list' -%}
+										{% liquid
+											assign design_list = settings.pf_design_default
+											assign custom_design_list = settings.pf_custom_design
+											assign limit_value = settings.pf_limit
+											assign show_count = settings.pf_count
+											assign custom_design_list = ',' | append: custom_design_list | strip_newlines | downcase | append: ',' | replace: ': ', ':' | replace: ' :', ':' | replace: ' ', '-'
+											if filter.param_name contains 'filter.p.'
+												assign scope = filter.param_name | replace: 'filter.p.', '' | split: '.' | first | downcase | strip
+											endif
+											if filter.param_name contains 'filter.v.'
+												assign scope = filter.param_name | replace: 'filter.v.', '' | split: '.' | last | downcase | strip
+												assign scope = scope | replace: ' ', '-' | replace: '_', '-'
+											endif
+											assign class_additional_wrap = "product-filter-source-" | append: scope
+											assign scope = ',' | append: scope | append: ':'
+											if custom_design_list contains scope
+												assign design_list = custom_design_list | split: scope | last | split: ',' | first | strip
+											endif
+										%}
+										{% render 'product-filter__list', filter: filter, design: design_list, show_count: show_count, limit_value: limit_value, class_additional: class_additional_wrap %}
+									{%- when 'price_range' -%}
+										{% liquid
+											assign design_price = settings.pf_design_price
+											assign step_price = settings.pf_step
+										%}
+										{% render 'product-filter__price-range', filter: filter, design: design_price, step: step_price %}
+									{%- when 'boolean' -%}
+										{% render 'product-filter__boolean', filter: filter %}
+								{%- endcase -%}
+								{% if enable_collapse %}
+							</div>
+						</div>
+						{% endif %}
+					</div>
+				{%- endfor -%}
+				{% if enable_collapse %}
+			</div>
+			{% endif %}
+		</div>
+	</div>
+</div>

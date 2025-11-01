@@ -1,0 +1,54 @@
+{% comment %}
+	- product: product object
+	- use_variant: product use variant
+	- include_badges: sale,custom_badges
+	- custom_css = settings.custom_css
+{% endcomment %}
+{%- liquid
+	assign badges_sale_mode = settings.badges_sale_mode
+	assign custom_badges = settings.enable_custom_badges
+	if include_badges == blank
+		assign include_badges = 'sale'
+	endif
+-%}
+<div class="gsp-product-card__badges gsp-product-card-item {% if custom_css != blank %} {{- custom_css -}} {%- endif -%}">
+	{% if badges_sale_mode != 'hide' and include_badges contains 'sale' %}
+		{%- liquid
+			assign discount = ''
+			assign save_amount = 0
+			assign selected_variant = product.selected_or_first_available_variant
+			if use_variant
+				assign target = selected_variant
+			else
+				assign target = product
+			endif
+			assign compare_at_price = target.compare_at_price
+			assign price = target.price | default: 1999
+			if compare_at_price > price
+				assign save_amount = compare_at_price | minus: price
+				if badges_sale_mode == 'discounted'
+					assign discount = save_amount | times: 100 | divided_by: compare_at_price | append: '%'
+				elsif badges_sale_mode == 'text'
+					assign discount = 'products.badges.badges_sale_text' | t
+				endif
+			endif
+		-%}
+		{% if discount != '' %}
+			<span class="gsp-product-card__badge-item badge gsp-product-card__badge-sale">{{ discount }}</span>
+		{% endif %}
+	{% endif %}
+	{% if custom_badges and include_badges contains 'custom_badges' %}
+		{% for tag in product.tags %}
+			{% if tag contains 'badge__' %}
+				{%- liquid
+					assign tag_content = tag | split: '__' | last
+					assign type = tag_content | split: '_' | first
+					assign tag_name = tag_content | split: '_' | last
+				-%}
+				<span class="gsp-product-card__badge-item gsp-product-card__custom-badges badge  custom-badges-{{ type }}">
+                      {{ tag_name }}
+                  </span>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+</div>

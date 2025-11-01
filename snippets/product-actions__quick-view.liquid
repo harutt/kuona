@@ -1,0 +1,26 @@
+{% comment %}
+	- product: product object
+	- classes_item: Class css item action
+	- label: lable for button
+{% endcomment %}
+{% liquid
+	if classes_item == nil
+		assign classes_item = 'gsp-product-actions-item gsp-product-actions-quick-view rounded-circle gsp-spin-wrapper'
+	endif
+	if label != nil
+		assign classes_item = classes_item | append: ' has-label'
+	endif
+%}
+
+<a class="{{ classes_item }}" href="#" {% if label == nil %}  data-bs-toggle="tooltip"
+   data-bs-placement="top" data-bs-title="{{ 'products.actions.quick_view' | t }}" {% endif %} data-product-handle="{{ product.handle }}" title="{{ 'products.actions.quick_view' | t }}">
+	<span class="gsp-button__content lh-0 active">
+		{% render 'icons', icon: 'quick-view' %}
+		{%- if label != nil -%}
+			<span>{{ label }}</span>
+		{% endif %}
+	</span>
+	<span class="gsp-button__spin">
+		{% render 'spin', custom_class: 'fs-18px' %}
+	</span>
+</a>

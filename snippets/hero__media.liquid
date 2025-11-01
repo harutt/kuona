@@ -1,0 +1,32 @@
+{% comment %}
+	Image hero
+	Accepts:
+	- block: block object
+	- custom_css: Custom css
+	- custom_css_inner: Custom css inner
+{% endcomment %}
+{% liquid
+	assign bg_video = block.settings.use_bg_video | default: false
+	assign url_video = block.settings.bg_video | default: false
+%}
+{% if bg_video and url_video != blank %}
+	<div class="gsp-hero-media gsp-hero-video {{ custom_css }}">
+		<div class="gsp-hero-media-inner {{ custom_css_inner }}">
+			{% render 'el__video',
+				url: url_video,
+				autoplay: true,
+				muted: true,
+				loop: true
+			%}
+		</div>
+	</div>
+{% else %}
+	<div class="gsp-hero-media gsp-hero-image {{ custom_css }}">
+		<div
+			class="gsp-hero-media-inner {{ custom_css_inner }} {% if block.settings.bg_image == blank %} gsp-hero-media-blank {% endif %}">
+			{% if block.settings.bg_image == blank %}
+				{% render 'responsive-image', placeholder: 'lifestyle-2' %}
+			{% endif %}
+		</div>
+	</div>
+{% endif %}

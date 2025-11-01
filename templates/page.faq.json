@@ -1,0 +1,381 @@
+{
+  "sections": {
+    "banner_zhVidP": {
+      "type": "banner",
+      "blocks": {
+        "banner_KUn4Wx": {
+          "type": "banner",
+          "settings": {
+            "title": "",
+            "subtitle": "",
+            "desc": "",
+            "image": "shopify://shop_images/banner-35.jpg",
+            "aspect_ratio": "1170/420",
+            "image_size": "full",
+            "image_height": 420,
+            "image_height_mobile": 350,
+            "enable_image_link": true,
+            "el_button_icon": "none",
+            "el_button_link": "",
+            "el_button_text": "",
+            "el_button_style": "default",
+            "el_button_color": "primary",
+            "el_button_size": "default",
+            "card_style": "middle",
+            "content_alignment": "center",
+            "hover_style": "zoom-in",
+            "hover_effect": "shine",
+            "title_color": "",
+            "subtitle_color": "",
+            "desc_color": "",
+            "title_fs": -1,
+            "subtitle_fs": -1,
+            "desc_fs": -1,
+            "content_padding": -1,
+            "content_padding_mobile": -1,
+            "title_spacing": -1,
+            "subtitle_spacing": -1,
+            "desc_spacing": -1,
+            "button_spacing": -1,
+            "col_xl": 12,
+            "col_lg": 12,
+            "col_md": 12,
+            "col_sm": 12,
+            "col_xs": 12,
+            "animation_type": "inherit",
+            "custom_class": ""
+          }
+        }
+      },
+      "block_order": [
+        "banner_KUn4Wx"
+      ],
+      "settings": {
+        "el_heading_title": "Frequently Asked Questions",
+        "el_heading_sub_title": "",
+        "el_heading_desc": "",
+        "el_heading_alignment": "default",
+        "el_heading_title_tag": "h2",
+        "container": "inherit",
+        "header_container": "inherit",
+        "section_bg_color": "",
+        "section_bg_position": "default",
+        "section_bg_size": "default",
+        "item_gap": -1,
+        "btn_view_all_position": "hide",
+        "view_all_el_button_icon": "none",
+        "view_all_el_button_link": "",
+        "view_all_el_button_text": "View All",
+        "view_all_el_button_style": "default",
+        "view_all_el_button_color": "primary",
+        "view_all_el_button_size": "default",
+        "slider_enable": false,
+        "slider_show_pagination": false,
+        "slider_show_navigation": false,
+        "slider_auto_height": false,
+        "slider_loop": false,
+        "slider_fade": false,
+        "slider_center_mode": false,
+        "slider_autoplay": false,
+        "slider_center_padding": "",
+        "item_show_xl": 4,
+        "item_show_lg": 3,
+        "item_show_md": 2,
+        "item_show_sm": 2,
+        "item_show_xs": 1,
+        "slider_navigation_after_heading": false,
+        "header_inline": false,
+        "header_inline_align": "top",
+        "header_width": -1,
+        "el_heading_title_color": "",
+        "el_heading_sub_title_color": "",
+        "el_heading_desc_color": "",
+        "el_heading_fs_title": -1,
+        "el_heading_fs_sub_title": -1,
+        "el_heading_fs_desc": -1,
+        "el_heading_mw": -1,
+        "el_heading_sp_sub_title": -1,
+        "el_heading_sp_sub_image": -1,
+        "el_heading_sp_desc": -1,
+        "header_margin_bottom": 60,
+        "padding_top": 58,
+        "padding_bottom": -1,
+        "padding_top_mobile": -1,
+        "padding_bottom_mobile": -1,
+        "animation_type": "fadeInUp",
+        "custom_class": ""
+      }
+    },
+    "accordion_FB9dN7": {
+      "type": "accordion",
+      "blocks": {
+        "accordion_item_NF8ryB": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "How did my package ship?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": true
+          }
+        },
+        "accordion_item_J6eQyY": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "Why does my USPS tracking number state 1-Day, 2-Day, 3-Day Delivery?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": false
+          }
+        },
+        "accordion_item_w9bPX6": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "How long will my package take to arrive?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": false
+          }
+        },
+        "accordion_item_qmdiDH": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "What are business days?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": false
+          }
+        },
+        "accordion_item_ttTReP": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "How do I know my package has shipped?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": false
+          }
+        },
+        "accordion_item_7gL4bW": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "Why are certain products unavailable to ship to Internationally?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": false
+          }
+        },
+        "accordion_item_g9Lw7Y": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "Why is my tracking number not updating?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": false
+          }
+        }
+      },
+      "block_order": [
+        "accordion_item_NF8ryB",
+        "accordion_item_J6eQyY",
+        "accordion_item_w9bPX6",
+        "accordion_item_qmdiDH",
+        "accordion_item_ttTReP",
+        "accordion_item_7gL4bW",
+        "accordion_item_g9Lw7Y"
+      ],
+      "settings": {
+        "el_heading_title": "Orders &amp; Shipping",
+        "el_heading_sub_title": "",
+        "el_heading_desc": "",
+        "el_heading_alignment": "default",
+        "el_heading_title_tag": "h2",
+        "accordion_type": "accordion",
+        "accordion_heading_font_size": -1,
+        "accordion_content_font_size": -1,
+        "accordion_gap": -1,
+        "accordion_heading_color": "",
+        "accordion_content_color": "",
+        "container": "inherit",
+        "header_container": "inherit",
+        "section_bg_color": "",
+        "section_bg_position": "default",
+        "section_bg_size": "default",
+        "header_inline": true,
+        "header_inline_align": "top",
+        "header_width": 25,
+        "el_heading_title_color": "",
+        "el_heading_sub_title_color": "",
+        "el_heading_desc_color": "",
+        "el_heading_fs_title": -1,
+        "el_heading_fs_sub_title": -1,
+        "el_heading_fs_desc": -1,
+        "el_heading_mw": 227,
+        "el_heading_sp_sub_title": -1,
+        "el_heading_sp_sub_image": -1,
+        "el_heading_sp_desc": -1,
+        "header_margin_bottom": -1,
+        "padding_top": 65,
+        "padding_bottom": -1,
+        "padding_top_mobile": 35,
+        "padding_bottom_mobile": -1,
+        "animation_type": "fadeInUp",
+        "custom_class": ""
+      }
+    },
+    "accordion_CzYfUA": {
+      "type": "accordion",
+      "blocks": {
+        "accordion_item_aGmwHz": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "How do I know my package has shipped?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": false
+          }
+        },
+        "accordion_item_thxjMR": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "Why are certain products unavailable to ship to Internationally?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": false
+          }
+        },
+        "accordion_item_6xPNjy": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "Why is my tracking number not updating?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": false
+          }
+        }
+      },
+      "block_order": [
+        "accordion_item_aGmwHz",
+        "accordion_item_thxjMR",
+        "accordion_item_6xPNjy"
+      ],
+      "settings": {
+        "el_heading_title": "Returns &amp; Exchanges",
+        "el_heading_sub_title": "",
+        "el_heading_desc": "",
+        "el_heading_alignment": "default",
+        "el_heading_title_tag": "h2",
+        "accordion_type": "accordion",
+        "accordion_heading_font_size": -1,
+        "accordion_content_font_size": -1,
+        "accordion_gap": -1,
+        "accordion_heading_color": "",
+        "accordion_content_color": "",
+        "container": "inherit",
+        "header_container": "inherit",
+        "section_bg_color": "",
+        "section_bg_position": "default",
+        "section_bg_size": "default",
+        "header_inline": true,
+        "header_inline_align": "top",
+        "header_width": 25,
+        "el_heading_title_color": "",
+        "el_heading_sub_title_color": "",
+        "el_heading_desc_color": "",
+        "el_heading_fs_title": -1,
+        "el_heading_fs_sub_title": -1,
+        "el_heading_fs_desc": -1,
+        "el_heading_mw": 227,
+        "el_heading_sp_sub_title": -1,
+        "el_heading_sp_sub_image": -1,
+        "el_heading_sp_desc": -1,
+        "header_margin_bottom": -1,
+        "padding_top": 65,
+        "padding_bottom": -1,
+        "padding_top_mobile": 35,
+        "padding_bottom_mobile": -1,
+        "animation_type": "fadeInUp",
+        "custom_class": ""
+      }
+    },
+    "accordion_T978Xz": {
+      "type": "accordion",
+      "blocks": {
+        "accordion_item_Ew3YNa": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "How do I know my package has shipped?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": false
+          }
+        },
+        "accordion_item_xxFcar": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "Why are certain products unavailable to ship to Internationally?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": false
+          }
+        },
+        "accordion_item_yBBJCG": {
+          "type": "accordion_item",
+          "settings": {
+            "heading": "Why is my tracking number not updating?",
+            "content": "",
+            "liquid": "Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin.\n\nSay hello to flawless, long-lasting foundation that comes in 7 melt-into-your-skin shades. This lightweight, innovative formula creates a smooth, natural matte finish that won’t settle into lines. It’s the perfect fit for your skin. 1 fl. oz.",
+            "default_open": false
+          }
+        }
+      },
+      "block_order": [
+        "accordion_item_Ew3YNa",
+        "accordion_item_xxFcar",
+        "accordion_item_yBBJCG"
+      ],
+      "settings": {
+        "el_heading_title": "Discounts",
+        "el_heading_sub_title": "",
+        "el_heading_desc": "",
+        "el_heading_alignment": "default",
+        "el_heading_title_tag": "h2",
+        "accordion_type": "accordion",
+        "accordion_heading_font_size": -1,
+        "accordion_content_font_size": -1,
+        "accordion_gap": -1,
+        "accordion_heading_color": "",
+        "accordion_content_color": "",
+        "container": "inherit",
+        "header_container": "inherit",
+        "section_bg_color": "",
+        "section_bg_position": "default",
+        "section_bg_size": "default",
+        "header_inline": true,
+        "header_inline_align": "top",
+        "header_width": 25,
+        "el_heading_title_color": "",
+        "el_heading_sub_title_color": "",
+        "el_heading_desc_color": "",
+        "el_heading_fs_title": -1,
+        "el_heading_fs_sub_title": -1,
+        "el_heading_fs_desc": -1,
+        "el_heading_mw": 227,
+        "el_heading_sp_sub_title": -1,
+        "el_heading_sp_sub_image": -1,
+        "el_heading_sp_desc": -1,
+        "header_margin_bottom": -1,
+        "padding_top": 65,
+        "padding_bottom": 100,
+        "padding_top_mobile": 35,
+        "padding_bottom_mobile": 80,
+        "animation_type": "fadeInUp",
+        "custom_class": ""
+      }
+    }
+  },
+  "order": [
+    "banner_zhVidP",
+    "accordion_FB9dN7",
+    "accordion_CzYfUA",
+    "accordion_T978Xz"
+  ]
+}

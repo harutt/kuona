@@ -1,0 +1,54 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+<head>
+	{% render 'meta-tags' %}
+	<title>
+		{{ page_title | escape }}
+		{%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+		{%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+		{%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+	</title>
+
+	<link rel="canonical" href="{{ canonical_url }}">
+	<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+	{%- if settings.favicon != blank -%}
+		<link rel="shortcut icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+	{% else %}
+		<link rel="shortcut icon" type="image/png" href="{{ "favicon.ico" | asset_url }}">
+	{%- endif -%}
+
+	{% render 'css-vendors' %}
+	{{ 'theme.css' | asset_url | stylesheet_tag }}
+	{% render 'stylesheet' %}
+
+	{{ 'font.css' | asset_url | stylesheet_tag }}
+
+	<!-- header hook for Shopify plugins -->
+	{{ content_for_header }}
+
+	<script>
+		document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+		if (Shopify.designMode) {
+			document.documentElement.classList.add('shopify-design-mode');
+		}
+	</script>
+</head>
+
+<body class="template-{{ template.name }}">
+	{%- render 'skip-link' -%}
+	<div class="wrap overflow-hidden">
+		{% comment %} {% sections 'header-group' %} {% endcomment %}
+		{% section 'custom-header' %}
+		<main id="main" role="main">
+			<!-- content hook for Shopify -->
+			{{ content_for_layout }}
+		</main>
+		{% sections 'footer-group' %}
+		{% render 'after-footer' %}
+	</div>
+	{% render 'js-vendors' %}
+	<script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+	{% render 'script' %}
+</body>
+</html>
