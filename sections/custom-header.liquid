@@ -6,6 +6,18 @@
       <span class="pt-mobile-toggle__text">Menu</span>
     </button>
 
+    <!-- CENTER LOGO -->
+    <a href="{{ routes.root_url }}" class="pt-logo" aria-label="{{ shop.name }}">
+      {% if section.settings.logo != blank %}
+        {{ section.settings.logo | image_url: width: 220 | image_tag: width: section.settings.logo_width, alt: shop.name, class: 'pt-logo__img' }}
+      {% else %}
+        <span class="pt-logo__text">{{ section.settings.logo_text | default: shop.name }}</span>
+      {% endif %}
+    </a>
+
+    <!-- MOBILE BAG BUTTON -->
+    <a href="{{ routes.cart_url }}" class="pt-mobile-bag">Bag{% if cart.item_count > 0 %}<sup class="pt-badge">{{ cart.item_count }}</sup>{% endif %}</a>
+
     <!-- LEFT: primary items -->
     <nav class="pt-nav pt-nav--left" aria-label="Primary">
       {% if section.settings.menu_left != blank %}
@@ -62,18 +74,6 @@
       {% endif %}
     </nav>
 
-    <!-- CENTER LOGO -->
-    <a href="{{ routes.root_url }}" class="pt-logo" aria-label="{{ shop.name }}">
-      {% if section.settings.logo != blank %}
-        {{ section.settings.logo | image_url: width: 220 | image_tag: width: section.settings.logo_width, alt: shop.name, class: 'pt-logo__img' }}
-      {% else %}
-        <span class="pt-logo__text">{{ section.settings.logo_text | default: shop.name }}</span>
-      {% endif %}
-    </a>
-
-    <!-- MOBILE BAG BUTTON -->
-    <a href="{{ routes.cart_url }}" class="pt-mobile-bag">Bag{% if cart.item_count > 0 %}<sup class="pt-badge">{{ cart.item_count }}</sup>{% endif %}</a>
-
     <!-- RIGHT: utility + book -->
     <nav class="pt-nav pt-nav--right" aria-label="Secondary">
       {% if section.settings.menu_right != blank %}
@@ -98,6 +98,8 @@
         {% endfor %}
       {% endif %}
 
+      <a href="{{ routes.cart_url }}" class="pt-link">Bag{% if cart.item_count > 0 %}<sup class="pt-badge">{{ cart.item_count }}</sup>{% endif %}</a>
+
       {% if section.settings.book_url != blank %}
         <a href="{{ section.settings.book_url }}" class="pt-book">Book Appointment</a>
       {% endif %}
@@ -109,19 +111,10 @@
 <!-- MOBILE MENU EXPANDED -->
 <div class="pt-mobile-expanded" aria-hidden="true">
   <nav class="pt-mobile-nav">
-    {% if section.settings.menu_left != blank %}
-      {% assign left_menu = linklists[section.settings.menu_left] %}
-      {% for link in left_menu.links %}
-        {% if link.links.size == 0 %}
-          <a href="{{ link.url }}" class="pt-mobile-tab">{{ link.title }}</a>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-
-    {% if section.settings.menu_right != blank %}
-      {% assign right_menu = linklists[section.settings.menu_right] %}
-      {% for link in right_menu.links %}
-        <a href="{{ link.url }}" class="pt-mobile-tab">{{ link.title }}{% if link.url == routes.cart_url and cart.item_count > 0 %}<sup class="pt-badge-mobile">{{ cart.item_count }}</sup>{% endif %}</a>
+    {% if section.settings.menu_mobile != blank %}
+      {% assign mobile_menu = linklists[section.settings.menu_mobile] %}
+      {% for link in mobile_menu.links %}
+        <a href="{{ link.url }}" class="pt-mobile-tab">{{ link.title }}</a>
       {% endfor %}
     {% endif %}
   </nav>
@@ -175,6 +168,9 @@
   .pt-mobile-toggle{display:none;background:none;border:none;padding:0;cursor:pointer;z-index:70;position:relative;font-size:13px;letter-spacing:.03em;color:#111}
   .pt-mobile-toggle__text{display:inline-block}
 
+  /* Mobile bag button */
+  .pt-mobile-bag{display:none;font-size:13px;letter-spacing:.03em;text-decoration:none;color:#111;position:relative}
+
   /* Mobile menu expanded (horizontal tabs) */
   .pt-mobile-expanded{position:fixed;top:calc(var(--pt-offset, 64px));left:0;right:0;background:#fff;border-bottom:1px solid #efefef;z-index:59;max-height:0;overflow:hidden;transition:.3s ease;box-shadow:0 2px 8px rgba(0,0,0,.08)}
   .pt-mobile-expanded[aria-hidden="false"]{max-height:200px}
@@ -186,10 +182,12 @@
 
   /* mobile */
   @media (max-width:960px){
-    .pt-mobile-toggle{display:flex}
+    .pt-mobile-toggle{display:block}
+    .pt-mobile-bag{display:block}
     .pt-nav--left,.pt-nav--right{display:none}
     .pt-logo{position:static;transform:none}
-    .pt-header__inner{justify-content:space-between}
+    .pt-header__inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}
+    .pt-logo{justify-self:center}
   }
   @media (min-width:961px){
     .pt-nav--left{gap:14px}
@@ -218,16 +216,33 @@
     // Mobile menu functionality
     var mobileExpanded = document.querySelector('.pt-mobile-expanded');
     var mobileToggle = document.querySelector('.pt-mobile-toggle');
+    var mobileToggleText = document.querySelector('.pt-mobile-toggle__text');
 
     function toggleMobileMenu(){
       var isHidden = mobileExpanded.getAttribute('aria-hidden') === 'true';
       mobileExpanded.setAttribute('aria-hidden', isHidden ? 'false' : 'true');
       mobileToggle.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+
+      // Toggle text between "Menu" and "Close"
+      if(mobileToggleText) {
+        mobileToggleText.textContent = isHidden ? 'Close' : 'Menu';
+      }
     }
 
     if(mobileToggle) {
       mobileToggle.addEventListener('click', toggleMobileMenu);
     }
+
+    // Close mobile menu on resize to desktop
+    window.addEventListener('resize', function(){
+      if(window.innerWidth > 960 && mobileExpanded && mobileExpanded.getAttribute('aria-hidden') === 'false') {
+        mobileExpanded.setAttribute('aria-hidden', 'true');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        if(mobileToggleText) {
+          mobileToggleText.textContent = 'Menu';
+        }
+      }
+    });
   })();
 </script>
 
@@ -241,6 +256,7 @@
 
     { "type":"link_list", "id":"menu_left", "label":"Left Menu" },
     { "type":"link_list", "id":"menu_right", "label":"Right Menu" },
+    { "type":"link_list", "id":"menu_mobile", "label":"Mobile Menu" },
 
     { "type":"url", "id":"book_url", "label":"Book Appointment URL" }
   ],
