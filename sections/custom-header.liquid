@@ -25,6 +25,15 @@
         {% for link in left_menu.links %}
 
           {% if link.links.size > 0 %}
+            {% comment %} Check if any child has grandchildren (3rd level) {% endcomment %}
+            {% assign has_grandchildren = false %}
+            {% for child_link in link.links %}
+              {% if child_link.links.size > 0 %}
+                {% assign has_grandchildren = true %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+
             <!-- Menu item with dropdown/mega -->
             <div class="pt-item {% if link.title == 'Brands' %}pt-has-mega{% else %}pt-has-drop{% endif %}">
               <button class="pt-link pt-drop__btn" aria-haspopup="true" aria-expanded="false">{{ link.title }}</button>
