@@ -1,0 +1,65 @@
+{% comment %}
+  Custom Dropdown Select Component
+
+  Accepts:
+  - option: {Object} Product option
+  - product_form_id: {String} Form ID
+  - section_id: {String} Section ID
+{% endcomment %}
+
+<div class="custom-dropdown-wrapper" data-dropdown-wrapper>
+  <label class="custom-dropdown-label">{{ option.name }}</label>
+
+  <div class="custom-dropdown" data-dropdown data-option-name="{{ option.name }}">
+    <button type="button" class="custom-dropdown-trigger" data-dropdown-trigger aria-haspopup="listbox" aria-expanded="false">
+      <span class="custom-dropdown-value" data-dropdown-value>{{ option.selected_value }}</span>
+      <svg class="custom-dropdown-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none">
+        <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <ul class="custom-dropdown-options" data-dropdown-options role="listbox">
+      {%- for value in option.values -%}
+        {% liquid
+          assign variant_price = ''
+          for variant in product.variants
+            if option.position == 1
+              if variant.option1 == value
+                assign variant_price = variant.price | money
+                break
+              endif
+            elsif option.position == 2
+              if variant.option2 == value
+                assign variant_price = variant.price | money
+                break
+              endif
+            elsif option.position == 3
+              if variant.option3 == value
+                assign variant_price = variant.price | money
+                break
+              endif
+            endif
+          endfor
+        %}
+        <li
+          class="custom-dropdown-option {% if option.selected_value == value %}active{% endif %}"
+          data-dropdown-option
+          data-value="{{ value | escape }}"
+          data-option-position="{{ option.position }}"
+          role="option"
+          {% if option.selected_value == value %}aria-selected="true"{% endif %}
+        >
+          {{ value }}{% if variant_price != '' %} – {{ variant_price }}{% endif %}
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    <input
+      type="hidden"
+      name="options[{{ option.name | escape }}]"
+      value="{{ option.selected_value | escape }}"
+      form="{{ product_form_id }}"
+      data-dropdown-input
+    >
+  </div>
+</div>

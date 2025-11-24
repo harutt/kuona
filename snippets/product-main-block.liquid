@@ -16,7 +16,7 @@
 						{% render 'product-main-block__title', product: product %}	
 					{%- when 'price' -%}
 						{% render 'product-main-block__price', product: product %}
-						{% render 'product-main-block__description', product: product %}
+						{%- comment -%}Description moved below product image{%- endcomment -%}
 					{%- when 'variants' -%}
 						{%- unless product.has_only_default_variant -%}
 							{% render 'product-main-block__variants',
@@ -33,7 +33,7 @@
 							product_form_id: product_form_id,
 							product_form_class: product_form_class,
 							current_variant: current_variant,
-							show_quantity_selector: true,
+							show_quantity_selector: false,
 							enable_dynamic_checkout: block.settings.enable_dynamic_checkout,
 							show_gift_card_recipient: block.settings.show_gift_card_recipient,
 							show_pickup_availability: true
@@ -77,7 +77,9 @@
 						%}
 					{%- when 'payment-icons' -%}
 						{% render 'product-main-block__payment-icons', block: block %}
-				{%- endcase -%}
+					{%- when 'description' -%}
+					{%- comment -%}Description now renders below product image in main-product.liquid{%- endcomment -%}
+			{%- endcase -%}
 			</div>
 			{% style %}
 				{%- if block.settings.block_spacing != blank and block.settings.block_spacing != -1 %}

@@ -20559,7 +20559,6 @@ gsp-ordering .form-select {
 .gsp-testimonial .gsp-testimonial-quote {
   color: var(--gsp-testimonial-color-quote);
   font-size: var(--gsp-testimonial-fs-quote);
-  margin-bottom: var(--gsp-testimonial-sp-quote);
   font-weight: var(--gsp-heading-font-weight);
 }
 .gsp-testimonial .gsp-testimonial-name {
@@ -21597,5 +21596,6 @@ button[aria-label*="Compare"],
 .card__compare, .product-card__compare, .js-compare {
   display: none !important;
 }
+
 
 

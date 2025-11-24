@@ -1,4 +1,4 @@
-<header class="pt-header" role="banner">
+<header class="pt-header{% if section.settings.transparent_header and template == 'index' %} pt-header--transparent{% endif %}" role="banner">
   <div class="pt-header__inner">
 
     <!-- MOBILE MENU BUTTON -->
@@ -25,54 +25,34 @@
         {% for link in left_menu.links %}
 
           {% if link.links.size > 0 %}
-            {% comment %} Check if any child has grandchildren (3rd level) {% endcomment %}
-            {% assign has_grandchildren = false %}
-            {% for child_link in link.links %}
-              {% if child_link.links.size > 0 %}
-                {% assign has_grandchildren = true %}
-                {% break %}
-              {% endif %}
-            {% endfor %}
-
-            <!-- Menu item with dropdown/mega -->
-            <div class="pt-item {% if link.title == 'Brands' %}pt-has-mega{% else %}pt-has-drop{% endif %}">
+            <!-- Menu item with mega menu -->
+            <div class="pt-item pt-has-mega">
               <button class="pt-link pt-drop__btn" aria-haspopup="true" aria-expanded="false">{{ link.title }}</button>
 
-              {% if link.title == 'Brands' %}
-                <!-- Mega menu for Brands -->
-                <div class="pt-mega" aria-hidden="true">
-                  <div class="pt-mega__inner">
-                    <div class="pt-mega__col">
-                      <div class="pt-mega__title">Brands</div>
-                      <div class="pt-brands">
-                        {% for block in section.blocks %}
-                          {% if block.type == 'brand' %}
-                            <a href="{{ block.settings.url | default: '#' }}" class="pt-brand">
-                              {% if block.settings.logo != blank %}
-                                {{ block.settings.logo | image_url: width: 160 | image_tag: class: 'pt-brand__img', alt: block.settings.name | escape }}
-                              {% else %}
-                                <span class="pt-brand__text">{{ block.settings.name }}</span>
-                              {% endif %}
-                            </a>
-                          {% endif %}
-                        {% endfor %}
-                      </div>
-                    </div>
-                    <div class="pt-mega__col pt-mega__links">
+              <!-- Full-width mega menu -->
+              <div class="pt-mega" aria-hidden="true">
+                <div class="pt-mega__inner">
+                  <div class="pt-mega__content">
+                    <div class="pt-mega__links-side">
                       {% for child_link in link.links %}
-                        <a href="{{ child_link.url }}" class="pt-mega__link">{{ child_link.title }}</a>
+                        <a href="{{ child_link.url }}" class="pt-mega__link-item">{{ child_link.title }}</a>
                       {% endfor %}
+                    </div>
+                    <div class="pt-mega__image-side">
+                      <div class="pt-mega__image-placeholder">
+                        {% if section.settings.mega_menu_image != blank %}
+                          <img src="{{ section.settings.mega_menu_image | image_url: width: 200 }}" alt="Menu visual" loading="lazy" width="200px" height="200px">
+                        {% else %}
+                          <svg width="100" height="100" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 5h50v50H5z" stroke="#ddd" stroke-width="1.5" fill="none"/>
+                            <path d="M15 40l10-10 5 5 10-15 10 10" stroke="#ddd" stroke-width="1.5" fill="none"/>
+                          </svg>
+                        {% endif %}
+                      </div>
                     </div>
                   </div>
                 </div>
-              {% else %}
-                <!-- Regular dropdown -->
-                <div class="pt-drop" aria-hidden="true">
-                  {% for child_link in link.links %}
-                    <a class="pt-drop__link" href="{{ child_link.url }}">{{ child_link.title }}</a>
-                  {% endfor %}
-                </div>
-              {% endif %}
+              </div>
             </div>
           {% else %}
             <!-- Simple link -->
@@ -90,13 +70,33 @@
         {% for link in right_menu.links %}
 
           {% if link.links.size > 0 %}
-            <!-- Menu item with dropdown -->
-            <div class="pt-item pt-has-drop">
+            <!-- Menu item with mega menu -->
+            <div class="pt-item pt-has-mega">
               <button class="pt-link pt-drop__btn" aria-haspopup="true" aria-expanded="false">{{ link.title }}</button>
-              <div class="pt-drop" aria-hidden="true">
-                {% for child_link in link.links %}
-                  <a class="pt-drop__link" href="{{ child_link.url }}">{{ child_link.title }}</a>
-                {% endfor %}
+
+              <!-- Full-width mega menu -->
+              <div class="pt-mega" aria-hidden="true">
+                <div class="pt-mega__inner">
+                  <div class="pt-mega__content">
+                    <div class="pt-mega__links-side">
+                      {% for child_link in link.links %}
+                        <a href="{{ child_link.url }}" class="pt-mega__link-item">{{ child_link.title }}</a>
+                      {% endfor %}
+                    </div>
+                    <div class="pt-mega__image-side">
+                      <div class="pt-mega__image-placeholder">
+                        {% if section.settings.mega_menu_image != blank %}
+                          <img src="{{ section.settings.mega_menu_image | image_url: width: 200 }}" alt="Menu visual" loading="lazy" width="200px" height="200px">
+                        {% else %}
+                          <svg width="100" height="100" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 5h50v50H5z" stroke="#ddd" stroke-width="1.5" fill="none"/>
+                            <path d="M15 40l10-10 5 5 10-15 10 10" stroke="#ddd" stroke-width="1.5" fill="none"/>
+                          </svg>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           {% else %}
@@ -123,46 +123,97 @@
     {% if section.settings.menu_mobile != blank %}
       {% assign mobile_menu = linklists[section.settings.menu_mobile] %}
       {% for link in mobile_menu.links %}
-        <a href="{{ link.url }}" class="pt-mobile-tab">{{ link.title }}</a>
+        {% if link.links.size > 0 %}
+          <button class="pt-mobile-tab pt-mobile-tab--parent" data-menu-trigger="{{ link.title | handleize }}">
+            {{ link.title }}
+          </button>
+        {% else %}
+          <a href="{{ link.url }}" class="pt-mobile-tab">{{ link.title }}</a>
+        {% endif %}
       {% endfor %}
     {% endif %}
   </nav>
+
+  <!-- Mobile submenus -->
+  {% if section.settings.menu_mobile != blank %}
+    {% for link in mobile_menu.links %}
+      {% if link.links.size > 0 %}
+        <div class="pt-mobile-submenu" data-menu-panel="{{ link.title | handleize }}" aria-hidden="true">
+          <div class="pt-mobile-submenu__content">
+            {% for child_link in link.links %}
+              <div class="pt-mobile-submenu__group">
+                <a href="{{ child_link.url }}" class="pt-mobile-submenu__link pt-mobile-submenu__link--main">{{ child_link.title }}</a>
+                {% if child_link.links.size > 0 %}
+                  {% for grandchild_link in child_link.links %}
+                    <a href="{{ grandchild_link.url }}" class="pt-mobile-submenu__link">{{ grandchild_link.title }}</a>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
 </div>
 
 <style>
   :root{ --pt-offset: 0px; }
-  /* compact white bar with thin border and small gutter */
+
+  /* Reset any default margins that might cause white space */
+  html, body { margin: 0; padding: 0; }
+
+  /* Default: white header */
   .pt-header{position:fixed;top:0;left:0;right:0;z-index:60;
-    width:calc(100% - 12px);margin:6px auto 0;background:#fff;border:1px solid #efefef;
-    box-shadow:0 1px 0 rgba(0,0,0,.04);transition:padding .2s ease,margin .2s ease,width .2s ease}
-  .pt-header__inner{max-width:1280px;margin:0 auto;padding:9px 18px;display:flex;align-items:center;justify-content:space-between;position:relative}
+    width:100%;margin:0;background:#fff;border:none;border-bottom:none;
+    box-shadow:none;transition:all .3s ease}
+  .pt-header__inner{margin:0 auto;padding:9px 18px;display:flex;align-items:center;justify-content:space-between;position:relative;border:none;border-bottom:none}
   .pt-nav{display:flex;gap:18px;align-items:center}
-  .pt-link{font-size:13px;letter-spacing:.05em;text-decoration:none;color:#111}
+  .pt-nav--left{position:relative}
+  .pt-link{font-size:13px;letter-spacing:.05em;text-decoration:none;color:#111;transition:color .3s ease}
   .pt-link:hover{opacity:.75}
-  .pt-logo{position:absolute;left:50%;transform:translateX(-50%);text-decoration:none;color:#111}
+  .pt-logo{position:absolute;left:50%;transform:translateX(-50%);text-decoration:none;color:#111;transition:color .3s ease}
   .pt-logo__text{font-weight:600;letter-spacing:.26em;font-size:16px}
-  .pt-logo__img{display:block;height:auto}
+  .pt-logo__img{display:block;height:auto;transition:filter .3s ease}
   .pt-badge{font-size:10px;line-height:1;position:relative;top:-.35em;margin-left:.25em}
-  .pt-book{margin-left:12px;padding:7px 12px;border:1px solid #111;text-decoration:none;color:#111;font-size:12px;letter-spacing:.05em}
+  .pt-book{margin-left:12px;padding:7px 12px;border:1px solid #111;text-decoration:none;color:#111;font-size:12px;letter-spacing:.05em;transition:all .3s ease}
   .pt-book:hover{background:#111;color:#fff}
+
+  /* Transparent header variant */
+  .pt-header--transparent{background:transparent;border:none;border-bottom:none;box-shadow:none}
+  .pt-header--transparent .pt-link{color:#fff}
+  .pt-header--transparent .pt-logo{color:#fff}
+  .pt-header--transparent .pt-logo__img{filter:brightness(0) invert(1)}
+  .pt-header--transparent .pt-book{border-color:#fff;color:#fff}
+  .pt-header--transparent .pt-book:hover{background:#fff;color:#111}
+
+  /* Transparent header when scrolled */
+  .pt-header--transparent.is-scrolled{background:#fff;border:none;box-shadow:none}
+  .pt-header--transparent.is-scrolled .pt-link{color:#111}
+  .pt-header--transparent.is-scrolled .pt-logo{color:#111}
+  .pt-header--transparent.is-scrolled .pt-logo__img{filter:none}
+  .pt-header--transparent.is-scrolled .pt-book{border-color:#111;color:#111}
+  .pt-header--transparent.is-scrolled .pt-book:hover{background:#111;color:#fff}
 
   /* dropdowns */
   .pt-item{position:relative}
-  .pt-has-mega:hover .pt-mega{opacity:1;visibility:visible;transform:translateY(0)}
-  .pt-has-drop:hover .pt-drop{opacity:1;visibility:visible;transform:translateY(0)}
-  .pt-drop__btn{all:unset;cursor:pointer}
-  .pt-mega{position:absolute;left:0;top:100%;transform:translateY(6px);
-    opacity:0;visibility:hidden;transition:.18s ease;background:#fff;border:1px solid #efefef;box-shadow:0 8px 24px rgba(0,0,0,.06);padding:16px}
-  .pt-mega__inner{display:grid;grid-template-columns:2fr 1fr;gap:24px;min-width:720px}
-  .pt-mega__col{}
-  .pt-mega__title{font-size:12px;letter-spacing:.08em;color:#555;margin-bottom:10px}
-  .pt-brands{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-  .pt-brand{display:flex;align-items:center;justify-content:center;border:1px solid #eee;padding:8px;height:54px;text-decoration:none;color:#111}
-  .pt-brand__img{max-height:28px;max-width:100%;object-fit:contain}
-  .pt-brand__text{font-size:12px;letter-spacing:.04em}
-  .pt-mega__links{display:flex;flex-direction:column;gap:8px}
-  .pt-mega__link{font-size:13px;text-decoration:none;color:#111}
-  .pt-mega__link:hover{opacity:.7}
+  .pt-drop__btn{all:unset;cursor:pointer;font-size:13px;letter-spacing:.05em;text-decoration:none;color:#111;transition:color .3s ease}
+  .pt-header--transparent .pt-drop__btn{color:#fff}
+  .pt-header--transparent.is-scrolled .pt-drop__btn{color:#111}
+  .pt-drop__btn.is-active{opacity:.7}
+
+  /* Full-width mega menu (John Dalia style) */
+  .pt-mega{position:fixed;left:0;right:0;top:calc(var(--pt-offset, 64px) - 1px);
+    opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease;background:#fff;border-bottom:1px solid #efefef;box-shadow:0 2px 12px rgba(0,0,0,.06);z-index:58;pointer-events:none}
+  .pt-mega.is-hover,.pt-mega.is-locked{opacity:1;visibility:visible;pointer-events:auto}
+  .pt-mega__inner{margin:0 auto;padding:0;display:flex;width:100%}
+  .pt-mega__content{display:grid;grid-template-columns:auto 1fr;gap:0;margin-left:18px;width:100%}
+  .pt-mega__links-side{display:flex;flex-direction:column;padding:10px 5px;gap:0}
+  .pt-mega__link-item{display:block;text-decoration:none;color:#333;font-size:13px;letter-spacing:.02em;transition:opacity .2s ease;line-height:1.6}
+  .pt-mega__link-item:hover{opacity:.6}
+  .pt-mega__image-side{display:flex;align-items:flex-start;justify-content:flex-end;padding:10px 0;width:100%}
+  .pt-mega__image-placeholder{max-width:600px;display:flex;align-items:flex-start;justify-content:flex-end;border-radius:2px;overflow:hidden}
+  .pt-mega__image-placeholder img{object-fit:cover;object-position:right top}
 
   .pt-drop{position:absolute;left:0;top:100%;transform:translateY(6px);
     opacity:0;visibility:hidden;transition:.18s ease;background:#fff;border:1px solid #efefef;box-shadow:0 8px 24px rgba(0,0,0,.06);padding:10px 12px;min-width:220px}
@@ -174,20 +225,35 @@
   .pt-header.is-shrink .pt-book{padding:6px 10px}
 
   /* Mobile toggle button */
-  .pt-mobile-toggle{display:none;background:none;border:none;padding:0;cursor:pointer;z-index:70;position:relative;font-size:13px;letter-spacing:.03em;color:#111}
+  .pt-mobile-toggle{display:none;background:none;border:none;padding:0;cursor:pointer;z-index:70;position:relative;font-size:13px;letter-spacing:.03em;color:#111;transition:color .3s ease}
+  .pt-header--transparent .pt-mobile-toggle{color:#fff}
+  .pt-header--transparent.is-scrolled .pt-mobile-toggle{color:#111}
   .pt-mobile-toggle__text{display:inline-block}
 
   /* Mobile bag button */
-  .pt-mobile-bag{display:none;font-size:13px;letter-spacing:.03em;text-decoration:none;color:#111;position:relative}
+  .pt-mobile-bag{display:none;font-size:13px;letter-spacing:.03em;text-decoration:none;color:#111;position:relative;transition:color .3s ease}
+  .pt-header--transparent .pt-mobile-bag{color:#fff}
+  .pt-header--transparent.is-scrolled .pt-mobile-bag{color:#111}
 
   /* Mobile menu expanded (horizontal tabs) */
-  .pt-mobile-expanded{position:fixed;top:calc(var(--pt-offset, 64px));left:0;right:0;background:#fff;border-bottom:1px solid #efefef;z-index:59;max-height:0;overflow:hidden;transition:.3s ease;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-  .pt-mobile-expanded[aria-hidden="false"]{max-height:200px}
+  .pt-mobile-expanded{position:fixed;top:calc(var(--pt-offset, 64px));left:0;right:0;background:#fff;border:none;border-bottom:none;z-index:59;max-height:0;overflow:hidden;transition:.3s ease;box-shadow:none}
+  .pt-mobile-expanded[aria-hidden="false"]{max-height:80vh;overflow-y:auto}
   .pt-mobile-nav{display:flex;overflow-x:auto;padding:12px 6px;gap:4px;-webkit-overflow-scrolling:touch}
   .pt-mobile-nav::-webkit-scrollbar{display:none}
-  .pt-mobile-tab{flex-shrink:0;padding:8px 16px;text-decoration:none;color:#111;font-size:13px;letter-spacing:.03em;white-space:nowrap;border-bottom:2px solid transparent;position:relative}
+  .pt-mobile-tab{flex-shrink:0;padding:8px 16px;text-decoration:none;color:#111;font-size:13px;letter-spacing:.03em;white-space:nowrap;border-bottom:2px solid transparent;position:relative;background:none;border:none;cursor:pointer}
   .pt-mobile-tab:hover,.pt-mobile-tab:active{border-bottom-color:#111}
+  .pt-mobile-tab--parent.is-active{border-bottom-color:#111}
   .pt-badge-mobile{font-size:9px;position:absolute;top:4px;right:8px;background:#111;color:#fff;border-radius:10px;padding:2px 5px;line-height:1}
+
+  /* Mobile submenu panels (accordion style) */
+  .pt-mobile-submenu{max-height:0;overflow:hidden;transition:max-height .3s ease}
+  .pt-mobile-submenu[aria-hidden="false"]{max-height:1000px}
+  .pt-mobile-submenu__content{padding:20px 18px;background:#fafafa}
+  .pt-mobile-submenu__group{margin-bottom:20px}
+  .pt-mobile-submenu__group:last-child{margin-bottom:0}
+  .pt-mobile-submenu__link{display:block;padding:6px 0;text-decoration:none;color:#111;font-size:13px;letter-spacing:.02em;line-height:1.5}
+  .pt-mobile-submenu__link--main{font-weight:600;font-size:14px;margin-bottom:8px;color:#111}
+  .pt-mobile-submenu__link:hover{opacity:.6}
 
   /* mobile */
   @media (max-width:960px){
@@ -200,9 +266,16 @@
   }
   @media (min-width:961px){
     .pt-nav--left{gap:14px}
-    .pt-mega__inner{min-width:88vw}
-    .pt-brands{grid-template-columns:repeat(3,minmax(0,1fr))}
     .pt-logo__text{font-size:15px;letter-spacing:.22em}
+  }
+  @media (max-width:1200px){
+    .pt-mega__content{grid-template-columns:auto 1fr}
+    .pt-mega__image-side{padding:10px 0}
+    .pt-mega__links-side{padding:10px 5px}
+    .pt-mega__link-item{font-size:13px}
+  }
+  @media (max-width:960px){
+    .pt-mega{display:none}
   }
 </style>
 
@@ -210,12 +283,13 @@
   (function(){
     // Header scroll and offset
     var el = document.querySelector('.pt-header'); if(!el) return;
-    function setOffset(){ var off = (el.offsetHeight||0) + 6; document.documentElement.style.setProperty('--pt-offset', off+'px'); }
+    function setOffset(){ var off = (el.offsetHeight||0); document.documentElement.style.setProperty('--pt-offset', off+'px'); }
     setOffset();
     var last=0;
     function onScroll(){
       var y = window.pageYOffset || document.documentElement.scrollTop;
       if(y>20 && last<=20) el.classList.add('is-shrink'); else if(y<=20 && last>20) el.classList.remove('is-shrink');
+      if(y>50){el.classList.add('is-scrolled');}else{el.classList.remove('is-scrolled');}
       last=y; setOffset();
     }
     window.addEventListener('scroll', onScroll, {passive:true});
@@ -250,7 +324,173 @@
         if(mobileToggleText) {
           mobileToggleText.textContent = 'Menu';
         }
+        closeAllSubmenus();
       }
+    });
+
+    // Mobile submenu functionality
+    function closeAllSubmenus() {
+      var allSubmenus = document.querySelectorAll('.pt-mobile-submenu');
+      var allTriggers = document.querySelectorAll('.pt-mobile-tab--parent');
+      allSubmenus.forEach(function(submenu){
+        submenu.setAttribute('aria-hidden', 'true');
+      });
+      allTriggers.forEach(function(trigger){
+        trigger.classList.remove('is-active');
+      });
+    }
+
+    // Handle parent menu item clicks (toggle functionality)
+    var menuTriggers = document.querySelectorAll('[data-menu-trigger]');
+    menuTriggers.forEach(function(trigger){
+      trigger.addEventListener('click', function(){
+        var menuId = trigger.getAttribute('data-menu-trigger');
+        var panel = document.querySelector('[data-menu-panel="' + menuId + '"]');
+
+        if(panel) {
+          var isOpen = panel.getAttribute('aria-hidden') === 'false';
+
+          // Close all submenus first
+          closeAllSubmenus();
+
+          // Toggle this submenu (opposite of what it was)
+          if(!isOpen) {
+            panel.setAttribute('aria-hidden', 'false');
+            trigger.classList.add('is-active');
+          }
+        }
+      });
+    });
+
+    // Close submenus when main mobile menu closes
+    var originalToggle = toggleMobileMenu;
+    toggleMobileMenu = function() {
+      var wasOpen = mobileExpanded.getAttribute('aria-hidden') === 'false';
+      originalToggle();
+      if(wasOpen) {
+        closeAllSubmenus();
+      }
+    };
+
+    // Desktop mega menu toggle functionality (hover + click to lock)
+    var desktopMenuButtons = document.querySelectorAll('.pt-nav .pt-drop__btn');
+    var megaMenuTimers = {};
+
+    function closeAllDesktopMenus() {
+      var allMegaMenus = document.querySelectorAll('.pt-mega');
+      var allButtons = document.querySelectorAll('.pt-nav .pt-drop__btn');
+
+      allMegaMenus.forEach(function(menu){
+        menu.classList.remove('is-locked');
+        menu.classList.remove('is-hover');
+      });
+
+      allButtons.forEach(function(btn){
+        btn.setAttribute('aria-expanded', 'false');
+        btn.classList.remove('is-active');
+      });
+    }
+
+    function showMegaMenu(parent, btn) {
+      var megaMenu = parent.querySelector('.pt-mega');
+      if(megaMenu) {
+        var menuId = parent.getAttribute('data-menu-id') || Math.random().toString();
+        parent.setAttribute('data-menu-id', menuId);
+
+        // Clear any pending hide timer
+        if(megaMenuTimers[menuId]) {
+          clearTimeout(megaMenuTimers[menuId]);
+          delete megaMenuTimers[menuId];
+        }
+
+        megaMenu.classList.add('is-hover');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    function hideMegaMenu(parent, btn, delay) {
+      var megaMenu = parent.querySelector('.pt-mega');
+      if(megaMenu && !megaMenu.classList.contains('is-locked')) {
+        var menuId = parent.getAttribute('data-menu-id');
+
+        // Clear any existing timer
+        if(megaMenuTimers[menuId]) {
+          clearTimeout(megaMenuTimers[menuId]);
+        }
+
+        // Set new timer to hide after delay
+        megaMenuTimers[menuId] = setTimeout(function(){
+          megaMenu.classList.remove('is-hover');
+          btn.setAttribute('aria-expanded', 'false');
+          delete megaMenuTimers[menuId];
+        }, delay || 300);
+      }
+    }
+
+    // Hover events for menu items
+    document.querySelectorAll('.pt-item.pt-has-mega').forEach(function(item){
+      var btn = item.querySelector('.pt-drop__btn');
+      var megaMenu = item.querySelector('.pt-mega');
+
+      // Hover on menu button
+      item.addEventListener('mouseenter', function(){
+        showMegaMenu(item, btn);
+      });
+
+      item.addEventListener('mouseleave', function(){
+        hideMegaMenu(item, btn, 300);
+      });
+
+      // Hover on mega menu itself
+      if(megaMenu) {
+        megaMenu.addEventListener('mouseenter', function(){
+          showMegaMenu(item, btn);
+        });
+
+        megaMenu.addEventListener('mouseleave', function(){
+          hideMegaMenu(item, btn, 200);
+        });
+      }
+    });
+
+    // Click to lock functionality
+    desktopMenuButtons.forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+
+        var parent = btn.closest('.pt-item');
+        var megaMenu = parent.querySelector('.pt-mega');
+
+        if(megaMenu) {
+          var isLocked = megaMenu.classList.contains('is-locked');
+
+          // Close all menus first
+          closeAllDesktopMenus();
+
+          // Toggle this menu (opposite of what it was)
+          if(!isLocked) {
+            megaMenu.classList.add('is-locked');
+            megaMenu.classList.add('is-hover');
+            btn.setAttribute('aria-expanded', 'true');
+            btn.classList.add('is-active');
+          }
+        }
+      });
+    });
+
+    // Close mega menus when clicking outside
+    document.addEventListener('click', function(e){
+      if(!e.target.closest('.pt-item')) {
+        closeAllDesktopMenus();
+      }
+    });
+
+    // Prevent clicks inside mega menu from closing it
+    document.querySelectorAll('.pt-mega').forEach(function(menu){
+      menu.addEventListener('click', function(e){
+        e.stopPropagation();
+      });
     });
   })();
 </script>
@@ -267,7 +507,29 @@
     { "type":"link_list", "id":"menu_right", "label":"Right Menu" },
     { "type":"link_list", "id":"menu_mobile", "label":"Mobile Menu" },
 
-    { "type":"url", "id":"book_url", "label":"Book Appointment URL" }
+    { "type":"url", "id":"book_url", "label":"Book Appointment URL" },
+
+    {
+      "type": "header",
+      "content": "Mega Menu Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "mega_menu_image",
+      "label": "Mega Menu Image",
+      "info": "This image will appear on the right side of all mega menu dropdowns. Recommended size: 600x400px"
+    },
+    {
+      "type": "header",
+      "content": "Header Appearance"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_header",
+      "label": "Enable Transparent Header on Homepage",
+      "default": true,
+      "info": "When enabled, header will be transparent on the homepage only and turn white on scroll. All other pages will have a white header."
+    }
   ],
   "blocks": [
     {

@@ -114,6 +114,14 @@
 							{% endif %}
 						</variant-button>
 					{% when 'dropdown' %}
+					{% render 'custom-dropdown-select',
+						option: option,
+						product: product,
+						product_form_id: product_form_id,
+						section_id: section.id
+					%}
+					{% comment %}
+					Old dropdown code - replaced with custom dropdown
 						<variant-select class="gsp-product-option-type-select d-flex mb-4 {% if attach_size_chart %} justify-content-between {% endif %}" data-picker-field="select"
 										data-option-name="{{ option.name }}"
 										data-selected-value="{{ option.selected_value }}">
@@ -128,11 +136,32 @@
 											name="options[{{ option.name | escape }}]"
 											form="{{ product_form_id }}">
 										{%- for value in option.values -%}
+											{% liquid
+												assign variant_price = ''
+												for variant in product.variants
+													if option.position == 1
+														if variant.option1 == value
+															assign variant_price = variant.price | money
+															break
+														endif
+													elsif option.position == 2
+														if variant.option2 == value
+															assign variant_price = variant.price | money
+															break
+														endif
+													elsif option.position == 3
+														if variant.option3 == value
+															assign variant_price = variant.price | money
+															break
+														endif
+													endif
+												endfor
+											%}
 											<option value="{{ value | escape }}" class="gsp-product-option-item gsp-product-option--node"
 													data-value="{{- value | escape -}}"
 													data-option-position="{{ option.position }}"
 													{% if option.selected_value == value %}selected="selected"{% endif %}>
-												{{- value -}}
+												{{- value -}}{% if variant_price != '' %} - {{ variant_price }}{% endif %}
 											</option>
 										{%- endfor -%}
 									</select>
@@ -142,7 +171,8 @@
 								{{ size_chart_html }}
 							{% endif %}
 						</variant-select>
-					{% when 'color' %}
+					{% endcomment %}
+				{% when 'color' %}
 						{% liquid
 							assign color_base = ',' | append: settings.pvd_display_type_color | strip_newlines | downcase | append: ',' | replace: ': ', ':' | replace: ' :', ':'
 						%}
